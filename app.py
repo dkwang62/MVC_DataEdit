@@ -805,71 +805,170 @@ def render_gantt_charts(working: Dict, resort: str, data: Dict):
         st.plotly_chart(create_gantt_chart(working, resort, 2025, data), use_container_width=True)
     with tab2026:
         st.plotly_chart(create_gantt_chart(working, resort, 2026, data), use_container_width=True)
-
 # ----------------------------------------------------------------------
-# RESORT SUMMARY (COMPACT ONE-PAGER, NO DATES, NO HOLIDAYS)
+# VALIDATION
 # ----------------------------------------------------------------------
-def render_resort_summary(resort: str, working: Dict):
-    """
-    Compact 1-page view of all seasons + reference points
-    for the selected resort (ignores Holiday Week and date ranges).
-    """
-    st.subheader("📋 Resort Summary (Seasons & Points)")
-
+def validate_resort_data(working: Dict, data: Dict) -> List[str]:
+    """Validate resort data and return list of issues."""
+    issues: List[str] = []
+    season_blocks = working.get("season_blocks", {})
+    days_covered = {
+        "Mon-Thu": {"Mon", "Tue", "Wed", "Thu"},
+        "Fri-Sat": {"Fri", "Sat"},
+        "Sun": {"Sun"},
+        "Sun-Thu": {"Sun", "Mon", "Tue", "Wed", "Thu"}
+    }
+    all_days = set(["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"])
+    # Check for overlapping season ranges and holidays
+    for year in YEARS:
+        season_ranges: List[Tuple[str, datetime, datetime]] = []
+        season_data = season_blocks.get(year, {})
+ 
+        for season_name, ranges in season_data.items():
+            for start_str, end_str in ranges:
+                try:
+                    start = datetime.strptime(start_str, "%Y-%m-%d")
+                    end = datetime.strptime(end_str, "%Y-%m-%d") + timedelta(days=1)  # end inclusive for checks
+                    season_ranges.append((season_name, start, end))
+                except (ValueError, TypeError):
+                    issues.append(f"Invalid date range in {year} {season_name}: {start_str} - {end_str}")
+ 
+        season_ranges.sort(key=lambda x: x[1])
+        for i in range(1, len(season_ranges)):
+            prev_name, prev_start, prev_end = season_ranges[i-1]
+            curr_name, curr_start, curr_end = season_ranges[i]
+            if curr_start < prev_end:
+                issues.append(f"Overlapping seasons in {year}: {prev_name} and {curr_name}")
+ 
+        # Holiday ranges
+        holiday_ranges: List[Tuple[str, datetime, datetime]] = []
+        holiday_dict = working.get("holiday_weeks", {}).get(year, {})
+        for name, raw in holiday_dict.items():
+            if isinstance(raw, str) and raw.startswith("global:"):
+                holiday_name = raw.split(":", 1)[1]
+                raw = data.get("global_dates", {}).get(year, {}).get(holiday_name, [])
+            if isinstance(raw, list) and len(raw) >= 2:
+                try:
+                    start = datetime.strptime(raw[0], "%Y-%m-%d")
+                    end = datetime.strptime(raw[1], "%Y-%m-%d") + timedelta(days=1)
+                    holiday_ranges.append((name, start, end))
+                except (ValueError, TypeError):
+                    issues.append(f"Invalid holiday date in {year} {name}: {raw}")
+        holiday_ranges.sort(key=lambda x: x[1])
+        for i in range(1, len(holiday_ranges)):
+            prev_name, prev_start, prev_end = holiday_ranges[i-1]
+            curr_name, curr_start, curr_end = holiday_ranges[i]
+            if curr_start < prev_end:
+                issues.append(f"Overlapping holidays in {year}: {prev_name} and {curr_name}")
+ 
+        # Check cross overlaps (season and holiday)
+        for s_name, s_start, s_end in season_ranges:
+            for h_name, h_start, h_end in holiday_ranges:
+                if max(s_start, h_start) < min(s_end, h_end):
+                    issues.append(f"Overlap between season {s_name} and holiday {h_name} in {year}")
+ 
+        # Check overall coverage (no gaps in union)
+        all_ranges = season_ranges + holiday_ranges
+        if all_ranges:
+            all_ranges.sort(key=lambda x: x[1])
+            merged_start = all_ranges[0][1]
+            merged_end = all_ranges[0][2]
+            for _, start, end in all_ranges[1:]:
+                if start <= merged_end:  # merge adjacent or overlapping
+                    merged_end = max(merged_end, end)
+                else:
+                    gap_start = merged_end
+                    gap_end = start - timedelta(days=1)
+                    issues.append(f"Gap in overall coverage in {year}: {gap_start.date()} to {gap_end.date()}")
+                    merged_start = start
+                    merged_end = end
+            year_start = datetime(int(year), 1, 1)
+            year_end = datetime(int(year), 12, 31) + timedelta(days=1)
+            if merged_start > year_start:
+                gap_start = year_start
+                gap_end = merged_start - timedelta(days=1)
+                issues.append(f"Gap at start of {year}: {gap_start.date()} to {gap_end.date()}")
+            if merged_end < year_end:
+                gap_start = merged_end
+                gap_end = year_end - timedelta(days=1)
+                issues.append(f"Gap at end of {year}: {gap_start.date()} to {gap_end.date()}")
+        else:
+            issues.append(f"No coverage at all for {year}")
+ 
+    # Check for empty seasons
+    all_seasons = get_all_seasons(working)
     ref_points = working.get("reference_points", {})
-    if not ref_points:
-        st.info("No reference points defined yet for this resort.")
-        return
-
-    # Collect all non-holiday room types across seasons
-    room_types: Set[str] = set()
-    for season_name, season_data in ref_points.items():
-        if season_name == HOLIDAY_SEASON_KEY:
+    for season in all_seasons:
+        if season == HOLIDAY_SEASON_KEY:
             continue
-        for day_type, rooms_dict in season_data.items():
+        has_data = False
+        for year in YEARS:
+            if season_blocks.get(year, {}).get(season):
+                has_data = True
+                break
+        if not has_data and season in ref_points:
+            issues.append(f"Season '{season}' has reference points but no date ranges")
+ 
+    # Check room consistency
+    all_rooms = set(get_all_room_types(working))
+    for season, season_content in ref_points.items():
+        if season == HOLIDAY_SEASON_KEY:
+            continue
+        for day_type, rooms_dict in season_content.items():
             if isinstance(rooms_dict, dict):
-                room_types.update(rooms_dict.keys())
-
-    if not room_types:
-        st.info("No room types found in reference points for this resort.")
-        return
-
-    room_types = sorted(room_types)
-
-    rows: List[Dict[str, Any]] = []
-
-    # One row per (Season, Day Type)
-    for season_name in sorted(ref_points.keys()):
-        if season_name == HOLIDAY_SEASON_KEY:
-            continue
-
-        season_data = ref_points.get(season_name, {})
-
-        for day_type in DAY_TYPES:
-            rooms_dict = season_data.get(day_type)
-            if not isinstance(rooms_dict, dict) or not rooms_dict:
-                continue
-
-            row: Dict[str, Any] = {
-                "Season": season_name,
-                "Day": day_type,
-            }
-
-            for room in room_types:
-                val = rooms_dict.get(room)
-                row[room] = "" if val is None else val
-
-            rows.append(row)
-
-    if not rows:
-        st.info("No season/day combinations with room point data yet.")
-        return
-
-    df = pd.DataFrame(rows, columns=["Season", "Day"] + room_types)
-
-    # Compact, single-screen display
-    st.dataframe(df, use_container_width=True)
-
+                season_rooms = set(rooms_dict.keys())
+                missing = all_rooms - season_rooms
+                if missing:
+                    issues.append(f"Season '{season}' missing rooms in {day_type}: {', '.join(sorted(missing))}")
+ 
+    # Check holiday consistency
+    if HOLIDAY_SEASON_KEY in ref_points:
+        for holiday, room_data in ref_points[HOLIDAY_SEASON_KEY].items():
+            if isinstance(room_data, dict):
+                holiday_rooms = set(room_data.keys())
+                missing = all_rooms - holiday_rooms
+                if missing:
+                    issues.append(f"Holiday '{holiday}' missing rooms: {', '.join(sorted(missing))}")
+            else:
+                issues.append(f"Invalid data structure for holiday '{holiday}'")
+ 
+    # Check structural integrity for reference_points only
+    for season, content in ref_points.items():
+        if season == HOLIDAY_SEASON_KEY:
+            for holiday, rooms in content.items():
+                if not isinstance(rooms, dict):
+                    issues.append(f"reference_points Holiday '{holiday}' invalid (not dict)")
+        else:
+            found_day_types = [k for k in content if k in DAY_TYPES]
+            extra = [k for k in content if k not in DAY_TYPES]
+            if extra:
+                issues.append(f"reference_points Season '{season}' has extra keys: {', '.join(extra)}")
+            for day, rooms in content.items():
+                if day in DAY_TYPES and not isinstance(rooms, dict):
+                    issues.append(f"reference_points Season '{season}' day '{day}' invalid (not dict)")
+            # Check day coverage
+            covered_days = set()
+            for day_type in found_day_types:
+                new_days = days_covered.get(day_type, set())
+                overlap = covered_days & new_days
+                if overlap:
+                    issues.append(f"Overlapping days in Season '{season}': {', '.join(overlap)}")
+                covered_days.update(new_days)
+            if len(covered_days) != 7:
+                missing_days = all_days - covered_days
+                issues.append(f"Season '{season}' does not cover full week: missing {', '.join(missing_days)}")
+ 
+    return issues
+def render_validation_panel(working: Dict, data: Dict):
+    """Render validation issues panel."""
+    with st.expander("🔍 Validation Check", expanded=False):
+        issues = validate_resort_data(working, data)
+        if issues:
+            st.error("Validation Issues Found:")
+            for issue in issues:
+                st.write(f"• {issue}")
+        else:
+            st.success("✓ No validation issues found")
 # ----------------------------------------------------------------------
 # GLOBAL SETTINGS
 # ----------------------------------------------------------------------
@@ -1120,9 +1219,6 @@ def main():
      
         # Gantt charts
         render_gantt_charts(working, current_resort, data)
-
-        # Compact 1-page resort summary (like the brochure table, no holidays)
-        render_resort_summary(current_resort, working)
  
         # Season dates editor
         render_season_dates_editor(working, current_resort)
