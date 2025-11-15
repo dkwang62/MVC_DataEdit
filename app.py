@@ -809,12 +809,58 @@ def render_gantt_charts(working: Dict, resort: str, data: Dict):
 # ----------------------------------------------------------------------
 # RESORT SUMMARY (COMPACT ONE-PAGER, NO DATES, NO HOLIDAYS)
 # ----------------------------------------------------------------------
+def compute_weekly_totals_for_season(season_data: Dict, room_types: List[str]) -> Tuple[Dict[str, int], bool]:
+    """
+    Compute total points for a 7-night week for a single season.
+
+    Handles two main schemas:
+    1) Sun-Thu + Fri-Sat  → 5 + 2 nights
+    2) Sun + Mon-Thu + Fri-Sat → 1 + 4 + 2 nights
+
+    Falls back to "whatever exists" with canonical night counts if the pattern
+    is incomplete or unusual.
+    """
+    has_sun_thu = isinstance(season_data.get("Sun-Thu"), dict)
+    has_sun = isinstance(season_data.get("Sun"), dict)
+    has_mon_thu = isinstance(season_data.get("Mon-Thu"), dict)
+    has_fri_sat = isinstance(season_data.get("Fri-Sat"), dict)
+
+    # Choose pattern based on what's present
+    if has_sun_thu and has_fri_sat:
+        patterns = [("Sun-Thu", 5), ("Fri-Sat", 2)]
+    elif has_sun and has_mon_thu and has_fri_sat:
+        patterns = [("Sun", 1), ("Mon-Thu", 4), ("Fri-Sat", 2)]
+    else:
+        # Fallback: multiply whatever day-types exist by canonical nights
+        days_per_type = {"Sun": 1, "Mon-Thu": 4, "Fri-Sat": 2, "Sun-Thu": 5}
+        patterns = [
+            (dt, nights)
+            for dt, nights in days_per_type.items()
+            if isinstance(season_data.get(dt), dict)
+        ]
+
+    weekly_totals = {room: 0 for room in room_types}
+    any_data = False
+
+    for day_type, nights in patterns:
+        rooms_dict = season_data.get(day_type, {})
+        if not isinstance(rooms_dict, dict):
+            continue
+        for room in room_types:
+            if room in rooms_dict and rooms_dict[room] is not None:
+                weekly_totals[room] += int(rooms_dict[room]) * nights
+                any_data = True
+
+    return weekly_totals, any_data
+
 def render_resort_summary(resort: str, working: Dict):
     """
-    Compact 1-page view of all seasons + reference points
-    for the selected resort (ignores Holiday Week and date ranges).
+    Compact 1-page view:
+    - One row per non-holiday Season
+    - One column per room type
+    - Value = total points for a 7-night stay
     """
-    st.subheader("📋 Resort Summary (Seasons & Points)")
+    st.subheader("📋 Resort Summary – Weekly Points (7 nights)")
 
     ref_points = working.get("reference_points", {})
     if not ref_points:
@@ -838,36 +884,27 @@ def render_resort_summary(resort: str, working: Dict):
 
     rows: List[Dict[str, Any]] = []
 
-    # One row per (Season, Day Type)
     for season_name in sorted(ref_points.keys()):
         if season_name == HOLIDAY_SEASON_KEY:
             continue
 
         season_data = ref_points.get(season_name, {})
+        weekly_totals, any_data = compute_weekly_totals_for_season(season_data, room_types)
 
-        for day_type in DAY_TYPES:
-            rooms_dict = season_data.get(day_type)
-            if not isinstance(rooms_dict, dict) or not rooms_dict:
-                continue
+        if not any_data:
+            # Skip seasons that don't have usable rate data
+            continue
 
-            row: Dict[str, Any] = {
-                "Season": season_name,
-                "Day": day_type,
-            }
-
-            for room in room_types:
-                val = rooms_dict.get(room)
-                row[room] = "" if val is None else val
-
-            rows.append(row)
+        row: Dict[str, Any] = {"Season": season_name}
+        for room in room_types:
+            row[room] = "" if weekly_totals[room] == 0 else weekly_totals[room]
+        rows.append(row)
 
     if not rows:
-        st.info("No season/day combinations with room point data yet.")
+        st.info("No season data available to compute weekly totals.")
         return
 
-    df = pd.DataFrame(rows, columns=["Season", "Day"] + room_types)
-
-    # Compact, single-screen display
+    df = pd.DataFrame(rows, columns=["Season"] + room_types)
     st.dataframe(df, use_container_width=True)
 
 # ----------------------------------------------------------------------
