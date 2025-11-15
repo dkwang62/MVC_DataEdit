@@ -805,6 +805,99 @@ def render_gantt_charts(working: Dict, resort: str, data: Dict):
         st.plotly_chart(create_gantt_chart(working, resort, 2025, data), use_container_width=True)
     with tab2026:
         st.plotly_chart(create_gantt_chart(working, resort, 2026, data), use_container_width=True)
+
+# ----------------------------------------------------------------------
+# RESORT SUMMARY (COMPACT ONE-PAGER, NO HOLIDAYS)
+# ----------------------------------------------------------------------
+def format_season_date_ranges(working: Dict, year: str, season: str) -> str:
+    """
+    Build a compact 'Jan 3–Jan 30; Apr 4–Apr 17' style string
+    for a given season and year. Returns '—' if no ranges exist.
+    """
+    season_blocks = working.get("season_blocks", {}).get(year, {})
+    ranges = season_blocks.get(season, [])
+    if not ranges:
+        return "—"
+
+    parts = []
+    for start_str, end_str in ranges:
+        try:
+            start = datetime.strptime(start_str, "%Y-%m-%d").date()
+            end = datetime.strptime(end_str, "%Y-%m-%d").date()
+            # e.g. "Jan 03–Jan 30"
+            parts.append(f"{start.strftime('%b %d')}–{end.strftime('%b %d')}")
+        except Exception:
+            # fall back to raw strings if parsing fails
+            parts.append(f"{start_str}–{end_str}")
+    return "; ".join(parts)
+
+
+def render_resort_summary(resort: str, working: Dict):
+    """
+    Compact 1-page view of all seasons + reference points
+    for the selected resort (ignores Holiday Week).
+    """
+    st.subheader("📋 Resort Summary (Seasons & Points)")
+
+    ref_points = working.get("reference_points", {})
+    if not ref_points:
+        st.info("No reference points defined yet for this resort.")
+        return
+
+    # Collect all non-holiday room types across seasons
+    room_types: Set[str] = set()
+    for season_name, season_data in ref_points.items():
+        if season_name == HOLIDAY_SEASON_KEY:
+            continue
+        for day_type, rooms_dict in season_data.items():
+            if isinstance(rooms_dict, dict):
+                room_types.update(rooms_dict.keys())
+
+    if not room_types:
+        st.info("No room types found in reference points for this resort.")
+        return
+
+    room_types = sorted(room_types)
+
+    rows: List[Dict[str, Any]] = []
+
+    # Iterate seasons in a stable, sorted order (excluding Holiday Week)
+    for season_name in sorted(ref_points.keys()):
+        if season_name == HOLIDAY_SEASON_KEY:
+            continue
+
+        season_data = ref_points.get(season_name, {})
+        dates_2025 = format_season_date_ranges(working, "2025", season_name)
+        dates_2026 = format_season_date_ranges(working, "2026", season_name)
+
+        for day_type in DAY_TYPES:
+            rooms_dict = season_data.get(day_type)
+            if not isinstance(rooms_dict, dict) or not rooms_dict:
+                continue
+
+            row: Dict[str, Any] = {
+                "Season": season_name,
+                "2025 Dates": dates_2025,
+                "2026 Dates": dates_2026,
+                "Day": day_type,
+            }
+
+            for room in room_types:
+                val = rooms_dict.get(room)
+                # keep empty string for missing values to keep it tidy
+                row[room] = "" if val is None else val
+
+            rows.append(row)
+
+    if not rows:
+        st.info("No season/day combinations with room point data yet.")
+        return
+
+    df = pd.DataFrame(rows, columns=["Season", "2025 Dates", "2026 Dates", "Day"] + room_types)
+
+    # Compact, one-screen style
+    st.dataframe(df, use_container_width=True)
+
 # ----------------------------------------------------------------------
 # VALIDATION
 # ----------------------------------------------------------------------
@@ -1219,6 +1312,9 @@ def main():
      
         # Gantt charts
         render_gantt_charts(working, current_resort, data)
+
+        # Compact 1-page resort summary (like the brochure table, no holidays)
+        render_resort_summary(current_resort, working)
  
         # Season dates editor
         render_season_dates_editor(working, current_resort)
