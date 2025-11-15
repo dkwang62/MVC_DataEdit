@@ -53,7 +53,6 @@ def initialize_session_state():
         'working_resorts': {},
         'editing_season': None,
         'editing_room': None,
-        'change_history': [],
         'last_save_time': None
     }
  
@@ -69,17 +68,21 @@ def show_save_indicator():
         elapsed = (datetime.now() - st.session_state.last_save_time).total_seconds()
         if elapsed < 2: # Show for 2 seconds after save
             st.sidebar.success("✓ Saved", icon="✅")
-def revert_last_change():
-    """Revert to previous state if available."""
-    if st.session_state.change_history:
-        st.session_state.data = st.session_state.change_history.pop()
-        # Drop all per-resort working copies – they’ll be recreated from reverted data
-        st.session_state.working_resorts = {}
-        st.rerun()
-def snapshot_before_change():
-    if st.session_state.data is not None:
-        st.session_state.change_history.append(copy.deepcopy(st.session_state.data))
-        st.session_state.change_history = st.session_state.change_history[-10:]
+def reset_state_for_new_file():
+    """Clear all file-specific session state when a new file is loaded."""
+    # keep last_upload_sig OUTSIDE this reset (we set it after successful load)
+    keys_to_reset = [
+        "data",
+        "current_resort",
+        "previous_resort",
+        "working_resorts",
+        "editing_season",
+        "editing_room",
+        "delete_confirm",
+        "last_save_time",
+    ]
+    for k in keys_to_reset:
+        st.session_state[k] = None if k != "working_resorts" else {}
 # ----------------------------------------------------------------------
 # DATA MANAGEMENT
 # ----------------------------------------------------------------------
@@ -113,8 +116,9 @@ def handle_file_upload():
         if current_sig != st.session_state.last_upload_sig:
             try:
                 raw_data = json.load(uploaded)
+                # 🔴 NEW: clear any old-file state
+                reset_state_for_new_file()
                 st.session_state.data = raw_data
-                st.session_state.current_resort = None
                 st.session_state.last_upload_sig = current_sig
                 resorts_list = raw_data.get("resorts_list", [])
                 st.success(f"✅ Loaded {len(resorts_list)} resorts")
@@ -202,7 +206,6 @@ def handle_resort_creation(data: Dict, resorts: List[str]):
                     clone_resort(data, st.session_state.current_resort, new_name_clean)
 def create_blank_resort(data: Dict, new_name: str):
     """Create a new blank resort."""
-    snapshot_before_change()
     data.setdefault("resorts_list", []).append(new_name)
     data.setdefault("season_blocks", {})[new_name] = {year: {} for year in YEARS}
     data.setdefault("reference_points", {})[new_name] = {}
@@ -212,7 +215,6 @@ def create_blank_resort(data: Dict, new_name: str):
     st.rerun()
 def clone_resort(data: Dict, source: str, target: str):
     """Clone an existing resort."""
-    snapshot_before_change()
     data.setdefault("resorts_list", []).append(target)
     season_blocks = data.get("season_blocks", {})
     ref_points = data.get("reference_points", {})
@@ -254,7 +256,6 @@ def handle_resort_deletion(data: Dict, current_resort: str):
         st.stop()
 def delete_resort(data: Dict, resort: str):
     """Delete a resort from all data structures."""
-    snapshot_before_change()
     for category in ["season_blocks", "reference_points", "holiday_weeks"]:
         data.get(category, {}).pop(resort, None)
     data["resorts_list"].remove(resort)
@@ -559,6 +560,7 @@ def add_holiday_to_resort(working: Dict, holiday: str):
     """Add a holiday to resort data structures with room sync."""
     rooms = get_all_room_types(working)
     holiday_data: Dict[str, int] = {}
+ 
     # Build holiday data from current rooms
     for room in rooms:
         holiday_data[room] = DEFAULT_HOLIDAY_POINTS.get(room, 1500)
@@ -594,15 +596,16 @@ def render_season_dates_editor(working: Dict, resort: str):
         with st.expander(f"{year} Seasons", expanded=True):
             year_data = season_blocks.setdefault(year, {})
             seasons = list(year_data.keys())
-         
+ 
             # Add new season
             col1, col2 = st.columns([4, 1])
+ 
             with col1:
                 new_season = st.text_input(f"New season ({year})", key=f"ns_{resort}_{year}")
             with col2:
                 if st.button("Add", key=f"add_s_{resort}_{year}") and new_season:
                     add_season(working, new_season.strip())
-         
+ 
             # Edit existing seasons
             for season_idx, season in enumerate(seasons):
                 render_season_ranges(working, resort, year, season, season_idx)
@@ -820,7 +823,7 @@ def validate_resort_data(working: Dict, data: Dict) -> List[str]:
     for year in YEARS:
         season_ranges: List[Tuple[str, datetime, datetime]] = []
         season_data = season_blocks.get(year, {})
-     
+ 
         for season_name, ranges in season_data.items():
             for start_str, end_str in ranges:
                 try:
@@ -829,7 +832,7 @@ def validate_resort_data(working: Dict, data: Dict) -> List[str]:
                     season_ranges.append((season_name, start, end))
                 except (ValueError, TypeError):
                     issues.append(f"Invalid date range in {year} {season_name}: {start_str} - {end_str}")
-     
+ 
         season_ranges.sort(key=lambda x: x[1])
         for i in range(1, len(season_ranges)):
             prev_name, prev_start, prev_end = season_ranges[i-1]
@@ -988,7 +991,6 @@ def render_maintenance_fees(data: Dict):
             year, value=current_rate, step=0.01, format="%.4f", key=f"mf_{i}"
         )
         if new_rate != current_rate:
-            snapshot_before_change()
             rates[year] = float(new_rate)
             save_data()
 def render_holiday_dates_editor(data: Dict):
@@ -1011,45 +1013,36 @@ def render_holiday_date_range(data: Dict, year: str, name: str, dates: List, ind
     start_str, end_str = date_list[0], date_list[1]
     st.markdown(f"*{name}*")
     col1, col2, col3 = st.columns([4, 4, 1])
+ 
     with col1:
         new_start = st.date_input(f"Start", safe_date(start_str), key=f"hs_{year}_{index}", label_visibility="collapsed")
     with col2:
         new_end = st.date_input(f"End", safe_date(end_str), key=f"he_{year}_{index}", label_visibility="collapsed")
     with col3:
         if st.button("Delete", key=f"del_h_{year}_{index}"):
-            snapshot_before_change()
             del data["global_dates"][year][name]
             save_data()
             st.rerun()
+ 
     stored_start_iso = start_str if start_str else safe_date(start_str).isoformat()
     stored_end_iso = end_str if end_str else safe_date(end_str).isoformat()
     if new_start.isoformat() != stored_start_iso or new_end.isoformat() != stored_end_iso:
-        snapshot_before_change()
         data["global_dates"][year][name] = [new_start.isoformat(), new_end.isoformat()]
         save_data()
 def render_new_holiday_interface(data: Dict, year: str):
     """Render interface for adding new holidays."""
     new_name = st.text_input(f"New Holiday Name ({year})", key=f"nhn_{year}")
     col1, col2, col3 = st.columns([4, 4, 1])
+ 
     with col1:
         new_start = st.date_input("New Start Date", datetime.strptime(f"{year}-01-01", "%Y-%m-%d").date(), key=f"nhs_{year}")
     with col2:
         new_end = st.date_input("New End Date", datetime.strptime(f"{year}-01-07", "%Y-%m-%d").date(), key=f"nhe_{year}")
     with col3:
         if st.button("Add Holiday", key=f"add_h_{year}") and new_name and new_name not in data.get("global_dates", {}).get(year, {}):
-            snapshot_before_change()
             data.setdefault("global_dates", {}).setdefault(year, {})[new_name] = [new_start.isoformat(), new_end.isoformat()]
             save_data()
             st.rerun()
-# ----------------------------------------------------------------------
-# REVERT FUNCTIONALITY
-# ----------------------------------------------------------------------
-def render_revert_controls():
-    """Render revert controls in sidebar."""
-    if st.session_state.change_history:
-        st.sidebar.markdown("---")
-        if st.sidebar.button("↶ Revert Last Change", help="Undo the last change"):
-            revert_last_change()
 # ----------------------------------------------------------------------
 # HANDLE RESORT SWITCH
 # ----------------------------------------------------------------------
@@ -1093,7 +1086,6 @@ def handle_resort_switch(data: Dict, current_resort: str, previous_resort: str):
 # COMMIT WORKING TO DATA
 # ----------------------------------------------------------------------
 def commit_working_to_data(data: Dict, working: Dict, resort: str):
-    snapshot_before_change()
     for section in ("season_blocks", "reference_points", "holiday_weeks"):
         data.setdefault(section, {})[resort] = copy.deepcopy(working.get(section, {}))
     save_data()
@@ -1134,7 +1126,6 @@ def handle_merge_from_another_file(data: Dict):
                     key="selected_merge_resorts"
                 )
                 if selected_resorts and st.sidebar.button("Merge Selected Resorts"):
-                    snapshot_before_change()
                     for resort in selected_resorts:
                         if resort in data["resorts_list"]:
                             st.sidebar.warning(f"Resort '{resort}' already exists. Skipping to avoid overwrite.")
@@ -1166,7 +1157,6 @@ def main():
         if st.session_state.data:
             create_download_button(st.session_state.data)
             handle_file_verification()
-            render_revert_controls()
             handle_merge_from_another_file(st.session_state.data)
         show_save_indicator()
  
