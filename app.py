@@ -1171,7 +1171,7 @@ def main():
         show_save_indicator()
  
     # Main content
-    st.title("Marriott Data Editor")
+    st.title("MVC Resort Editor")
     st.caption("Rename • Add • Delete • Sync — All in One Place")
  
     # Check if data is loaded
