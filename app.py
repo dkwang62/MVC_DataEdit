@@ -1149,7 +1149,17 @@ def main():
     # Setup
     setup_page()
     initialize_session_state()
- 
+    if st.session_state.data is None:
+        try:
+            with open("data.json", "r") as f:
+                raw_data = json.load(f)
+                st.session_state.data = raw_data
+                resorts_list = raw_data.get("resorts_list", [])
+                st.info(f"✅ Automatically loaded {len(resorts_list)} resorts from data.json")
+        except FileNotFoundError:
+            st.info("No data.json found for automatic load. Please upload a file.")
+        except Exception as e:
+            st.error(f"❌ Error automatically loading data.json: {e}")
     # Sidebar
     with st.sidebar:
         st.markdown("<p class='big-font'>Marriott Editor</p>", unsafe_allow_html=True)
