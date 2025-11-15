@@ -1285,9 +1285,6 @@ def main():
         # Gantt charts
         render_gantt_charts(working, current_resort, data)
 
-        # Compact 1-page resort summary (no dates, no holidays)
-        render_resort_summary(current_resort, working)
- 
         # Season dates editor
         render_season_dates_editor(working, current_resort)
      
@@ -1301,7 +1298,10 @@ def main():
      
         # Holiday management
         handle_holiday_management(working, current_resort, data)
-     
+ 
+        # Compact 1-page resort summary (no dates, no holidays)
+        render_resort_summary(current_resort, working)
+      
         # Reference points editor
         render_reference_points_editor(working, current_resort)
      
