@@ -28,7 +28,7 @@ DEFAULT_HOLIDAY_POINTS = {
 # PAGE CONFIG & STYLES
 # ----------------------------------------------------------------------
 def setup_page():
-    st.set_page_config(page_title="Marriott Data Editor", layout="wide")
+    st.set_page_config(page_title="MVC Resort Editor", layout="wide")
     st.markdown("""
     <style>
         .big-font { font-size: 42px !important; font-weight: bold; color: #1f77b4; }
@@ -1162,28 +1162,34 @@ def main():
             st.error(f"❌ Error automatically loading data.json: {e}")
     # Sidebar
     with st.sidebar:
-        st.markdown("<p class='big-font'>Marriott Editor</p>", unsafe_allow_html=True)
+        st.markdown("<p class='big-font'>File Operations</p>", unsafe_allow_html=True)
         handle_file_upload()
         if st.session_state.data:
             create_download_button(st.session_state.data)
             handle_file_verification()
             handle_merge_from_another_file(st.session_state.data)
         show_save_indicator()
+ 
     # Main content
-    st.title("Marriott Data Editor")
+    st.title("MVC Resort Editor")
     st.caption("Rename • Add • Delete • Sync — All in One Place")
+ 
     # Check if data is loaded
     if not st.session_state.data:
         st.info("📁 Upload your data.json file to start editing")
         return
+ 
     data = st.session_state.data
     resorts = data.get("resorts_list", [])
     current_resort = st.session_state.current_resort
     previous_resort = st.session_state.previous_resort
+ 
     # Resort grid
     render_resort_grid(resorts, current_resort)
+ 
     # Handle switch
     handle_resort_switch(data, current_resort, previous_resort)
+ 
     # Load or create working for current
     if current_resort:
         working_resorts = st.session_state.working_resorts
@@ -1194,33 +1200,46 @@ def main():
                 'holiday_weeks': copy.deepcopy(data.get("holiday_weeks", {}).get(current_resort, {year: {} for year in YEARS}))
             }
         working = working_resorts[current_resort]
+ 
     # Resort creation
     handle_resort_creation(data, resorts)
+ 
     # Resort-specific editing
     if current_resort:
         st.markdown(f"### **{current_resort}**")
+     
         # Validation panel
         render_validation_panel(working, data)
+     
         # Save button
         render_save_button(data, working, current_resort)
+     
         # Resort deletion
         handle_resort_deletion(data, current_resort)
+     
         # Gantt charts
         render_gantt_charts(working, current_resort, data)
+ 
         # Season dates editor
         render_season_dates_editor(working, current_resort)
+     
         # Season management
         handle_season_renaming(working)
         handle_season_operations(working)
+     
         # Room type management
         handle_room_renaming(working)
         handle_room_operations(working)
+     
         # Holiday management
         handle_holiday_management(working, current_resort, data)
+     
         # Reference points editor
         render_reference_points_editor(working, current_resort)
+     
     # Global settings
     render_global_settings(data)
+ 
     # Footer
     st.markdown("""
     <div class='success-box'>
