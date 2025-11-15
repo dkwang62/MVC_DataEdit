@@ -28,7 +28,7 @@ DEFAULT_HOLIDAY_POINTS = {
 # PAGE CONFIG & STYLES
 # ----------------------------------------------------------------------
 def setup_page():
-    st.set_page_config(page_title="Marriott Data Editor", layout="wide")
+    st.set_page_config(page_title="MVC Resort Editor", layout="wide")
     st.markdown("""
     <style>
         .big-font { font-size: 42px !important; font-weight: bold; color: #1f77b4; }
