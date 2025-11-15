@@ -1336,9 +1336,9 @@ def main():
         # Holiday management
         handle_holiday_management(working, current_resort, data)
  
-        # Compact 1-page resort summary (no dates, no holidays)
+        # Compact weekly summary (1 row per season, 7-night totals)
         render_resort_summary(current_resort, working)
-      
+        
         # Reference points editor
         render_reference_points_editor(working, current_resort)
      
