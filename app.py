@@ -1162,7 +1162,7 @@ def main():
             st.error(f"❌ Error automatically loading data.json: {e}")
     # Sidebar
     with st.sidebar:
-        st.markdown("<p class='big-font'>Marriott Editor</p>", unsafe_allow_html=True)
+        st.markdown("<p class='big-font'>File Operations</p>", unsafe_allow_html=True)
         handle_file_upload()
         if st.session_state.data:
             create_download_button(st.session_state.data)
