@@ -1,4 +1,5 @@
 import streamlit as st
+import re
 import json
 import copy
 from datetime import datetime, timedelta
@@ -137,6 +138,22 @@ def create_download_button(data: Dict):
             key="download_btn",
             help="Download the most recent version of your data"
         )
+
+def create_v2_download_button(v1_data: Dict):
+    """Create download button for V2-schema data converted from current V1 data."""
+    if v1_data:
+        v2_data = convert_v1_to_v2(v1_data)
+        json_data = json.dumps(v2_data, indent=2, ensure_ascii=False)
+        st.download_button(
+            label="📥 Download V2 Data (schema 2.0)",
+            data=json_data,
+            file_name="data_v2.json",
+            mime="application/json",
+            key="download_v2_btn",
+            help="Convert current V1 data into the V2 schema and download it",
+        )
+
+
 # ----------------------------------------------------------------------
 # VERIFY DOWNLOADED FILE
 # ----------------------------------------------------------------------
@@ -1243,6 +1260,282 @@ def handle_merge_from_another_file(data: Dict):
             st.sidebar.error("❌ Invalid JSON file uploaded.")
         except Exception as e:
             st.sidebar.error(f"❌ Error: {str(e)}")
+
+# ----------------------------------------------------------------------
+# V1 → V2 CONVERSION
+# ----------------------------------------------------------------------
+
+def slugify_resort_id(name: str) -> str:
+    """Create a stable id from resort display name."""
+    slug = name.strip().lower()
+    slug = re.sub(r'[^a-z0-9]+', '-', slug)
+    slug = re.sub(r'-+', '-', slug).strip('-')
+    return slug or "resort"
+
+
+def build_resort_code(name: str) -> str:
+    """
+    Simple resort code heuristic: take first letters of up to 3 words.
+    You can later replace this logic with your official codes.
+    """
+    parts = [p for p in name.replace("’", "'").split() if p]
+    initials = "".join(p[0].upper() for p in parts[:3])
+    return initials or "RST"
+
+
+def guess_holiday_type(name: str) -> str:
+    """Best-effort type classification for global_holidays."""
+    n = name.lower()
+    if "christmas" in n or "easter" in n:
+        return "religious_holiday"
+    if "newyear" in n or "new year" in n:
+        return "secular_holiday"
+    if "presidents" in n or "memorial" in n or "labor" in n or "independence" in n or "thanksgiving" in n:
+        return "federal_holiday"
+    if "week" in n or "term" in n:
+        return "school_holiday"
+    if "ap1" in n or "ap2" in n:
+        return "special_week"
+    if "chinese" in n:
+        return "cultural_holiday"
+    return "other"
+
+
+def guess_holiday_regions(name: str) -> list[str]:
+    """Best-effort region classification for global_holidays."""
+    n = name.lower()
+    if any(k in n for k in ["presidents", "memorial", "labor", "independence", "thanksgiving"]):
+        return ["US"]
+    if "chinese" in n:
+        return ["Asia"]
+    # everything else default global
+    return ["global"]
+
+
+def convert_global_dates_to_global_holidays(global_dates: Dict[str, Dict[str, List[str]]]) -> Dict[str, Dict[str, Dict[str, Any]]]:
+    """
+    V1: global_dates[year][holiday] = [start, end]
+    V2: global_holidays[year][holiday] = {start_date, end_date, type, regions}
+    """
+    result: Dict[str, Dict[str, Dict[str, Any]]] = {}
+    for year, holidays in global_dates.items():
+        year_dict: Dict[str, Dict[str, Any]] = {}
+        if not isinstance(holidays, dict):
+            continue
+        for name, dates in holidays.items():
+            start, end = None, None
+            if isinstance(dates, list) and len(dates) >= 2:
+                start, end = dates[0], dates[1]
+            year_dict[name] = {
+                "start_date": start,
+                "end_date": end,
+                "type": guess_holiday_type(name),
+                "regions": guess_holiday_regions(name),
+            }
+        result[year] = year_dict
+    return result
+
+
+def build_day_categories(season_ref: Dict[str, Any]) -> Dict[str, Any]:
+    """
+    V1: season_ref = {'Sun-Thu': {...}, 'Fri-Sat': {...}} or
+        {'Sun': {...}, 'Mon-Thu': {...}, 'Fri-Sat': {...}}
+    V2: day_categories with explicit day_pattern + room_points.
+    """
+    dc: Dict[str, Any] = {}
+    if not isinstance(season_ref, dict):
+        return dc
+
+    has_sun_thu = isinstance(season_ref.get("Sun-Thu"), dict)
+    has_sun = isinstance(season_ref.get("Sun"), dict)
+    has_mon_thu = isinstance(season_ref.get("Mon-Thu"), dict)
+    has_fri_sat = isinstance(season_ref.get("Fri-Sat"), dict)
+
+    # Pattern 1: Sun-Thu + Fri-Sat
+    if has_sun_thu and has_fri_sat:
+        dc["sun_thu"] = {
+            "day_pattern": ["Sun", "Mon", "Tue", "Wed", "Thu"],
+            "room_points": season_ref["Sun-Thu"],
+        }
+        dc["fri_sat"] = {
+            "day_pattern": ["Fri", "Sat"],
+            "room_points": season_ref["Fri-Sat"],
+        }
+
+    # Pattern 2: Sun + Mon-Thu + Fri-Sat
+    elif has_sun and has_mon_thu and has_fri_sat:
+        dc["sun"] = {
+            "day_pattern": ["Sun"],
+            "room_points": season_ref["Sun"],
+        }
+        dc["mon_thu"] = {
+            "day_pattern": ["Mon", "Tue", "Wed", "Thu"],
+            "room_points": season_ref["Mon-Thu"],
+        }
+        dc["fri_sat"] = {
+            "day_pattern": ["Fri", "Sat"],
+            "room_points": season_ref["Fri-Sat"],
+        }
+
+    # Fallback: just pass through whatever is there
+    else:
+        for k, v in season_ref.items():
+            if not isinstance(v, dict):
+                continue
+            key = k.lower().replace(" ", "_").replace("-", "_")
+            dc[key] = {
+                "day_pattern": [],
+                "room_points": v,
+            }
+
+    return dc
+
+
+def convert_resorts_to_v2(v1: Dict[str, Any]) -> List[Dict[str, Any]]:
+    """
+    V1:
+      - resorts_list: [name]
+      - season_blocks[resort][year][season] = [[start, end], ...]
+      - reference_points[resort][season][day_type][room] = points
+      - reference_points[resort]['Holiday Week'][holiday][room] = weekly points
+      - holiday_weeks[resort][year][holiday] = 'global:Name' or [start,end]
+
+    V2:
+      "resorts": [
+         {
+           "id", "display_name", "code", "region", "timezone",
+           "years": {
+             "2025": {
+               "seasons": [...],
+               "holidays": [...]
+             }, ...
+           }
+         }, ...
+      ]
+    """
+    resorts: List[Dict[str, Any]] = []
+
+    resorts_list = v1.get("resorts_list", [])
+    season_blocks_all = v1.get("season_blocks", {})
+    ref_points_all = v1.get("reference_points", {})
+    holiday_weeks_all = v1.get("holiday_weeks", {})
+
+    for resort_name in resorts_list:
+        ref_points_resort = ref_points_all.get(resort_name, {})
+        season_blocks_resort = season_blocks_all.get(resort_name, {})
+        holiday_weeks_resort = holiday_weeks_all.get(resort_name, {})
+
+        years_dict: Dict[str, Any] = {}
+
+        for year in YEARS:
+            year_seasons: List[Dict[str, Any]] = []
+            year_holidays: List[Dict[str, Any]] = []
+
+            year_block = season_blocks_resort.get(year, {})
+
+            # Seasons
+            for season_name, ranges in year_block.items():
+                if season_name == HOLIDAY_SEASON_KEY:
+                    continue
+
+                periods = []
+                for rng in ranges:
+                    if isinstance(rng, (list, tuple)) and len(rng) >= 2:
+                        periods.append({
+                            "start": rng[0],
+                            "end": rng[1],
+                        })
+
+                season_ref = ref_points_resort.get(season_name, {})
+                day_categories = build_day_categories(season_ref)
+
+                year_seasons.append({
+                    "name": season_name,
+                    "periods": periods,
+                    "day_categories": day_categories,
+                })
+
+            # Holidays
+            holiday_ref = ref_points_resort.get(HOLIDAY_SEASON_KEY, {})
+            year_holiday_map = holiday_weeks_resort.get(year, {})
+
+            if isinstance(year_holiday_map, dict):
+                for display_name, mapping in year_holiday_map.items():
+                    if isinstance(mapping, str) and mapping.startswith("global:"):
+                        global_name = mapping.split(":", 1)[1]
+                    else:
+                        global_name = display_name
+
+                    # Try both keys, prioritising global_name
+                    room_points = holiday_ref.get(global_name) or holiday_ref.get(display_name) or {}
+
+                    year_holidays.append({
+                        "name": display_name,
+                        "global_reference": global_name,
+                        "room_points": room_points,
+                    })
+
+            if year_seasons or year_holidays:
+                years_dict[year] = {
+                    "seasons": year_seasons,
+                    "holidays": year_holidays,
+                }
+
+        resort_obj = {
+            "id": slugify_resort_id(resort_name),
+            "display_name": resort_name,
+            "code": build_resort_code(resort_name),
+            # You can refine these later; V1 has no region/timezone
+            "region": v1.get("region_overrides", {}).get(resort_name, "Unknown"),
+            "timezone": v1.get("timezone_overrides", {}).get(resort_name, "UTC"),
+            "years": years_dict,
+        }
+        resorts.append(resort_obj)
+
+    return resorts
+
+
+def convert_v1_to_v2(v1: Dict[str, Any]) -> Dict[str, Any]:
+    """
+    Main converter: take the current V1 data structure
+    (what this app edits) and emit a V2-style JSON.
+    """
+    now_iso = datetime.utcnow().isoformat() + "Z"
+
+    global_dates = v1.get("global_dates", {})
+    maintenance_rates = v1.get("maintenance_rates", {})
+
+    v2: Dict[str, Any] = {
+        "schema_version": "2.0.0",
+        "metadata": {
+            "last_updated": now_iso,
+            "data_year_range": [int(y) for y in YEARS if y.isdigit()],
+            "description": v1.get("description", "Converted from V1 schema by MVC Resort Editor"),
+            "maintainer": v1.get("maintainer", "MVC Resort Editor"),
+        },
+        "configuration": {
+            # Carry over maintenance; leave others customisable later
+            "maintenance_rates": maintenance_rates,
+            "discount_policies": v1.get("discount_policies", {}),
+            "default_values": v1.get("default_values", {}),
+        },
+        # If you have a room type catalog in V1, pass it through; else empty.
+        "room_type_catalog": v1.get("room_type_catalog", {}),
+        "global_holidays": convert_global_dates_to_global_holidays(global_dates),
+        "resorts": convert_resorts_to_v2(v1),
+        "migration_notes": {
+            "from_version": v1.get("schema_version", "1.x"),
+            "migration_date": now_iso,
+            "changes": [
+                "Converted from legacy V1 schema inside MVC Resort Editor",
+                "Mapped global_dates → global_holidays",
+                "Mapped season_blocks/reference_points/holiday_weeks → resorts[*].years[*]",
+            ],
+        },
+    }
+
+    return v2
+
 # ----------------------------------------------------------------------
 # MAIN APPLICATION
 # ----------------------------------------------------------------------
@@ -1267,10 +1560,15 @@ def main():
         st.markdown("<p class='big-font'>File Operations</p>", unsafe_allow_html=True)
         handle_file_upload()
         if st.session_state.data:
+            # V1 raw download (unchanged)
             create_download_button(st.session_state.data)
+            # NEW: V1 → V2 conversion download
+            create_v2_download_button(st.session_state.data)
+
             handle_file_verification()
             handle_merge_from_another_file(st.session_state.data)
         show_save_indicator()
+
  
     # Main content
     st.title("MVC Resort Editor")
