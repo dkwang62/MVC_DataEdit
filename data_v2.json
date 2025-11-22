@@ -12694,555 +12694,6 @@
       }
     },
     {
-      "id": "pulse-dc",
-      "display_name": "Pulse DC",
-      "code": "PD",
-      "region": "Unknown",
-      "timezone": "UTC",
-      "years": {
-        "2025": {
-          "seasons": [
-            {
-              "name": "Low Season",
-              "periods": [
-                {
-                  "start": "2025-01-03",
-                  "end": "2025-02-13"
-                },
-                {
-                  "start": "2025-12-05",
-                  "end": "2025-12-18"
-                }
-              ],
-              "day_categories": {
-                "sun_thu": {
-                  "day_pattern": [
-                    "Sun",
-                    "Mon",
-                    "Tue",
-                    "Wed",
-                    "Thu"
-                  ],
-                  "room_points": {
-                    "Guestroom K": 250,
-                    "Guestroom DB": 250,
-                    "Deluxe DB": 275,
-                    "Junior Suite K": 300,
-                    "Executive Suite K": 300
-                  }
-                },
-                "fri_sat": {
-                  "day_pattern": [
-                    "Fri",
-                    "Sat"
-                  ],
-                  "room_points": {
-                    "Guestroom K": 300,
-                    "Guestroom DB": 300,
-                    "Deluxe DB": 325,
-                    "Junior Suite K": 400,
-                    "Executive Suite K": 400
-                  }
-                }
-              }
-            },
-            {
-              "name": "Mid Season",
-              "periods": [
-                {
-                  "start": "2025-02-21",
-                  "end": "2025-03-20"
-                },
-                {
-                  "start": "2025-11-07",
-                  "end": "2025-11-20"
-                }
-              ],
-              "day_categories": {
-                "sun_thu": {
-                  "day_pattern": [
-                    "Sun",
-                    "Mon",
-                    "Tue",
-                    "Wed",
-                    "Thu"
-                  ],
-                  "room_points": {
-                    "Guestroom K": 300,
-                    "Guestroom DB": 300,
-                    "Deluxe DB": 325,
-                    "Junior Suite K": 400,
-                    "Executive Suite K": 400
-                  }
-                },
-                "fri_sat": {
-                  "day_pattern": [
-                    "Fri",
-                    "Sat"
-                  ],
-                  "room_points": {
-                    "Guestroom K": 400,
-                    "Guestroom DB": 400,
-                    "Deluxe DB": 450,
-                    "Junior Suite K": 525,
-                    "Executive Suite K": 525
-                  }
-                }
-              }
-            },
-            {
-              "name": "High Season",
-              "periods": [
-                {
-                  "start": "2025-03-21",
-                  "end": "2025-05-22"
-                },
-                {
-                  "start": "2025-09-05",
-                  "end": "2025-11-06"
-                }
-              ],
-              "day_categories": {
-                "sun_thu": {
-                  "day_pattern": [
-                    "Sun",
-                    "Mon",
-                    "Tue",
-                    "Wed",
-                    "Thu"
-                  ],
-                  "room_points": {
-                    "Guestroom K": 350,
-                    "Guestroom DB": 350,
-                    "Deluxe DB": 400,
-                    "Junior Suite K": 450,
-                    "Executive Suite K": 450
-                  }
-                },
-                "fri_sat": {
-                  "day_pattern": [
-                    "Fri",
-                    "Sat"
-                  ],
-                  "room_points": {
-                    "Guestroom K": 475,
-                    "Guestroom DB": 475,
-                    "Deluxe DB": 525,
-                    "Junior Suite K": 625,
-                    "Executive Suite K": 625
-                  }
-                }
-              }
-            },
-            {
-              "name": "Peak Season",
-              "periods": [
-                {
-                  "start": "2025-05-30",
-                  "end": "2025-07-03"
-                },
-                {
-                  "start": "2025-07-11",
-                  "end": "2025-08-28"
-                }
-              ],
-              "day_categories": {
-                "sun_thu": {
-                  "day_pattern": [
-                    "Sun",
-                    "Mon",
-                    "Tue",
-                    "Wed",
-                    "Thu"
-                  ],
-                  "room_points": {
-                    "Guestroom K": 425,
-                    "Guestroom DB": 425,
-                    "Deluxe DB": 475,
-                    "Junior Suite K": 550,
-                    "Executive Suite K": 550
-                  }
-                },
-                "fri_sat": {
-                  "day_pattern": [
-                    "Fri",
-                    "Sat"
-                  ],
-                  "room_points": {
-                    "Guestroom K": 575,
-                    "Guestroom DB": 575,
-                    "Deluxe DB": 625,
-                    "Junior Suite K": 750,
-                    "Executive Suite K": 750
-                  }
-                }
-              }
-            }
-          ],
-          "holidays": [
-            {
-              "name": "Presidents Day",
-              "global_reference": "Presidents Day",
-              "room_points": {
-                "Guestroom K": 2500,
-                "Guestroom DB": 2500,
-                "Deluxe DB": 2675,
-                "Junior Suite K": 3150,
-                "Executive Suite K": 3150
-              }
-            },
-            {
-              "name": "Memorial Day",
-              "global_reference": "Memorial Day",
-              "room_points": {
-                "Guestroom K": 3500,
-                "Guestroom DB": 3500,
-                "Deluxe DB": 3775,
-                "Junior Suite K": 4425,
-                "Executive Suite K": 4425
-              }
-            },
-            {
-              "name": "Independence Day",
-              "global_reference": "Independence Day",
-              "room_points": {
-                "Guestroom K": 3625,
-                "Guestroom DB": 3625,
-                "Deluxe DB": 3925,
-                "Junior Suite K": 4600,
-                "Executive Suite K": 4600
-              }
-            },
-            {
-              "name": "Labor Day",
-              "global_reference": "Labor Day",
-              "room_points": {
-                "Guestroom K": 3350,
-                "Guestroom DB": 3350,
-                "Deluxe DB": 3625,
-                "Junior Suite K": 4200,
-                "Executive Suite K": 4200
-              }
-            },
-            {
-              "name": "Thanksgiving",
-              "global_reference": "Thanksgiving",
-              "room_points": {
-                "Guestroom K": 2300,
-                "Guestroom DB": 2300,
-                "Deluxe DB": 2525,
-                "Junior Suite K": 3000,
-                "Executive Suite K": 3000
-              }
-            },
-            {
-              "name": "Thanksgiving2",
-              "global_reference": "Thanksgiving2",
-              "room_points": {
-                "Guestroom K": 2300,
-                "Guestroom DB": 2300,
-                "Deluxe DB": 2525,
-                "Junior Suite K": 3000,
-                "Executive Suite K": 3000
-              }
-            },
-            {
-              "name": "Christmas",
-              "global_reference": "Christmas",
-              "room_points": {
-                "Guestroom K": 2350,
-                "Guestroom DB": 2350,
-                "Deluxe DB": 2575,
-                "Junior Suite K": 3000,
-                "Executive Suite K": 3000
-              }
-            },
-            {
-              "name": "NewYear",
-              "global_reference": "NewYear",
-              "room_points": {
-                "Guestroom K": 2800,
-                "Guestroom DB": 2800,
-                "Deluxe DB": 3025,
-                "Junior Suite K": 3550,
-                "Executive Suite K": 3550
-              }
-            }
-          ]
-        },
-        "2026": {
-          "seasons": [
-            {
-              "name": "Low Season",
-              "periods": [
-                {
-                  "start": "2026-01-02",
-                  "end": "2026-02-12"
-                },
-                {
-                  "start": "2026-12-04",
-                  "end": "2026-12-17"
-                }
-              ],
-              "day_categories": {
-                "sun_thu": {
-                  "day_pattern": [
-                    "Sun",
-                    "Mon",
-                    "Tue",
-                    "Wed",
-                    "Thu"
-                  ],
-                  "room_points": {
-                    "Guestroom K": 250,
-                    "Guestroom DB": 250,
-                    "Deluxe DB": 275,
-                    "Junior Suite K": 300,
-                    "Executive Suite K": 300
-                  }
-                },
-                "fri_sat": {
-                  "day_pattern": [
-                    "Fri",
-                    "Sat"
-                  ],
-                  "room_points": {
-                    "Guestroom K": 300,
-                    "Guestroom DB": 300,
-                    "Deluxe DB": 325,
-                    "Junior Suite K": 400,
-                    "Executive Suite K": 400
-                  }
-                }
-              }
-            },
-            {
-              "name": "Mid Season",
-              "periods": [
-                {
-                  "start": "2026-02-20",
-                  "end": "2026-03-19"
-                },
-                {
-                  "start": "2026-11-06",
-                  "end": "2026-11-19"
-                }
-              ],
-              "day_categories": {
-                "sun_thu": {
-                  "day_pattern": [
-                    "Sun",
-                    "Mon",
-                    "Tue",
-                    "Wed",
-                    "Thu"
-                  ],
-                  "room_points": {
-                    "Guestroom K": 300,
-                    "Guestroom DB": 300,
-                    "Deluxe DB": 325,
-                    "Junior Suite K": 400,
-                    "Executive Suite K": 400
-                  }
-                },
-                "fri_sat": {
-                  "day_pattern": [
-                    "Fri",
-                    "Sat"
-                  ],
-                  "room_points": {
-                    "Guestroom K": 400,
-                    "Guestroom DB": 400,
-                    "Deluxe DB": 450,
-                    "Junior Suite K": 525,
-                    "Executive Suite K": 525
-                  }
-                }
-              }
-            },
-            {
-              "name": "High Season",
-              "periods": [
-                {
-                  "start": "2026-03-20",
-                  "end": "2026-05-21"
-                },
-                {
-                  "start": "2026-09-11",
-                  "end": "2026-11-05"
-                }
-              ],
-              "day_categories": {
-                "sun_thu": {
-                  "day_pattern": [
-                    "Sun",
-                    "Mon",
-                    "Tue",
-                    "Wed",
-                    "Thu"
-                  ],
-                  "room_points": {
-                    "Guestroom K": 350,
-                    "Guestroom DB": 350,
-                    "Deluxe DB": 400,
-                    "Junior Suite K": 450,
-                    "Executive Suite K": 450
-                  }
-                },
-                "fri_sat": {
-                  "day_pattern": [
-                    "Fri",
-                    "Sat"
-                  ],
-                  "room_points": {
-                    "Guestroom K": 475,
-                    "Guestroom DB": 475,
-                    "Deluxe DB": 525,
-                    "Junior Suite K": 625,
-                    "Executive Suite K": 625
-                  }
-                }
-              }
-            },
-            {
-              "name": "Peak Season",
-              "periods": [
-                {
-                  "start": "2026-05-29",
-                  "end": "2026-07-02"
-                },
-                {
-                  "start": "2026-07-10",
-                  "end": "2026-09-03"
-                }
-              ],
-              "day_categories": {
-                "sun_thu": {
-                  "day_pattern": [
-                    "Sun",
-                    "Mon",
-                    "Tue",
-                    "Wed",
-                    "Thu"
-                  ],
-                  "room_points": {
-                    "Guestroom K": 425,
-                    "Guestroom DB": 425,
-                    "Deluxe DB": 475,
-                    "Junior Suite K": 550,
-                    "Executive Suite K": 550
-                  }
-                },
-                "fri_sat": {
-                  "day_pattern": [
-                    "Fri",
-                    "Sat"
-                  ],
-                  "room_points": {
-                    "Guestroom K": 575,
-                    "Guestroom DB": 575,
-                    "Deluxe DB": 625,
-                    "Junior Suite K": 750,
-                    "Executive Suite K": 750
-                  }
-                }
-              }
-            }
-          ],
-          "holidays": [
-            {
-              "name": "Presidents Day",
-              "global_reference": "Presidents Day",
-              "room_points": {
-                "Guestroom K": 2500,
-                "Guestroom DB": 2500,
-                "Deluxe DB": 2675,
-                "Junior Suite K": 3150,
-                "Executive Suite K": 3150
-              }
-            },
-            {
-              "name": "Memorial Day",
-              "global_reference": "Memorial Day",
-              "room_points": {
-                "Guestroom K": 3500,
-                "Guestroom DB": 3500,
-                "Deluxe DB": 3775,
-                "Junior Suite K": 4425,
-                "Executive Suite K": 4425
-              }
-            },
-            {
-              "name": "Independence Day",
-              "global_reference": "Independence Day",
-              "room_points": {
-                "Guestroom K": 3625,
-                "Guestroom DB": 3625,
-                "Deluxe DB": 3925,
-                "Junior Suite K": 4600,
-                "Executive Suite K": 4600
-              }
-            },
-            {
-              "name": "Labor Day",
-              "global_reference": "Labor Day",
-              "room_points": {
-                "Guestroom K": 3350,
-                "Guestroom DB": 3350,
-                "Deluxe DB": 3625,
-                "Junior Suite K": 4200,
-                "Executive Suite K": 4200
-              }
-            },
-            {
-              "name": "Thanksgiving",
-              "global_reference": "Thanksgiving",
-              "room_points": {
-                "Guestroom K": 2300,
-                "Guestroom DB": 2300,
-                "Deluxe DB": 2525,
-                "Junior Suite K": 3000,
-                "Executive Suite K": 3000
-              }
-            },
-            {
-              "name": "Thanksgiving2",
-              "global_reference": "Thanksgiving2",
-              "room_points": {
-                "Guestroom K": 2300,
-                "Guestroom DB": 2300,
-                "Deluxe DB": 2525,
-                "Junior Suite K": 3000,
-                "Executive Suite K": 3000
-              }
-            },
-            {
-              "name": "Christmas",
-              "global_reference": "Christmas",
-              "room_points": {
-                "Guestroom K": 2350,
-                "Guestroom DB": 2350,
-                "Deluxe DB": 2575,
-                "Junior Suite K": 3000,
-                "Executive Suite K": 3000
-              }
-            },
-            {
-              "name": "NewYear",
-              "global_reference": "NewYear",
-              "room_points": {
-                "Guestroom K": 2800,
-                "Guestroom DB": 2800,
-                "Deluxe DB": 3025,
-                "Junior Suite K": 3550,
-                "Executive Suite K": 3550
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
       "id": "pulse-new-york",
       "display_name": "Pulse New York",
       "code": "PNY",
@@ -21150,6 +20601,555 @@
                 "1-BR": 2175,
                 "2-BR": 3234,
                 "0-Studio": 1625
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "washington-dc",
+      "display_name": "Washington DC",
+      "code": "WD",
+      "region": "Unknown",
+      "timezone": "UTC",
+      "years": {
+        "2025": {
+          "seasons": [
+            {
+              "name": "Low Season",
+              "periods": [
+                {
+                  "start": "2025-01-03",
+                  "end": "2025-02-13"
+                },
+                {
+                  "start": "2025-12-05",
+                  "end": "2025-12-18"
+                }
+              ],
+              "day_categories": {
+                "sun_thu": {
+                  "day_pattern": [
+                    "Sun",
+                    "Mon",
+                    "Tue",
+                    "Wed",
+                    "Thu"
+                  ],
+                  "room_points": {
+                    "Guestroom K": 250,
+                    "Guestroom DB": 250,
+                    "Deluxe DB": 275,
+                    "Junior Suite K": 300,
+                    "Executive Suite K": 300
+                  }
+                },
+                "fri_sat": {
+                  "day_pattern": [
+                    "Fri",
+                    "Sat"
+                  ],
+                  "room_points": {
+                    "Guestroom K": 300,
+                    "Guestroom DB": 300,
+                    "Deluxe DB": 325,
+                    "Junior Suite K": 400,
+                    "Executive Suite K": 400
+                  }
+                }
+              }
+            },
+            {
+              "name": "Mid Season",
+              "periods": [
+                {
+                  "start": "2025-02-21",
+                  "end": "2025-03-20"
+                },
+                {
+                  "start": "2025-11-07",
+                  "end": "2025-11-20"
+                }
+              ],
+              "day_categories": {
+                "sun_thu": {
+                  "day_pattern": [
+                    "Sun",
+                    "Mon",
+                    "Tue",
+                    "Wed",
+                    "Thu"
+                  ],
+                  "room_points": {
+                    "Guestroom K": 300,
+                    "Guestroom DB": 300,
+                    "Deluxe DB": 325,
+                    "Junior Suite K": 400,
+                    "Executive Suite K": 400
+                  }
+                },
+                "fri_sat": {
+                  "day_pattern": [
+                    "Fri",
+                    "Sat"
+                  ],
+                  "room_points": {
+                    "Guestroom K": 400,
+                    "Guestroom DB": 400,
+                    "Deluxe DB": 450,
+                    "Junior Suite K": 525,
+                    "Executive Suite K": 525
+                  }
+                }
+              }
+            },
+            {
+              "name": "High Season",
+              "periods": [
+                {
+                  "start": "2025-03-21",
+                  "end": "2025-05-22"
+                },
+                {
+                  "start": "2025-09-05",
+                  "end": "2025-11-06"
+                }
+              ],
+              "day_categories": {
+                "sun_thu": {
+                  "day_pattern": [
+                    "Sun",
+                    "Mon",
+                    "Tue",
+                    "Wed",
+                    "Thu"
+                  ],
+                  "room_points": {
+                    "Guestroom K": 350,
+                    "Guestroom DB": 350,
+                    "Deluxe DB": 400,
+                    "Junior Suite K": 450,
+                    "Executive Suite K": 450
+                  }
+                },
+                "fri_sat": {
+                  "day_pattern": [
+                    "Fri",
+                    "Sat"
+                  ],
+                  "room_points": {
+                    "Guestroom K": 475,
+                    "Guestroom DB": 475,
+                    "Deluxe DB": 525,
+                    "Junior Suite K": 625,
+                    "Executive Suite K": 625
+                  }
+                }
+              }
+            },
+            {
+              "name": "Peak Season",
+              "periods": [
+                {
+                  "start": "2025-05-30",
+                  "end": "2025-07-03"
+                },
+                {
+                  "start": "2025-07-11",
+                  "end": "2025-08-28"
+                }
+              ],
+              "day_categories": {
+                "sun_thu": {
+                  "day_pattern": [
+                    "Sun",
+                    "Mon",
+                    "Tue",
+                    "Wed",
+                    "Thu"
+                  ],
+                  "room_points": {
+                    "Guestroom K": 425,
+                    "Guestroom DB": 425,
+                    "Deluxe DB": 475,
+                    "Junior Suite K": 550,
+                    "Executive Suite K": 550
+                  }
+                },
+                "fri_sat": {
+                  "day_pattern": [
+                    "Fri",
+                    "Sat"
+                  ],
+                  "room_points": {
+                    "Guestroom K": 575,
+                    "Guestroom DB": 575,
+                    "Deluxe DB": 625,
+                    "Junior Suite K": 750,
+                    "Executive Suite K": 750
+                  }
+                }
+              }
+            }
+          ],
+          "holidays": [
+            {
+              "name": "Presidents Day",
+              "global_reference": "Presidents Day",
+              "room_points": {
+                "Guestroom K": 2500,
+                "Guestroom DB": 2500,
+                "Deluxe DB": 2675,
+                "Junior Suite K": 3150,
+                "Executive Suite K": 3150
+              }
+            },
+            {
+              "name": "Memorial Day",
+              "global_reference": "Memorial Day",
+              "room_points": {
+                "Guestroom K": 3500,
+                "Guestroom DB": 3500,
+                "Deluxe DB": 3775,
+                "Junior Suite K": 4425,
+                "Executive Suite K": 4425
+              }
+            },
+            {
+              "name": "Independence Day",
+              "global_reference": "Independence Day",
+              "room_points": {
+                "Guestroom K": 3625,
+                "Guestroom DB": 3625,
+                "Deluxe DB": 3925,
+                "Junior Suite K": 4600,
+                "Executive Suite K": 4600
+              }
+            },
+            {
+              "name": "Labor Day",
+              "global_reference": "Labor Day",
+              "room_points": {
+                "Guestroom K": 3350,
+                "Guestroom DB": 3350,
+                "Deluxe DB": 3625,
+                "Junior Suite K": 4200,
+                "Executive Suite K": 4200
+              }
+            },
+            {
+              "name": "Thanksgiving",
+              "global_reference": "Thanksgiving",
+              "room_points": {
+                "Guestroom K": 2300,
+                "Guestroom DB": 2300,
+                "Deluxe DB": 2525,
+                "Junior Suite K": 3000,
+                "Executive Suite K": 3000
+              }
+            },
+            {
+              "name": "Thanksgiving2",
+              "global_reference": "Thanksgiving2",
+              "room_points": {
+                "Guestroom K": 2300,
+                "Guestroom DB": 2300,
+                "Deluxe DB": 2525,
+                "Junior Suite K": 3000,
+                "Executive Suite K": 3000
+              }
+            },
+            {
+              "name": "Christmas",
+              "global_reference": "Christmas",
+              "room_points": {
+                "Guestroom K": 2350,
+                "Guestroom DB": 2350,
+                "Deluxe DB": 2575,
+                "Junior Suite K": 3000,
+                "Executive Suite K": 3000
+              }
+            },
+            {
+              "name": "NewYear",
+              "global_reference": "NewYear",
+              "room_points": {
+                "Guestroom K": 2800,
+                "Guestroom DB": 2800,
+                "Deluxe DB": 3025,
+                "Junior Suite K": 3550,
+                "Executive Suite K": 3550
+              }
+            }
+          ]
+        },
+        "2026": {
+          "seasons": [
+            {
+              "name": "Low Season",
+              "periods": [
+                {
+                  "start": "2026-01-02",
+                  "end": "2026-02-12"
+                },
+                {
+                  "start": "2026-12-04",
+                  "end": "2026-12-17"
+                }
+              ],
+              "day_categories": {
+                "sun_thu": {
+                  "day_pattern": [
+                    "Sun",
+                    "Mon",
+                    "Tue",
+                    "Wed",
+                    "Thu"
+                  ],
+                  "room_points": {
+                    "Guestroom K": 250,
+                    "Guestroom DB": 250,
+                    "Deluxe DB": 275,
+                    "Junior Suite K": 300,
+                    "Executive Suite K": 300
+                  }
+                },
+                "fri_sat": {
+                  "day_pattern": [
+                    "Fri",
+                    "Sat"
+                  ],
+                  "room_points": {
+                    "Guestroom K": 300,
+                    "Guestroom DB": 300,
+                    "Deluxe DB": 325,
+                    "Junior Suite K": 400,
+                    "Executive Suite K": 400
+                  }
+                }
+              }
+            },
+            {
+              "name": "Mid Season",
+              "periods": [
+                {
+                  "start": "2026-02-20",
+                  "end": "2026-03-19"
+                },
+                {
+                  "start": "2026-11-06",
+                  "end": "2026-11-19"
+                }
+              ],
+              "day_categories": {
+                "sun_thu": {
+                  "day_pattern": [
+                    "Sun",
+                    "Mon",
+                    "Tue",
+                    "Wed",
+                    "Thu"
+                  ],
+                  "room_points": {
+                    "Guestroom K": 300,
+                    "Guestroom DB": 300,
+                    "Deluxe DB": 325,
+                    "Junior Suite K": 400,
+                    "Executive Suite K": 400
+                  }
+                },
+                "fri_sat": {
+                  "day_pattern": [
+                    "Fri",
+                    "Sat"
+                  ],
+                  "room_points": {
+                    "Guestroom K": 400,
+                    "Guestroom DB": 400,
+                    "Deluxe DB": 450,
+                    "Junior Suite K": 525,
+                    "Executive Suite K": 525
+                  }
+                }
+              }
+            },
+            {
+              "name": "High Season",
+              "periods": [
+                {
+                  "start": "2026-03-20",
+                  "end": "2026-05-21"
+                },
+                {
+                  "start": "2026-09-11",
+                  "end": "2026-11-05"
+                }
+              ],
+              "day_categories": {
+                "sun_thu": {
+                  "day_pattern": [
+                    "Sun",
+                    "Mon",
+                    "Tue",
+                    "Wed",
+                    "Thu"
+                  ],
+                  "room_points": {
+                    "Guestroom K": 350,
+                    "Guestroom DB": 350,
+                    "Deluxe DB": 400,
+                    "Junior Suite K": 450,
+                    "Executive Suite K": 450
+                  }
+                },
+                "fri_sat": {
+                  "day_pattern": [
+                    "Fri",
+                    "Sat"
+                  ],
+                  "room_points": {
+                    "Guestroom K": 475,
+                    "Guestroom DB": 475,
+                    "Deluxe DB": 525,
+                    "Junior Suite K": 625,
+                    "Executive Suite K": 625
+                  }
+                }
+              }
+            },
+            {
+              "name": "Peak Season",
+              "periods": [
+                {
+                  "start": "2026-05-29",
+                  "end": "2026-07-02"
+                },
+                {
+                  "start": "2026-07-10",
+                  "end": "2026-09-03"
+                }
+              ],
+              "day_categories": {
+                "sun_thu": {
+                  "day_pattern": [
+                    "Sun",
+                    "Mon",
+                    "Tue",
+                    "Wed",
+                    "Thu"
+                  ],
+                  "room_points": {
+                    "Guestroom K": 425,
+                    "Guestroom DB": 425,
+                    "Deluxe DB": 475,
+                    "Junior Suite K": 550,
+                    "Executive Suite K": 550
+                  }
+                },
+                "fri_sat": {
+                  "day_pattern": [
+                    "Fri",
+                    "Sat"
+                  ],
+                  "room_points": {
+                    "Guestroom K": 575,
+                    "Guestroom DB": 575,
+                    "Deluxe DB": 625,
+                    "Junior Suite K": 750,
+                    "Executive Suite K": 750
+                  }
+                }
+              }
+            }
+          ],
+          "holidays": [
+            {
+              "name": "Presidents Day",
+              "global_reference": "Presidents Day",
+              "room_points": {
+                "Guestroom K": 2500,
+                "Guestroom DB": 2500,
+                "Deluxe DB": 2675,
+                "Junior Suite K": 3150,
+                "Executive Suite K": 3150
+              }
+            },
+            {
+              "name": "Memorial Day",
+              "global_reference": "Memorial Day",
+              "room_points": {
+                "Guestroom K": 3500,
+                "Guestroom DB": 3500,
+                "Deluxe DB": 3775,
+                "Junior Suite K": 4425,
+                "Executive Suite K": 4425
+              }
+            },
+            {
+              "name": "Independence Day",
+              "global_reference": "Independence Day",
+              "room_points": {
+                "Guestroom K": 3625,
+                "Guestroom DB": 3625,
+                "Deluxe DB": 3925,
+                "Junior Suite K": 4600,
+                "Executive Suite K": 4600
+              }
+            },
+            {
+              "name": "Labor Day",
+              "global_reference": "Labor Day",
+              "room_points": {
+                "Guestroom K": 3350,
+                "Guestroom DB": 3350,
+                "Deluxe DB": 3625,
+                "Junior Suite K": 4200,
+                "Executive Suite K": 4200
+              }
+            },
+            {
+              "name": "Thanksgiving",
+              "global_reference": "Thanksgiving",
+              "room_points": {
+                "Guestroom K": 2300,
+                "Guestroom DB": 2300,
+                "Deluxe DB": 2525,
+                "Junior Suite K": 3000,
+                "Executive Suite K": 3000
+              }
+            },
+            {
+              "name": "Thanksgiving2",
+              "global_reference": "Thanksgiving2",
+              "room_points": {
+                "Guestroom K": 2300,
+                "Guestroom DB": 2300,
+                "Deluxe DB": 2525,
+                "Junior Suite K": 3000,
+                "Executive Suite K": 3000
+              }
+            },
+            {
+              "name": "Christmas",
+              "global_reference": "Christmas",
+              "room_points": {
+                "Guestroom K": 2350,
+                "Guestroom DB": 2350,
+                "Deluxe DB": 2575,
+                "Junior Suite K": 3000,
+                "Executive Suite K": 3000
+              }
+            },
+            {
+              "name": "NewYear",
+              "global_reference": "NewYear",
+              "room_points": {
+                "Guestroom K": 2800,
+                "Guestroom DB": 2800,
+                "Deluxe DB": 3025,
+                "Junior Suite K": 3550,
+                "Executive Suite K": 3550
               }
             }
           ]
