@@ -51,25 +51,20 @@ def setup_page():
             --border-color: #e0e0e0;
         }
         
-        /* Global Styles (IMPROVED CONTRAST) */
+        /* Global Styles */
         .main {
-            /* Changed from gradient to flat light grey for less visual noise */
-            background-color: #f0f2f6;
-        }
-
-        /* Ensure all text has high contrast */
-        body, p, .stMarkdown, .stText, .stNumberInput, .stTextInput, .stDateInput {
-            color: #1a1a1a; 
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
         }
         
-        /* Header Styling (SIMPLIFIED) */
+        /* Header Styling */
         .big-font {
             font-size: 38px !important;
             font-weight: 700;
-            /* Changed from gradient text to a solid, dark color */
-            color: #1e293b; 
-            text-align: left; /* Changed from center */
-            padding: 10px 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: center;
+            padding: 20px 0;
             margin-bottom: 10px;
         }
         
@@ -117,49 +112,42 @@ def setup_page():
             box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
         }
         
-        /* Section Headers (CLEANER LOOK) */
+        /* Section Headers */
         .section-header {
             font-size: 24px;
             font-weight: 700;
             color: #1e293b;
             padding: 16px 0;
-            /* Changed from thick purple to subtle light grey */
-            border-bottom: 2px solid #cfd8dc; 
+            border-bottom: 3px solid #667eea;
             margin-bottom: 24px;
         }
         
-        /* Info Box (CONTRAST IMPROVED) */
+        /* Info Box */
         .info-box {
             background: #e3f2fd;
             border-left: 4px solid #2196f3;
             padding: 16px;
             border-radius: 8px;
             margin: 12px 0;
-            color: #1a1a1a; /* Explicit dark text */
         }
-        .info-box h4, .info-box p { color: #1a1a1a; }
         
-        /* Warning Box (CONTRAST IMPROVED) */
+        /* Warning Box */
         .warning-box {
             background: #fff3e0;
             border-left: 4px solid #ff9800;
             padding: 16px;
             border-radius: 8px;
             margin: 12px 0;
-            color: #1a1a1a; /* Explicit dark text */
         }
-        .warning-box h4, .warning-box p { color: #1a1a1a; }
         
-        /* Error Box (CONTRAST IMPROVED) */
+        /* Error Box */
         .error-box {
             background: #ffebee;
             border-left: 4px solid #f44336;
             padding: 16px;
             border-radius: 8px;
             margin: 12px 0;
-            color: #1a1a1a; /* Explicit dark text */
         }
-        .error-box h4, .error-box p { color: #1a1a1a; }
         
         /* Expander Styling */
         .streamlit-expanderHeader {
@@ -169,17 +157,42 @@ def setup_page():
             padding: 12px;
         }
         
-        /* Sidebar Enhancements */
+        /* Sidebar Enhancements - Improved Contrast and Lighter Theme */
         section[data-testid="stSidebar"] {
-            background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
-            color: white;
+            /* 1. Lighter Background to remove dark indigo */
+            background: #f0f2f6; /* Light gray/off-white background */
+            color: #1e293b; /* Dark text for high contrast */
+            box-shadow: 2px 0 5px rgba(0,0,0,0.05); /* Soft shadow for depth */
         }
         
         section[data-testid="stSidebar"] .stMarkdown {
-            color: white;
+            color: #1e293b; /* Ensure Markdown text is dark */
         }
         
-        /* Metric Card (CONTRAST IMPROVED) */
+        /* Sidebar Header (App Title) */
+        section[data-testid="stSidebar"] h2 {
+            color: #667eea !important; /* Keep the app title color distinct */
+            font-weight: 700;
+        }
+
+        /* Sidebar Expander/Button Enhancements for 'Verify File' and 'Merge Resorts' */
+        section[data-testid="stSidebar"] .streamlit-expanderHeader {
+            /* 2. Specific styles for 'Verify File' and 'Merge Resorts' headers */
+            background: #ffffff; /* White background for the header */
+            border: 1px solid #d3dae3; /* Light border */
+            color: #1e293b; /* Dark text for contrast */
+            border-radius: 8px;
+            font-weight: 600;
+            padding: 12px;
+            margin: 4px 0;
+            transition: all 0.2s ease-in-out;
+        }
+
+        section[data-testid="stSidebar"] .streamlit-expanderHeader:hover {
+             background: #e9ecef; /* Slight hover effect */
+        }
+        
+        /* Metric Card */
         .metric-card {
             background: white;
             border-radius: 10px;
@@ -192,7 +205,7 @@ def setup_page():
         .metric-value {
             font-size: 32px;
             font-weight: 700;
-            color: var(--primary-color); /* Darker color for contrast */
+            color: #667eea;
         }
         
         .metric-label {
@@ -1378,7 +1391,7 @@ def main():
 
     # Sidebar
     with st.sidebar:
-        st.markdown("<div style='text-align: center; padding: 20px;'><h2 style='color: white;'>🏨 MVC Editor</h2></div>", unsafe_allow_html=True)
+        st.markdown("<div style='text-align: center; padding: 20px;'><h2 style='color: #667eea;'>🏨 MVC Editor</h2></div>", unsafe_allow_html=True)
         handle_file_upload()
         if st.session_state.data:
             create_download_button_v2(st.session_state.data)
