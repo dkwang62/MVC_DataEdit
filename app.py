@@ -1483,6 +1483,14 @@ def main():
 
         handle_file_upload()
 
+        if st.session_state.data:
+            st.markdown("<div style='margin: 20px 0;'></div>", unsafe_allow_html=True)
+            create_download_button_v2(st.session_state.data)
+            handle_file_verification()
+            handle_merge_from_another_file_v2(st.session_state.data)
+                   
+        show_save_indicator()
+    
     # Main content
     st.markdown("<div class='big-font'>MVC Resort Editor V2</div>", unsafe_allow_html=True)
     if not st.session_state.data:
