@@ -172,28 +172,35 @@ def setup_page():
             color: white !important;
         }
         
-        /* File uploader styling */
+        /* File uploader styling - override sidebar white text */
+        section[data-testid="stSidebar"] .stFileUploader {
+            background: white !important;
+            padding: 16px !important;
+            border-radius: 12px !important;
+            margin: 10px 0 !important;
+        }
+        
         section[data-testid="stSidebar"] .stFileUploader label,
         section[data-testid="stSidebar"] .stFileUploader span,
         section[data-testid="stSidebar"] .stFileUploader p,
         section[data-testid="stSidebar"] .stFileUploader button,
-        section[data-testid="stSidebar"] .stFileUploader small {
-            color: white !important;
+        section[data-testid="stSidebar"] .stFileUploader small,
+        section[data-testid="stSidebar"] .stFileUploader div {
+            color: #1e293b !important;
         }
         
         section[data-testid="stSidebar"] [data-testid="stFileUploadDropzone"] {
-            background: rgba(0, 0, 0, 0.2) !important;
-            border: 2px dashed rgba(255, 255, 255, 0.5) !important;
-            color: white !important;
+            background: #f8f9fa !important;
+            border: 2px dashed #cbd5e1 !important;
         }
         
         section[data-testid="stSidebar"] [data-testid="stFileUploadDropzone"] * {
-            color: white !important;
+            color: #1e293b !important;
         }
         
         section[data-testid="stSidebar"] [data-testid="stFileUploadDropzone"] button {
-            background: rgba(255, 255, 255, 0.9) !important;
-            color: #667eea !important;
+            background: #667eea !important;
+            color: white !important;
             border: none !important;
             font-weight: 600 !important;
             padding: 8px 16px !important;
@@ -201,11 +208,11 @@ def setup_page():
         }
         
         section[data-testid="stSidebar"] [data-testid="stFileUploadDropzone"] button * {
-            color: #667eea !important;
+            color: white !important;
         }
         
         section[data-testid="stSidebar"] [data-testid="stFileUploadDropzone"] button:hover {
-            background: white !important;
+            background: #5a67d8 !important;
         }
         
         section[data-testid="stSidebar"] .stMarkdown,
