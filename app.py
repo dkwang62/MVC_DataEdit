@@ -22,10 +22,8 @@ RESORT_TIMEZONE_MAP = {
     "doral": "America/New_York",
     "fort lauderdale": "America/New_York",
     "grande vista": "America/New_York",
-    "imperial": "America/New_York",
-    "lakeshore": "America/New_York",
     "ocean pointe": "America/New_York",
-    "pulse new york": "America/New_York",
+    "new york": "America/New_York",
     "sabal": "America/New_York",
     "harbour lake": "America/New_York",
     "orlando": "America/New_York",
@@ -35,11 +33,10 @@ RESORT_TIMEZONE_MAP = {
     # United States - West Coast
     "desert springs": "America/Los_Angeles",
     "newport coast": "America/Los_Angeles",
-    "pulse san diego": "America/Los_Angeles",
-    "pulse san francisco": "America/Los_Angeles",
-    "ritz tahoe": "America/Los_Angeles",
+    "san diego": "America/Los_Angeles",
+    "san francisco": "America/Los_Angeles",
+    "tahoe": "America/Los_Angeles",
     "shadow ridge": "America/Los_Angeles",
-    "residence tahoe": "America/Los_Angeles",
     "california": "America/Los_Angeles",
     
     # United States - Mountain
@@ -61,13 +58,13 @@ RESORT_TIMEZONE_MAP = {
     "missouri": "America/Chicago",
     
     # United States - Hawaii (no DST)
-    "kauai beach": "Pacific/Honolulu",
+    "kauai": "Pacific/Honolulu",
     "ko olina": "Pacific/Honolulu",
     "maui ocean": "Pacific/Honolulu",
-    "sheraton kauai": "Pacific/Honolulu",
+    "ka'anapali": "Pacific/Honolulu",
     "hawaii": "Pacific/Honolulu",
-    "kauai": "Pacific/Honolulu",
     "maui": "Pacific/Honolulu",
+    "waikoloa": "Pacific/Honolulu",
     
     # Caribbean
     "aruba": "America/Aruba",
