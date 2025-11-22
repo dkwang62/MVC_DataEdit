@@ -157,39 +157,14 @@ def setup_page():
             padding: 12px;
         }
         
-        /* Sidebar Enhancements - Improved Contrast and Lighter Theme */
+        /* Sidebar Enhancements */
         section[data-testid="stSidebar"] {
-            /* 1. Lighter Background to remove dark indigo */
-            background: #f0f2f6; /* Light gray/off-white background */
-            color: #1e293b; /* Dark text for high contrast */
-            box-shadow: 2px 0 5px rgba(0,0,0,0.05); /* Soft shadow for depth */
+            background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+            color: white;
         }
         
         section[data-testid="stSidebar"] .stMarkdown {
-            color: #1e293b; /* Ensure Markdown text is dark */
-        }
-        
-        /* Sidebar Header (App Title) */
-        section[data-testid="stSidebar"] h2 {
-            color: #667eea !important; /* Keep the app title color distinct */
-            font-weight: 700;
-        }
-
-        /* Sidebar Expander/Button Enhancements for 'Verify File' and 'Merge Resorts' */
-        section[data-testid="stSidebar"] .streamlit-expanderHeader {
-            /* 2. Specific styles for 'Verify File' and 'Merge Resorts' headers */
-            background: #ffffff; /* White background for the header */
-            border: 1px solid #d3dae3; /* Light border */
-            color: #1e293b; /* Dark text for contrast */
-            border-radius: 8px;
-            font-weight: 600;
-            padding: 12px;
-            margin: 4px 0;
-            transition: all 0.2s ease-in-out;
-        }
-
-        section[data-testid="stSidebar"] .streamlit-expanderHeader:hover {
-             background: #e9ecef; /* Slight hover effect */
+            color: white;
         }
         
         /* Metric Card */
@@ -1391,7 +1366,7 @@ def main():
 
     # Sidebar
     with st.sidebar:
-        st.markdown("<div style='text-align: center; padding: 20px;'><h2 style='color: #667eea;'>🏨 MVC Editor</h2></div>", unsafe_allow_html=True)
+        st.markdown("<div style='text-align: center; padding: 20px;'><h2 style='color: white;'>🏨 MVC Editor</h2></div>", unsafe_allow_html=True)
         handle_file_upload()
         if st.session_state.data:
             create_download_button_v2(st.session_state.data)
@@ -1447,34 +1422,63 @@ def main():
     if current_resort_id:
         working_resorts = st.session_state.working_resorts
         if current_resort_id not in working_resorts:
-            resort_obj = find_resort_by_id(data, current_resort_id)
-            if resort_obj:
+            if resort_obj := find_resort_by_id(data, current_resort_id):
                 working_resorts[current_resort_id] = copy.deepcopy(resort_obj)
         working = working_resorts.get(current_resort_id)
 
     if working:
         name = working.get("display_name", current_resort_id)
-        st.markdown(f"### **{name}**")
+        st.markdown(f"""
+            <div class='card'>
+                <h2 style='margin: 0; color: #667eea;'>🏨 {name}</h2>
+                <p style='color: #64748b; margin: 8px 0 0 0;'>
+                    Resort ID: <code>{current_resort_id}</code> | 
+                    Code: <code>{working.get('code', 'N/A')}</code> | 
+                    Region: {working.get('region', 'Unknown')}
+                </p>
+            </div>
+        """, unsafe_allow_html=True)
 
         render_validation_panel_v2(working, data, years)
         render_save_button_v2(data, working, current_resort_id)
         handle_resort_deletion_v2(data, current_resort_id)
 
-        render_gantt_charts_v2(working, years, data)
-        render_season_dates_editor_v2(working, years, current_resort_id)
+        # Main content tabs
+        tab1, tab2, tab3, tab4, tab5 = st.tabs([
+            "📊 Overview",
+            "📅 Season Dates", 
+            "💰 Room Points",
+            "🎄 Holidays",
+            "📈 Summary"
+        ])
 
-        # Master (year-independent) points + room types
-        render_reference_points_editor_v2(working, years, current_resort_id)
+        with tab1:
+            render_gantt_charts_v2(working, years, data)
 
-        render_holiday_management_v2(working, years, current_resort_id)
-        render_resort_summary_v2(working)
+        with tab2:
+            render_season_dates_editor_v2(working, years, current_resort_id)
 
+        with tab3:
+            render_reference_points_editor_v2(working, years, current_resort_id)
+
+        with tab4:
+            render_holiday_management_v2(working, years, current_resort_id)
+
+        with tab5:
+            render_resort_summary_v2(working)
+
+    # Global settings
+    st.markdown("---")
     render_global_settings_v2(data, years)
 
+    # Footer
     st.markdown("""
-    <div class='success-box'>
-        V2 MODE • Seasons are shared by name across all years • Dates per year • Master room types & points replicated everywhere
-    </div>
+        <div class='success-box'>
+            <p style='margin: 0;'>✨ MVC Resort Editor V2</p>
+            <p style='margin: 8px 0 0 0; font-size: 14px; opacity: 0.9;'>
+                Master data management • Real-time sync across years • Professional-grade tools
+            </p>
+        </div>
     """, unsafe_allow_html=True)
 
 
