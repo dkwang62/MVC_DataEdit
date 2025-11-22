@@ -166,6 +166,12 @@ def setup_page():
             color: white !important;
         }
         
+        /* Exception for metric cards - they need dark text */
+        .metric-card,
+        .metric-card * {
+            color: inherit !important;
+        }
+        
         section[data-testid="stSidebar"] .stMarkdown,
         section[data-testid="stSidebar"] h1,
         section[data-testid="stSidebar"] h2,
@@ -1428,15 +1434,15 @@ def main():
             
             st.markdown(f"""
                 <div class='metric-card'>
-                    <div class='metric-value' style='color: #667eea !important;'>{resorts_count}</div>
-                    <div class='metric-label' style='color: #1e293b !important;'>Total Resorts</div>
+                    <div style='color: #667eea !important; font-size: 32px; font-weight: 700;'>{resorts_count}</div>
+                    <div style='color: #1e293b !important; font-size: 14px; font-weight: 600; margin-top: 8px;'>Total Resorts</div>
                 </div>
             """, unsafe_allow_html=True)
             
             st.markdown(f"""
                 <div class='metric-card'>
-                    <div class='metric-value' style='color: #667eea !important;'>{years_count}</div>
-                    <div class='metric-label' style='color: #1e293b !important;'>Years Configured</div>
+                    <div style='color: #667eea !important; font-size: 32px; font-weight: 700;'>{years_count}</div>
+                    <div style='color: #1e293b !important; font-size: 14px; font-weight: 600; margin-top: 8px;'>Years Configured</div>
                 </div>
             """, unsafe_allow_html=True)
         
