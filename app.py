@@ -1466,25 +1466,6 @@ def main():
                 <p style='color: #64748b !important; margin: 8px 0 0 0; font-size: 14px;'>Resort Management System</p>
             </div>
         """, unsafe_allow_html=True)
-       
-        handle_file_upload()
-       
-        if st.session_state.data:
-            st.markdown("<div style='margin: 20px 0;'></div>", unsafe_allow_html=True)
-            create_download_button_v2(st.session_state.data)
-            handle_file_verification()
-            handle_merge_from_another_file_v2(st.session_state.data)
-                   
-        show_save_indicator()
-
-        # Sidebar
-    with st.sidebar:
-        st.markdown("""
-            <div style='text-align: center; padding: 20px; margin-bottom: 20px;'>
-                <h1 style='color: #0891b2 !important; margin: 0; font-size: 28px;'>🏨 File Operations</h1>
-                <p style='color: #64748b !important; margin: 8px 0 0 0; font-size: 14px;'>Resort Management System</p>
-            </div>
-        """, unsafe_allow_html=True)
 
         with st.expander("ℹ️ How File Operations Work", expanded=False):
             st.markdown(
