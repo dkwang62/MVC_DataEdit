@@ -1586,29 +1586,7 @@ def main():
             create_download_button_v2(st.session_state.data)
             handle_file_verification()
             handle_merge_from_another_file_v2(st.session_state.data)
-            
-            # Show metrics
-            st.markdown("<hr style='border: 1px solid #e2e8f0; margin: 30px 0;'>", unsafe_allow_html=True)
-            st.markdown("<h3 style='color: #0891b2 !important; text-align: center; margin-bottom: 20px;'>📊 Statistics</h3>", unsafe_allow_html=True)
-            
-            data = st.session_state.data
-            resorts_count = len(data.get("resorts", []))
-            years_count = len(get_years_from_data(data))
-            
-            st.markdown(f"""
-                <div class='metric-card'>
-                    <div class='metric-value'>{resorts_count}</div>
-                    <div class='metric-label'>Total Resorts</div>
-                </div>
-            """, unsafe_allow_html=True)
-            
-            st.markdown(f"""
-                <div class='metric-card'>
-                    <div class='metric-value'>{years_count}</div>
-                    <div class='metric-label'>Years Configured</div>
-                </div>
-            """, unsafe_allow_html=True)
-        
+                    
         show_save_indicator()
 
     # Main content
