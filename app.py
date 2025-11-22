@@ -581,7 +581,7 @@ def create_download_button_v2(data: Dict[str, Any]):
         st.sidebar.markdown("### 📥 Download Data")
         json_data = json.dumps(data, indent=2, ensure_ascii=False)
         st.sidebar.download_button(
-            label="💾 Download V2 JSON",
+            label="💾 Save JSON",
             data=json_data,
             file_name="data_v2.json",
             mime="application/json",
@@ -591,7 +591,7 @@ def create_download_button_v2(data: Dict[str, Any]):
 def handle_file_verification():
     with st.sidebar.expander("🔍 Verify File", expanded=False):
         verify_upload = st.file_uploader(
-            "Upload to verify",
+            "Verify file",
             type="json",
             key="verify_uploader"
         )
@@ -609,7 +609,7 @@ def handle_file_verification():
 def handle_merge_from_another_file_v2(data: Dict[str, Any]):
     with st.sidebar.expander("🔀 Merge Resorts", expanded=False):
         merge_upload = st.file_uploader(
-            "Upload V2 file to merge",
+            "Upload to merge resorts",
             type="json",
             key="merge_uploader_v2"
         )
@@ -1470,10 +1470,11 @@ def main():
         with st.expander("ℹ️ How File Operations Work", expanded=False):
             st.markdown(
             """
-            - Uploaded data loads into memory and can be edited.
-            - Edits are temporary — download the JSON or they may be lost on refresh.
-            - Re-upload your downloaded JSON to check it matches what’s in memory.
-            - Upload a different JSON to merge selected resorts into the current dataset.
+            - Data are pre-loaded into memory and can be edited.
+            - Option: Loading another file will replace data in memory 
+            - Edits in memory are temporary — SAVE or they may be lost on refresh.
+            - Verify by matching saved file to what’s in memory.
+            - Upload a different file to merge selected resorts to memory.
             """)
 
         handle_file_upload()
