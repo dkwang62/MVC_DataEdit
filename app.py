@@ -15,6 +15,102 @@ from functools import lru_cache
 DEFAULT_YEARS = ["2025", "2026"]
 BASE_YEAR_FOR_POINTS = "2025"
 
+# UTC Timezone mapping by resort location
+RESORT_TIMEZONE_MAP = {
+    # United States - East Coast
+    "boston": "America/New_York",
+    "doral": "America/New_York",
+    "fort lauderdale": "America/New_York",
+    "grande vista": "America/New_York",
+    "imperial": "America/New_York",
+    "lakeshore": "America/New_York",
+    "ocean pointe": "America/New_York",
+    "pulse new york": "America/New_York",
+    "sabal": "America/New_York",
+    "harbour lake": "America/New_York",
+    "orlando": "America/New_York",
+    "miami": "America/New_York",
+    "florida keys": "America/New_York",
+    
+    # United States - West Coast
+    "desert springs": "America/Los_Angeles",
+    "newport coast": "America/Los_Angeles",
+    "pulse san diego": "America/Los_Angeles",
+    "pulse san francisco": "America/Los_Angeles",
+    "ritz tahoe": "America/Los_Angeles",
+    "shadow ridge": "America/Los_Angeles",
+    "residence tahoe": "America/Los_Angeles",
+    "california": "America/Los_Angeles",
+    
+    # United States - Mountain
+    "birch vail": "America/Denver",
+    "mountainside": "America/Denver",
+    "ritz vail": "America/Denver",
+    "colorado": "America/Denver",
+    "utah": "America/Denver",
+    
+    # United States - Arizona (no DST)
+    "canyon villas": "America/Phoenix",
+    "sheraton scottsdale": "America/Phoenix",
+    "scottsdale": "America/Phoenix",
+    "arizona": "America/Phoenix",
+    
+    # United States - Central
+    "willow branson": "America/Chicago",
+    "branson": "America/Chicago",
+    "missouri": "America/Chicago",
+    
+    # United States - Hawaii (no DST)
+    "kauai beach": "Pacific/Honolulu",
+    "ko olina": "Pacific/Honolulu",
+    "maui ocean": "Pacific/Honolulu",
+    "sheraton kauai": "Pacific/Honolulu",
+    "hawaii": "Pacific/Honolulu",
+    "kauai": "Pacific/Honolulu",
+    "maui": "Pacific/Honolulu",
+    
+    # Caribbean
+    "aruba": "America/Aruba",
+    "aruba surf": "America/Aruba",
+    "frenchman's cove": "America/Virgin",
+    "usvi": "America/Virgin",
+    
+    # Latin America
+    "suenos costa rica": "America/Costa_Rica",
+    "costa rica": "America/Costa_Rica",
+    
+    # Europe
+    "village paris": "Europe/Paris",
+    "marbella": "Europe/Madrid",
+    "playa andaluza": "Europe/Madrid",
+    "spain": "Europe/Madrid",
+    "paris": "Europe/Paris",
+    
+    # Asia
+    "bali gardens": "Asia/Bali",
+    "bali terrace": "Asia/Bali",
+    "bali": "Asia/Bali",
+    "khao lak": "Asia/Bangkok",
+    "phuket": "Asia/Bangkok",
+    "thailand": "Asia/Bangkok",
+    
+    # Australia
+    "surfers paradise": "Australia/Brisbane",
+    "gold coast": "Australia/Brisbane",
+}
+
+def detect_timezone_from_name(resort_name: str) -> str:
+    """Detect timezone based on resort name using fuzzy matching."""
+    name_lower = resort_name.lower()
+    
+    # Check for exact or partial matches
+    for keyword, timezone in RESORT_TIMEZONE_MAP.items():
+        if keyword in name_lower:
+            return timezone
+    
+    # Default fallback
+    return "UTC"
+
 # ----------------------------------------------------------------------
 # WIDGET KEY HELPER (RESORT-SCOPED)
 # ----------------------------------------------------------------------
@@ -592,18 +688,20 @@ def handle_resort_creation_v2(data: Dict[str, Any], current_resort_id: Optional[
                     base_id = generate_resort_id(name)
                     rid = make_unique_resort_id(base_id, resorts)
                     code = generate_resort_code(name)
+                    detected_timezone = detect_timezone_from_name(name)
+                    
                     new_resort = {
                         "id": rid,
                         "display_name": name,
                         "code": code,
                         "region": "Unknown",
-                        "timezone": "UTC",
+                        "timezone": detected_timezone,
                         "years": {}
                     }
                     resorts.append(new_resort)
                     st.session_state.current_resort_id = rid
                     save_data()
-                    st.success(f"✅ Created {name}")
+                    st.success(f"✅ Created {name} (Timezone: {detected_timezone})")
                     st.rerun()
 
         with col2:
@@ -623,14 +721,17 @@ def handle_resort_creation_v2(data: Dict[str, Any], current_resort_id: Optional[
                         base_id = generate_resort_id(name)
                         rid = make_unique_resort_id(base_id, resorts)
                         code = generate_resort_code(name)
+                        detected_timezone = detect_timezone_from_name(name)
+                        
                         cloned = copy.deepcopy(src)
                         cloned["id"] = rid
                         cloned["display_name"] = name
                         cloned["code"] = code
+                        cloned["timezone"] = detected_timezone
                         resorts.append(cloned)
                         st.session_state.current_resort_id = rid
                         save_data()
-                        st.success(f"✅ Cloned to {name}")
+                        st.success(f"✅ Cloned to {name} (Timezone: {detected_timezone})")
                         st.rerun()
 
 
@@ -1517,13 +1618,23 @@ def main():
 
     if working:
         name = working.get("display_name", current_resort_id)
+        timezone = working.get("timezone", "UTC")
+        
+        # Auto-detect and update timezone if it's still UTC or Unknown
+        if timezone in ["UTC", "Unknown", ""]:
+            detected_tz = detect_timezone_from_name(name)
+            if detected_tz != "UTC":
+                working["timezone"] = detected_tz
+                timezone = detected_tz
+        
         st.markdown(f"""
             <div class='card'>
                 <h2 style='margin: 0; color: #667eea;'>🏨 {name}</h2>
                 <p style='color: #64748b; margin: 8px 0 0 0;'>
                     Resort ID: <code>{current_resort_id}</code> | 
                     Code: <code>{working.get('code', 'N/A')}</code> | 
-                    Region: {working.get('region', 'Unknown')}
+                    Region: {working.get('region', 'Unknown')} | 
+                    🕒 Timezone: <strong>{timezone}</strong>
                 </p>
             </div>
         """, unsafe_allow_html=True)
