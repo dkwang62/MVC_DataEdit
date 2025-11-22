@@ -160,32 +160,67 @@ def setup_page():
         /* Sidebar Enhancements */
         section[data-testid="stSidebar"] {
             background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
-            color: white;
         }
         
-        section[data-testid="stSidebar"] .stMarkdown {
-            color: white;
+        section[data-testid="stSidebar"] * {
+            color: white !important;
+        }
+        
+        section[data-testid="stSidebar"] .stMarkdown,
+        section[data-testid="stSidebar"] h1,
+        section[data-testid="stSidebar"] h2,
+        section[data-testid="stSidebar"] h3,
+        section[data-testid="stSidebar"] h4,
+        section[data-testid="stSidebar"] p,
+        section[data-testid="stSidebar"] label,
+        section[data-testid="stSidebar"] span {
+            color: white !important;
+        }
+        
+        section[data-testid="stSidebar"] .stButton>button {
+            background: rgba(255, 255, 255, 0.2);
+            color: white !important;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        section[data-testid="stSidebar"] .stButton>button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: white;
+        }
+        
+        section[data-testid="stSidebar"] .stDownloadButton>button {
+            background: white !important;
+            color: #667eea !important;
+            border: none;
+            font-weight: 700;
+        }
+        
+        section[data-testid="stSidebar"] .stDownloadButton>button:hover {
+            background: rgba(255, 255, 255, 0.9) !important;
+            transform: translateY(-2px);
         }
         
         /* Metric Card */
         .metric-card {
-            background: white;
+            background: rgba(255, 255, 255, 0.95);
             border-radius: 10px;
             padding: 20px;
             text-align: center;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
             margin: 10px 0;
+            border: 2px solid rgba(255, 255, 255, 0.3);
         }
         
         .metric-value {
             font-size: 32px;
             font-weight: 700;
-            color: #667eea;
+            color: #667eea !important;
         }
         
         .metric-label {
             font-size: 14px;
-            color: #64748b;
+            color: #1e293b !important;
+            font-weight: 600;
             margin-top: 8px;
         }
         
@@ -1366,15 +1401,25 @@ def main():
 
     # Sidebar
     with st.sidebar:
-        st.markdown("<div style='text-align: center; padding: 20px;'><h2 style='color: white;'>🏨 MVC Editor</h2></div>", unsafe_allow_html=True)
+        st.markdown("""
+            <div style='text-align: center; padding: 20px; margin-bottom: 20px;'>
+                <h1 style='color: white !important; margin: 0; font-size: 28px;'>🏨 MVC Editor</h1>
+                <p style='color: rgba(255,255,255,0.9) !important; margin: 8px 0 0 0; font-size: 14px;'>Resort Management System</p>
+            </div>
+        """, unsafe_allow_html=True)
+        
         handle_file_upload()
+        
         if st.session_state.data:
+            st.markdown("<div style='margin: 20px 0;'></div>", unsafe_allow_html=True)
             create_download_button_v2(st.session_state.data)
             handle_file_verification()
             handle_merge_from_another_file_v2(st.session_state.data)
             
             # Show metrics
-            st.markdown("---")
+            st.markdown("<hr style='border: 1px solid rgba(255,255,255,0.3); margin: 30px 0;'>", unsafe_allow_html=True)
+            st.markdown("<h3 style='color: white !important; text-align: center; margin-bottom: 20px;'>📊 Statistics</h3>", unsafe_allow_html=True)
+            
             data = st.session_state.data
             resorts_count = len(data.get("resorts", []))
             years_count = len(get_years_from_data(data))
@@ -1382,7 +1427,7 @@ def main():
             st.markdown(f"""
                 <div class='metric-card'>
                     <div class='metric-value'>{resorts_count}</div>
-                    <div class='metric-label'>Resorts</div>
+                    <div class='metric-label'>Total Resorts</div>
                 </div>
             """, unsafe_allow_html=True)
             
