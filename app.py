@@ -19,76 +19,64 @@ BASE_YEAR_FOR_POINTS = "2025"
 RESORT_TIMEZONE_MAP = {
     # United States - East Coast
     "boston": "America/New_York",
-    "doral": "America/New_York",
+    "washington DC": "America/New_York",
     "fort lauderdale": "America/New_York",
     "grande vista": "America/New_York",
-    "imperial": "America/New_York",
-    "lakeshore": "America/New_York",
     "ocean pointe": "America/New_York",
-    "pulse new york": "America/New_York",
-    "sabal": "America/New_York",
+    "new york": "America/New_York",
     "harbour lake": "America/New_York",
     "orlando": "America/New_York",
     "miami": "America/New_York",
-    "florida keys": "America/New_York",
+    "florida": "America/New_York",
     
     # United States - West Coast
     "desert springs": "America/Los_Angeles",
     "newport coast": "America/Los_Angeles",
-    "pulse san diego": "America/Los_Angeles",
-    "pulse san francisco": "America/Los_Angeles",
-    "ritz tahoe": "America/Los_Angeles",
+    "san diego": "America/Los_Angeles",
+    "san francisco": "America/Los_Angeles",
+    "tahoe": "America/Los_Angeles",
     "shadow ridge": "America/Los_Angeles",
-    "residence tahoe": "America/Los_Angeles",
     "california": "America/Los_Angeles",
     
     # United States - Mountain
-    "birch vail": "America/Denver",
+    "vail": "America/Denver",
     "mountainside": "America/Denver",
-    "ritz vail": "America/Denver",
     "colorado": "America/Denver",
     "utah": "America/Denver",
     
     # United States - Arizona (no DST)
     "canyon villas": "America/Phoenix",
-    "sheraton scottsdale": "America/Phoenix",
     "scottsdale": "America/Phoenix",
     "arizona": "America/Phoenix",
     
     # United States - Central
-    "willow branson": "America/Chicago",
     "branson": "America/Chicago",
     "missouri": "America/Chicago",
     
     # United States - Hawaii (no DST)
-    "kauai beach": "Pacific/Honolulu",
-    "ko olina": "Pacific/Honolulu",
-    "maui ocean": "Pacific/Honolulu",
-    "sheraton kauai": "Pacific/Honolulu",
+    "Ka'anapali": "Pacific/Honolulu",
+    "olina": "Pacific/Honolulu",
+    "waikoloa": "Pacific/Honolulu",
     "hawaii": "Pacific/Honolulu",
     "kauai": "Pacific/Honolulu",
     "maui": "Pacific/Honolulu",
+
     
     # Caribbean
     "aruba": "America/Aruba",
-    "aruba surf": "America/Aruba",
     "frenchman's cove": "America/Virgin",
     "usvi": "America/Virgin",
     
     # Latin America
-    "suenos costa rica": "America/Costa_Rica",
     "costa rica": "America/Costa_Rica",
     
     # Europe
-    "village paris": "Europe/Paris",
     "marbella": "Europe/Madrid",
     "playa andaluza": "Europe/Madrid",
     "spain": "Europe/Madrid",
     "paris": "Europe/Paris",
     
     # Asia
-    "bali gardens": "Asia/Bali",
-    "bali terrace": "Asia/Bali",
     "bali": "Asia/Bali",
     "khao lak": "Asia/Bangkok",
     "phuket": "Asia/Bangkok",
