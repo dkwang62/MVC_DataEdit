@@ -1468,16 +1468,12 @@ def main():
         """, unsafe_allow_html=True)
 
         with st.expander("ℹ️ How File Operations Work", expanded=False):
-            # st.markdown(
-            #     """
-            #     """.strip()
-            # )
             st.markdown(
             """
-            - **Edit in-memory resorts:** Uploaded data loads into memory and can be edited.
-            - **Download your changes:** Edits are temporary — download the JSON or they may be lost on refresh.
-            - **Verify a saved file:** Re-upload your downloaded JSON to check it matches what’s in memory.
-            - **Merge another file:** Upload a different JSON to merge selected resorts into the current dataset.
+            - Uploaded data loads into memory and can be edited.
+            - Edits are temporary — download the JSON or they may be lost on refresh.
+            - Re-upload your downloaded JSON to check it matches what’s in memory.
+            - Upload a different JSON to merge selected resorts into the current dataset.
             """)
 
         handle_file_upload()
