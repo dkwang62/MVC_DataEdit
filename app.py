@@ -26,7 +26,7 @@ def rk(resort_id: str, *parts: str) -> str:
 
 
 # ----------------------------------------------------------------------
-# PAGE CONFIG & ENHANCED STYLES
+# PAGE CONFIG & ENHANCED STYLES (MODIFIED FOR DARK THEME)
 # ----------------------------------------------------------------------
 def setup_page():
     st.set_page_config(
@@ -39,28 +39,31 @@ def setup_page():
     )
     st.markdown("""
     <style>
-        /* Main Theme Colors */
+        /* Main Theme Colors - Dark Mode */
         :root {
-            --primary-color: #1e88e5;
-            --secondary-color: #43a047;
-            --danger-color: #e53935;
-            --warning-color: #fb8c00;
-            --success-color: #66bb6a;
-            --dark-bg: #1a1a1a;
-            --card-bg: #ffffff;
-            --border-color: #e0e0e0;
+            --primary-color: #4e79a7; /* Blue accent */
+            --secondary-color: #59a14f; /* Green accent */
+            --danger-color: #e15759; /* Red */
+            --warning-color: #f28e2c; /* Orange */
+            --success-color: #43a047; /* Darker green */
+            --dark-bg: #1e272e; /* Very dark background */
+            --card-bg: #3b526b; /* Slightly lighter card background */
+            --sidebar-bg: #34495e; /* Sidebar background */
+            --text-color: #ecf0f1; /* Light text */
+            --border-color: #4a6684;
         }
         
         /* Global Styles */
         .main {
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            background: linear-gradient(135deg, #2c3e50 0%, #1e272e 100%);
+            color: var(--text-color);
         }
         
         /* Header Styling */
         .big-font {
             font-size: 38px !important;
             font-weight: 700;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #4e79a7 0%, #764ba2 100%); /* Retain a gradient for pop */
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             text-align: center;
@@ -70,17 +73,17 @@ def setup_page():
         
         /* Card Styles */
         .card {
-            background: white;
+            background: var(--card-bg);
             border-radius: 12px;
             padding: 24px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.07);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
             margin-bottom: 20px;
-            border: 1px solid #e0e0e0;
+            border: 1px solid var(--border-color);
             transition: all 0.3s ease;
         }
         
         .card:hover {
-            box-shadow: 0 8px 12px rgba(0,0,0,0.12);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.6);
             transform: translateY(-2px);
         }
         
@@ -91,17 +94,23 @@ def setup_page():
             padding: 0.5rem 1.5rem;
             transition: all 0.3s ease;
             border: none;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            color: var(--text-color); /* Light text on buttons */
+        }
+
+        .stButton>button[data-testid="base-button-secondary"] {
+            background-color: #4a6684;
+            color: var(--text-color);
         }
         
         .stButton>button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.5);
         }
         
         /* Success Box */
         .success-box {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #59a14f 0%, #43a047 100%);
             color: white;
             padding: 24px;
             border-radius: 12px;
@@ -109,23 +118,24 @@ def setup_page():
             font-weight: 600;
             text-align: center;
             font-size: 16px;
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 4px 12px rgba(89, 161, 79, 0.4);
         }
         
         /* Section Headers */
         .section-header {
             font-size: 24px;
             font-weight: 700;
-            color: #1e293b;
+            color: var(--text-color);
             padding: 16px 0;
-            border-bottom: 3px solid #667eea;
+            border-bottom: 3px solid var(--primary-color);
             margin-bottom: 24px;
         }
         
         /* Info Box */
         .info-box {
-            background: #e3f2fd;
-            border-left: 4px solid #2196f3;
+            background: #2b7489; /* Darker info blue */
+            border-left: 4px solid #4e79a7;
+            color: var(--text-color);
             padding: 16px;
             border-radius: 8px;
             margin: 12px 0;
@@ -133,8 +143,9 @@ def setup_page():
         
         /* Warning Box */
         .warning-box {
-            background: #fff3e0;
-            border-left: 4px solid #ff9800;
+            background: #89792b; /* Darker warning orange */
+            border-left: 4px solid #f28e2c;
+            color: var(--text-color);
             padding: 16px;
             border-radius: 8px;
             margin: 12px 0;
@@ -142,8 +153,9 @@ def setup_page():
         
         /* Error Box */
         .error-box {
-            background: #ffebee;
-            border-left: 4px solid #f44336;
+            background: #892b2b; /* Darker error red */
+            border-left: 4px solid #e15759;
+            color: var(--text-color);
             padding: 16px;
             border-radius: 8px;
             margin: 12px 0;
@@ -151,15 +163,16 @@ def setup_page():
         
         /* Expander Styling */
         .streamlit-expanderHeader {
-            background: #f8f9fa;
+            background: #4a6684;
             border-radius: 8px;
             font-weight: 600;
             padding: 12px;
+            color: var(--text-color);
         }
         
         /* Sidebar Enhancements */
         section[data-testid="stSidebar"] {
-            background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+            background: var(--sidebar-bg);
             color: white;
         }
         
@@ -169,23 +182,24 @@ def setup_page():
         
         /* Metric Card */
         .metric-card {
-            background: white;
+            background: #4a6684;
             border-radius: 10px;
             padding: 20px;
             text-align: center;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
             margin: 10px 0;
+            color: var(--text-color);
         }
         
         .metric-value {
             font-size: 32px;
             font-weight: 700;
-            color: #667eea;
+            color: #76a8d8; /* Light blue */
         }
         
         .metric-label {
             font-size: 14px;
-            color: #64748b;
+            color: #cccccc;
             margin-top: 8px;
         }
         
@@ -213,27 +227,32 @@ def setup_page():
             border-radius: 8px 8px 0 0;
             padding: 12px 24px;
             font-weight: 600;
+            color: var(--text-color);
         }
-        
-        /* Number Input Enhancements */
-        .stNumberInput>div>div>input {
-            border-radius: 8px;
-            border: 2px solid #e0e0e0;
-            padding: 8px;
-        }
-        
-        /* Text Input Enhancements */
-        .stTextInput>div>div>input {
-            border-radius: 8px;
-            border: 2px solid #e0e0e0;
-            padding: 8px;
-        }
-        
-        /* Date Input Enhancements */
+
+        /* Input Enhancements */
+        .stNumberInput>div>div>input,
+        .stTextInput>div>div>input,
         .stDateInput>div>div>input {
             border-radius: 8px;
-            border: 2px solid #e0e0e0;
+            border: 2px solid var(--border-color);
+            padding: 8px;
+            background-color: #2c3e50;
+            color: var(--text-color);
         }
+        
+        .stSelectbox>div>div>div {
+             border-radius: 8px;
+            border: 2px solid var(--border-color);
+            background-color: #2c3e50;
+            color: var(--text-color);
+        }
+
+        /* Streamlit components text color */
+        h1, h2, h3, h4, h5, h6, p, label, .stMarkdown, .stText, .stAlert, .stSelectbox, .stTextInput, .stNumberInput {
+            color: var(--text-color);
+        }
+
     </style>
     """, unsafe_allow_html=True)
 
@@ -564,6 +583,7 @@ def handle_resort_deletion_v2(data: Dict[str, Any], current_resort_id: Optional[
         return
 
     if not st.session_state.delete_confirm:
+        # Changed button type to secondary as delete is a less frequent action
         if st.button("🗑️ Delete Resort", key="delete_resort_init", type="secondary"):
             st.session_state.delete_confirm = True
             st.rerun()
@@ -953,54 +973,84 @@ def render_reference_points_editor_v2(working: Dict[str, Any], years: List[str],
 
 
 # ----------------------------------------------------------------------
-# HOLIDAY MANAGEMENT
+# HOLIDAY MANAGEMENT (MODIFIED)
 # ----------------------------------------------------------------------
-def render_holiday_management_v2(working: Dict[str, Any], years: List[str], resort_id: str):
+def render_holiday_management_v2(working: Dict[str, Any], years: List[str], resort_id: str, data: Dict[str, Any]):
     st.markdown("<div class='section-header'>🎄 Holiday Management</div>", unsafe_allow_html=True)
     
     base_year = BASE_YEAR_FOR_POINTS if BASE_YEAR_FOR_POINTS in years else (sorted(years)[0] if years else BASE_YEAR_FOR_POINTS)
 
+    # Fetch all global holiday keys for easier reference
+    global_holidays = data.get("global_holidays", {})
+
     # Per-year holiday assignment
-    st.markdown("**📋 Assign Holidays to Years**")
+    st.markdown("**📋 Assign Global Holidays to Resort Years**")
+    st.caption("Resort-specific holidays must link to a date defined in the Global Holiday Calendar. Dates are view-only here.")
+    
     for year in years:
         year_obj = ensure_year_structure(working, year)
         holidays = year_obj.get("holidays", [])
         
+        # Available Global Holidays for this year
+        available_global_keys = list(global_holidays.get(year, {}).keys())
+        global_options = ["— Select Global Holiday —"] + available_global_keys
+
         with st.expander(f"🎉 {year} Holidays", expanded=False):
+            
+            # Add New Holiday based on a Global Reference
             col1, col2 = st.columns([4, 1])
             with col1:
-                new_name = st.text_input(
-                    "Holiday name",
-                    key=rk(resort_id, "new_holiday_name", year),
-                    placeholder="e.g., Christmas Week"
+                selected_global_ref = st.selectbox(
+                    "Select Global Holiday to Add",
+                    options=global_options,
+                    key=rk(resort_id, "new_holiday_select", year),
+                    label_visibility="collapsed"
                 )
             with col2:
-                if st.button("➕ Add", key=rk(resort_id, "btn_add_holiday", year), use_container_width=True) and new_name:
-                    holidays.append({
-                        "name": new_name.strip(),
-                        "global_reference": new_name.strip(),
-                        "room_points": {}
-                    })
-                    st.rerun()
+                if st.button("➕ Add", key=rk(resort_id, "btn_add_holiday", year), use_container_width=True) and selected_global_ref != "— Select Global Holiday —":
+                    name = selected_global_ref.strip()
+                    # Check for duplicates before adding
+                    if any(h.get("global_reference") == name for h in holidays):
+                        st.warning(f"⚠️ Holiday '{name}' already added for {year}.")
+                    else:
+                        holidays.append({
+                            "name": name,
+                            "global_reference": name,
+                            "room_points": {} # Will be synced from base year master points
+                        })
+                        st.success(f"✅ Added {name}. Define points in the Master section below.")
+                        st.rerun()
+
+            st.markdown("---")
+            st.subheader(f"Existing Resort Holidays in {year}")
 
             for h_idx, h in enumerate(holidays):
                 col1, col2, col3 = st.columns([3, 3, 1])
+                
+                # Get start/end dates from global calendar for display
+                global_ref = h.get("global_reference", "")
+                global_dates = global_holidays.get(year, {}).get(global_ref, {})
+                start_date = global_dates.get("start_date", "N/A")
+                end_date = global_dates.get("end_date", "N/A")
+
+                # Display name (editable)
                 with col1:
                     new_disp = st.text_input(
                         "Display name",
                         value=h.get("name", ""),
-                        key=rk(resort_id, "holiday_name", year, h_idx)
+                        key=rk(resort_id, "holiday_name", year, h_idx),
+                        label_visibility="collapsed"
                     )
                     h["name"] = new_disp
+                    st.caption(f"Linked Global Ref: **{global_ref}**")
+                
+                # Global reference (read-only link to global dates)
                 with col2:
-                    new_global = st.text_input(
-                        "Global reference",
-                        value=h.get("global_reference", ""),
-                        key=rk(resort_id, "holiday_global", year, h_idx)
-                    )
-                    h["global_reference"] = new_global
+                    st.markdown(f"**Dates:** {start_date} to {end_date}")
+                    st.caption(f"Type: {global_dates.get('type', '—')}")
+
                 with col3:
-                    if st.button("❌", key=rk(resort_id, "holiday_del", year, h_idx)):
+                    if st.button("❌", key=rk(resort_id, "holiday_del", year, h_idx), use_container_width=True):
                         holidays.pop(h_idx)
                         st.rerun()
 
@@ -1009,8 +1059,8 @@ def render_holiday_management_v2(working: Dict[str, Any], years: List[str], reso
     # Master holiday points
     st.markdown("---")
     st.markdown("**💰 Master Holiday Points**")
-    st.caption("Edit holiday room points once. Applied to all years automatically.")
-
+    st.caption("Edit holiday room points once (using base year). Applied to all years automatically.")
+    
     base_year_obj = ensure_year_structure(working, base_year)
     base_holidays = base_year_obj.get("holidays", [])
 
@@ -1176,14 +1226,15 @@ def create_gantt_chart_v2(working: Dict[str, Any], year: str, data: Dict[str, An
         sname = season.get("name", "(Unnamed)")
         for i, p in enumerate(season.get("periods", []), 1):
             try:
+                # Add one day to end_dt to ensure plotly draws the last day correctly
                 start_dt = datetime.strptime(p.get("start"), "%Y-%m-%d")
-                end_dt = datetime.strptime(p.get("end"), "%Y-%m-%d")
-                if start_dt <= end_dt:
+                end_dt = datetime.strptime(p.get("end"), "%Y-%m-%d") + timedelta(days=1) 
+                if start_dt < end_dt:
                     rows.append({
-                        "Task": f"{sname} #{i}",
+                        "Task": f"Season: {sname} #{i}",
                         "Start": start_dt,
                         "Finish": end_dt,
-                        "Type": sname
+                        "Type": "Season"
                     })
             except:
                 continue
@@ -1194,11 +1245,12 @@ def create_gantt_chart_v2(working: Dict[str, Any], year: str, data: Dict[str, An
         global_ref = h.get("global_reference") or h.get("name")
         if gh := gh_year.get(global_ref):
             try:
+                # Add one day to end_dt to ensure plotly draws the last day correctly
                 start_dt = datetime.strptime(gh.get("start_date"), "%Y-%m-%d")
-                end_dt = datetime.strptime(gh.get("end_date"), "%Y-%m-%d")
-                if start_dt <= end_dt:
+                end_dt = datetime.strptime(gh.get("end_date"), "%Y-%m-%d") + timedelta(days=1)
+                if start_dt < end_dt:
                     rows.append({
-                        "Task": h.get("name", "(Unnamed)"),
+                        "Task": f"Holiday: {h.get('name', '(Unnamed)')}",
                         "Start": start_dt,
                         "Finish": end_dt,
                         "Type": "Holiday"
@@ -1218,6 +1270,9 @@ def create_gantt_chart_v2(working: Dict[str, Any], year: str, data: Dict[str, An
     df = pd.DataFrame(rows)
     df["Start"] = pd.to_datetime(df["Start"])
     df["Finish"] = pd.to_datetime(df["Finish"])
+    # Sort for better visual grouping
+    df = df.sort_values(by=["Type", "Start"], ascending=[False, True])
+
 
     fig = px.timeline(
         df,
@@ -1226,7 +1281,8 @@ def create_gantt_chart_v2(working: Dict[str, Any], year: str, data: Dict[str, An
         y="Task",
         color="Type",
         title=f"{working.get('display_name', 'Resort')} – {year} Timeline",
-        height=max(400, len(df) * 35)
+        height=max(400, len(df) * 35),
+        color_discrete_map={'Season': '#4e79a7', 'Holiday': '#e15759', 'No Data': '#cccccc'} # Custom colors for dark theme
     )
 
     fig.update_yaxes(autorange="reversed")
@@ -1238,8 +1294,8 @@ def create_gantt_chart_v2(working: Dict[str, Any], year: str, data: Dict[str, An
         showlegend=True,
         xaxis_title="Date",
         yaxis_title="Period",
-        font=dict(size=12),
-        plot_bgcolor='rgba(0,0,0,0)',
+        font=dict(size=12, color='white'), # White text for dark theme
+        plot_bgcolor='#2c3e50', # Dark plot background
         paper_bgcolor='rgba(0,0,0,0)'
     )
     return fig
@@ -1262,7 +1318,7 @@ def render_maintenance_fees_v2(data: Dict[str, Any]):
     st.caption("Define maintenance fee rates per point for each year")
     
     for year in sorted(rates.keys()):
-        current_rate = float(rates[year])
+        current_rate = float(rates.get(year, 0.0))
         new_rate = st.number_input(
             f"💵 {year}",
             value=current_rate,
@@ -1273,6 +1329,20 @@ def render_maintenance_fees_v2(data: Dict[str, Any]):
         if new_rate != current_rate:
             rates[year] = float(new_rate)
             save_data()
+
+    # Allow adding new years to maintenance rates config
+    all_years = get_years_from_data(data)
+    current_maint_years = set(rates.keys())
+    new_maint_years = sorted(list(set(all_years) - current_maint_years))
+
+    if new_maint_years:
+        st.markdown("---")
+        st.subheader("➕ Add Maintenance Rate Year")
+        for new_year in new_maint_years:
+            if st.button(f"Add {new_year}", key=f"add_mf_year_{new_year}"):
+                rates[new_year] = 0.0000
+                save_data()
+                st.rerun()
 
 
 def render_global_holiday_dates_editor_v2(data: Dict[str, Any], years: List[str]):
@@ -1319,9 +1389,21 @@ def render_global_holiday_dates_editor_v2(data: Dict[str, Any], years: List[str]
         with col1:
             new_name = st.text_input(f"New holiday name", key=f"gh_new_name_{year}", placeholder="e.g., New Year")
         with col2:
-            new_start = st.date_input("Start", datetime.strptime(f"{year}-01-01", "%Y-%m-%d").date(), key=f"gh_new_start_{year}")
+            # Default to the first day of the year if year is valid
+            try:
+                default_start = datetime.strptime(f"{year}-01-01", "%Y-%m-%d").date()
+            except ValueError:
+                default_start = date.today()
+            
+            new_start = st.date_input("Start", default_start, key=f"gh_new_start_{year}")
         with col3:
-            new_end = st.date_input("End", datetime.strptime(f"{year}-01-07", "%Y-%m-%d").date(), key=f"gh_new_end_{year}")
+            # Default to the seventh day of the year if year is valid
+            try:
+                default_end = (datetime.strptime(f"{year}-01-01", "%Y-%m-%d") + timedelta(days=6)).date()
+            except ValueError:
+                default_end = date.today()
+                
+            new_end = st.date_input("End", default_end, key=f"gh_new_end_{year}")
         
         if st.button("➕ Add Global Holiday", key=f"gh_add_{year}", use_container_width=True) and new_name and new_name not in holidays:
             holidays[new_name] = {
@@ -1441,7 +1523,8 @@ def main():
         # Master (year-independent) points + room types
         render_reference_points_editor_v2(working, years, current_resort_id)
 
-        render_holiday_management_v2(working, years, current_resort_id)
+        # Pass data to the modified function to access global holidays
+        render_holiday_management_v2(working, years, current_resort_id, data)
         render_resort_summary_v2(working)
 
     render_global_settings_v2(data, years)
