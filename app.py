@@ -202,7 +202,7 @@ def setup_page():
         
         /* Metric Card */
         .metric-card {
-            background: rgba(255, 255, 255, 0.95);
+            background: rgba(255, 255, 255, 0.95) !important;
             border-radius: 10px;
             padding: 20px;
             text-align: center;
@@ -211,17 +211,19 @@ def setup_page():
             border: 2px solid rgba(255, 255, 255, 0.3);
         }
         
+        .metric-card * {
+            color: inherit !important;
+        }
+        
         .metric-value {
-            font-size: 32px;
-            font-weight: 700;
-            color: #667eea !important;
+            font-size: 32px !important;
+            font-weight: 700 !important;
         }
         
         .metric-label {
-            font-size: 14px;
-            color: #1e293b !important;
-            font-weight: 600;
-            margin-top: 8px;
+            font-size: 14px !important;
+            font-weight: 600 !important;
+            margin-top: 8px !important;
         }
         
         /* Resort Grid Button */
@@ -1426,15 +1428,15 @@ def main():
             
             st.markdown(f"""
                 <div class='metric-card'>
-                    <div class='metric-value'>{resorts_count}</div>
-                    <div class='metric-label'>Total Resorts</div>
+                    <div class='metric-value' style='color: #667eea !important;'>{resorts_count}</div>
+                    <div class='metric-label' style='color: #1e293b !important;'>Total Resorts</div>
                 </div>
             """, unsafe_allow_html=True)
             
             st.markdown(f"""
                 <div class='metric-card'>
-                    <div class='metric-value'>{years_count}</div>
-                    <div class='metric-label'>Years Configured</div>
+                    <div class='metric-value' style='color: #667eea !important;'>{years_count}</div>
+                    <div class='metric-label' style='color: #1e293b !important;'>Years Configured</div>
                 </div>
             """, unsafe_allow_html=True)
         
