@@ -182,8 +182,9 @@ def setup_page():
         }
         
         section[data-testid="stSidebar"] [data-testid="stFileUploadDropzone"] {
-            background: rgba(255, 255, 255, 0.1) !important;
-            border: 2px dashed rgba(255, 255, 255, 0.4) !important;
+            background: rgba(0, 0, 0, 0.2) !important;
+            border: 2px dashed rgba(255, 255, 255, 0.5) !important;
+            color: white !important;
         }
         
         section[data-testid="stSidebar"] [data-testid="stFileUploadDropzone"] * {
@@ -191,13 +192,20 @@ def setup_page():
         }
         
         section[data-testid="stSidebar"] [data-testid="stFileUploadDropzone"] button {
-            background: rgba(255, 255, 255, 0.2) !important;
-            color: white !important;
-            border: 1px solid rgba(255, 255, 255, 0.3) !important;
+            background: rgba(255, 255, 255, 0.9) !important;
+            color: #667eea !important;
+            border: none !important;
+            font-weight: 600 !important;
+            padding: 8px 16px !important;
+            border-radius: 6px !important;
+        }
+        
+        section[data-testid="stSidebar"] [data-testid="stFileUploadDropzone"] button * {
+            color: #667eea !important;
         }
         
         section[data-testid="stSidebar"] [data-testid="stFileUploadDropzone"] button:hover {
-            background: rgba(255, 255, 255, 0.3) !important;
+            background: white !important;
         }
         
         section[data-testid="stSidebar"] .stMarkdown,
