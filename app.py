@@ -19,12 +19,11 @@ BASE_YEAR_FOR_POINTS = "2025"
 RESORT_TIMEZONE_MAP = {
     # United States - East Coast
     "boston": "America/New_York",
-    "doral": "America/New_York",
     "fort lauderdale": "America/New_York",
     "grande vista": "America/New_York",
     "ocean pointe": "America/New_York",
     "new york": "America/New_York",
-    "sabal": "America/New_York",
+    "DC": "America/New_York",
     "harbour lake": "America/New_York",
     "orlando": "America/New_York",
     "miami": "America/New_York",
@@ -40,20 +39,17 @@ RESORT_TIMEZONE_MAP = {
     "california": "America/Los_Angeles",
     
     # United States - Mountain
-    "birch vail": "America/Denver",
     "mountainside": "America/Denver",
-    "ritz vail": "America/Denver",
+    "vail": "America/Denver",
     "colorado": "America/Denver",
     "utah": "America/Denver",
     
     # United States - Arizona (no DST)
     "canyon villas": "America/Phoenix",
-    "sheraton scottsdale": "America/Phoenix",
     "scottsdale": "America/Phoenix",
     "arizona": "America/Phoenix",
     
     # United States - Central
-    "willow branson": "America/Chicago",
     "branson": "America/Chicago",
     "missouri": "America/Chicago",
     
@@ -68,7 +64,6 @@ RESORT_TIMEZONE_MAP = {
     
     # Caribbean
     "aruba": "America/Aruba",
-    "aruba surf": "America/Aruba",
     "frenchman's cove": "America/Virgin",
     "usvi": "America/Virgin",
     
@@ -84,8 +79,6 @@ RESORT_TIMEZONE_MAP = {
     "paris": "Europe/Paris",
     
     # Asia
-    "bali gardens": "Asia/Bali",
-    "bali terrace": "Asia/Bali",
     "bali": "Asia/Bali",
     "khao lak": "Asia/Bangkok",
     "phuket": "Asia/Bangkok",
