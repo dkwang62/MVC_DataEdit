@@ -1476,6 +1476,32 @@ def main():
             handle_merge_from_another_file_v2(st.session_state.data)
                    
         show_save_indicator()
+
+        # Sidebar
+    with st.sidebar:
+        st.markdown("""
+            <div style='text-align: center; padding: 20px; margin-bottom: 20px;'>
+                <h1 style='color: #0891b2 !important; margin: 0; font-size: 28px;'>🏨 File Operations</h1>
+                <p style='color: #64748b !important; margin: 8px 0 0 0; font-size: 14px;'>Resort Management System</p>
+            </div>
+        """, unsafe_allow_html=True)
+
+        with st.expander("ℹ️ How File Operations Work", expanded=False):
+            st.markdown(
+                """
+                - **Edit resorts in memory:** When you upload a V2 `data.json` file, all of its resorts are loaded into memory.  
+                  You can freely edit those in-memory resorts using the main editor.
+                - **Download after you edit:** Changes only live in memory until you click **Download V2 JSON**.  
+                  If you refresh the page, close the browser, or load another file without downloading, your edits may be lost.
+                - **Verify against a saved file:** After downloading, you can upload that file again using **Verify File**  
+                  to compare it with the data currently in memory and confirm there is no corruption or mismatch.
+                - **Merge from another file:** You can upload a different V2 file via **Merge Resorts** to bring one or more  
+                  resorts into the current in-memory dataset. The merged result is still only in memory until you download it again.
+                """.strip()
+            )
+
+        handle_file_upload()
+
     # Main content
     st.markdown("<div class='big-font'>MVC Resort Editor V2</div>", unsafe_allow_html=True)
     if not st.session_state.data:
