@@ -135,274 +135,243 @@ def setup_page():
     )
     st.markdown("""
     <style>
-        /* Main Theme Colors */
+        /* 1. Global Font and Base Setup */
+        html, body, .main, [data-testid="stAppViewContainer"] {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            color: var(--text-color);
+        }
+
+        /* Main Theme Colors (New Palette: Professional Teal/Navy) */
         :root {
-            --primary-color: #1e88e5;
-            --secondary-color: #43a047;
-            --danger-color: #e53935;
-            --warning-color: #fb8c00;
-            --success-color: #66bb6a;
-            --dark-bg: #1a1a1a;
-            --card-bg: #ffffff;
-            --border-color: #e0e0e0;
+            --primary-color: #008080; /* Deep Teal */
+            --secondary-color: #556B2F; /* Olive Green */
+            --danger-color: #C0392B;
+            --warning-color: #E67E22;
+            --success-color: #27AE60;
+            --text-color: #34495E; /* Dark Navy for text */
+            --bg-color: #F8F9FA; /* Very light gray background */
+            --card-bg: #FFFFFF;
+            --border-color: #EAECEE;
         }
         
         /* Global Styles */
         .main {
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            background-color: var(--bg-color);
         }
         
-        /* Header Styling */
+        /* 2. Header Styling - Clean and Minimal */
         .big-font {
-            font-size: 38px !important;
-            font-weight: 700;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-align: center;
-            padding: 20px 0;
-            margin-bottom: 10px;
+            font-size: 32px !important;
+            font-weight: 600;
+            color: var(--text-color);
+            border-bottom: 2px solid var(--primary-color);
+            text-align: left;
+            padding: 10px 0 15px 0;
+            margin-bottom: 20px;
         }
         
-        /* Card Styles */
+        /* 3. Card Styles - Lifted, Modern */
         .card {
-            background: white;
-            border-radius: 12px;
-            padding: 24px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.07);
+            background: var(--card-bg);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
             margin-bottom: 20px;
-            border: 1px solid #e0e0e0;
-            transition: all 0.3s ease;
+            border: none;
+            transition: all 0.2s ease;
         }
         
         .card:hover {
-            box-shadow: 0 8px 12px rgba(0,0,0,0.12);
-            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.10);
+            transform: translateY(-1px);
         }
         
         /* Button Enhancements */
         .stButton>button {
-            border-radius: 8px;
-            font-weight: 600;
-            padding: 0.5rem 1.5rem;
-            transition: all 0.3s ease;
-            border: none;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-radius: 6px;
+            font-weight: 500;
+            padding: 0.5rem 1.2rem;
+            transition: all 0.2s ease;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
         
         .stButton>button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+            transform: translateY(-1px);
+            box-shadow: 0 3px 6px rgba(0,0,0,0.1);
         }
         
+        /* Primary Button */
+        .stButton [data-testid="baseButton-primary"] {
+            background-color: var(--primary-color) !important;
+            color: white !important;
+            border: 1px solid var(--primary-color) !important;
+        }
+        
+        .stButton [data-testid="baseButton-primary"]:hover {
+            background-color: #006666 !important; /* Darken teal on hover */
+        }
+
         /* Success Box */
         .success-box {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 24px;
-            border-radius: 12px;
+            background: #E8F8F5; /* Lightened primary color bg */
+            color: var(--primary-color);
+            padding: 16px;
+            border-radius: 8px;
             margin: 20px 0;
             font-weight: 600;
             text-align: center;
-            font-size: 16px;
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+            font-size: 15px;
+            border: 1px solid #C0DEDD;
+            box-shadow: none;
         }
         
         /* Section Headers */
         .section-header {
-            font-size: 24px;
-            font-weight: 700;
-            color: #1e293b;
-            padding: 16px 0;
-            border-bottom: 3px solid #667eea;
-            margin-bottom: 24px;
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-color);
+            padding: 10px 0;
+            border-bottom: 2px solid var(--border-color);
+            margin-bottom: 20px;
         }
         
-        /* Info Box */
+        /* Info/Warning/Error Boxes - Use new palette */
         .info-box {
-            background: #e3f2fd;
-            border-left: 4px solid #2196f3;
-            padding: 16px;
-            border-radius: 8px;
-            margin: 12px 0;
+            background: #EBF5FB;
+            border-left: 4px solid #3498DB;
+            color: var(--text-color);
+            padding: 15px;
+            border-radius: 6px;
+            margin: 10px 0;
         }
         
-        /* Warning Box */
         .warning-box {
-            background: #fff3e0;
-            border-left: 4px solid #ff9800;
-            padding: 16px;
-            border-radius: 8px;
-            margin: 12px 0;
+            background: #FEF9E7;
+            border-left: 4px solid #F39C12;
+            color: var(--text-color);
+            padding: 15px;
+            border-radius: 6px;
+            margin: 10px 0;
         }
         
-        /* Error Box */
         .error-box {
-            background: #ffebee;
-            border-left: 4px solid #f44336;
-            padding: 16px;
-            border-radius: 8px;
-            margin: 12px 0;
+            background: #FADBD8;
+            border-left: 4px solid #C0392B;
+            color: var(--text-color);
+            padding: 15px;
+            border-radius: 6px;
+            margin: 10px 0;
         }
         
         /* Expander Styling */
         .streamlit-expanderHeader {
-            background: #f8f9fa;
-            border-radius: 8px;
+            background: var(--card-bg);
+            border-radius: 6px;
             font-weight: 600;
-            padding: 12px;
+            padding: 10px 15px;
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            transition: background 0.2s;
         }
         
-        /* Sidebar Enhancements */
+        .streamlit-expanderHeader:hover {
+            background: #F4F6F6;
+        }
+
+        /* 4. Sidebar Enhancements - Clean White Sidebar */
         section[data-testid="stSidebar"] {
-            background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+            background-color: var(--card-bg); /* White background */
+            box-shadow: 2px 0 10px rgba(0,0,0,0.05);
+            border-right: 1px solid var(--border-color);
         }
         
         section[data-testid="stSidebar"] * {
-            color: white !important;
+            color: var(--text-color) !important; /* Dark text for high contrast */
         }
         
-        /* Exception for metric cards - they need white text on dark background */
-        .metric-card,
-        .metric-card * {
-            color: white !important;
+        /* Sidebar Title */
+        section[data-testid="stSidebar"] h2 {
+            color: var(--primary-color) !important; 
+            font-weight: 700;
         }
-        
-        /* File uploader styling - override sidebar white text */
-        section[data-testid="stSidebar"] .stFileUploader {
-            background: white !important;
-            padding: 16px !important;
-            border-radius: 8px !important;
-            margin: 10px 0 !important;
-            border: 1px solid #e2e8f0 !important;
-        }
-        
-        section[data-testid="stSidebar"] .stFileUploader label,
-        section[data-testid="stSidebar"] .stFileUploader span,
-        section[data-testid="stSidebar"] .stFileUploader p,
-        section[data-testid="stSidebar"] .stFileUploader button,
-        section[data-testid="stSidebar"] .stFileUploader small,
-        section[data-testid="stSidebar"] .stFileUploader div {
-            color: #1e293b !important;
-            font-size: 12px !important;
-        }
-        
-        section[data-testid="stSidebar"] .stFileUploader label {
-            font-size: 14px !important;
-            font-weight: 600 !important;
-        }
-        
-        section[data-testid="stSidebar"] [data-testid="stFileUploadDropzone"] {
-            background: white !important;
-            border: 2px dashed #cbd5e1 !important;
-            padding: 12px !important;
-        }
-        
-        section[data-testid="stSidebar"] [data-testid="stFileUploadDropzone"] * {
-            color: #64748b !important;
-            font-size: 11px !important;
-        }
-        
-        section[data-testid="stSidebar"] [data-testid="stFileUploadDropzone"] button {
-            background: white !important;
-            color: #1e293b !important;
-            border: 1px solid #cbd5e1 !important;
-            font-weight: 600 !important;
-            font-size: 12px !important;
-            padding: 6px 12px !important;
-            border-radius: 6px !important;
-            margin-top: 8px !important;
-        }
-        
-        section[data-testid="stSidebar"] [data-testid="stFileUploadDropzone"] button * {
-            color: #1e293b !important;
-            font-size: 12px !important;
-        }
-        
-        section[data-testid="stSidebar"] [data-testid="stFileUploadDropzone"] button:hover {
-            background: #f8f9fa !important;
-            border-color: #94a3b8 !important;
-        }
-        
-        section[data-testid="stSidebar"] .stMarkdown,
-        section[data-testid="stSidebar"] h1,
-        section[data-testid="stSidebar"] h2,
-        section[data-testid="stSidebar"] h3,
-        section[data-testid="stSidebar"] h4,
-        section[data-testid="stSidebar"] p,
-        section[data-testid="stSidebar"] label,
-        section[data-testid="stSidebar"] span {
-            color: white !important;
+
+        /* Sidebar Expander/Button Enhancements */
+        section[data-testid="stSidebar"] .streamlit-expanderHeader {
+            background: #F4F6F6; /* Light gray background for expanders */
+            border: 1px solid var(--border-color);
+            color: var(--text-color) !important;
+            font-weight: 500;
+            margin: 4px 0;
         }
         
         section[data-testid="stSidebar"] .stButton>button {
-            background: rgba(255, 255, 255, 0.2);
-            color: white !important;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-        }
-        
-        section[data-testid="stSidebar"] .stButton>button:hover {
-            background: rgba(255, 255, 255, 0.3);
-            border-color: white;
+            background: #ECF0F1;
+            color: var(--text-color) !important;
+            border: 1px solid var(--border-color);
+            box-shadow: none;
         }
         
         section[data-testid="stSidebar"] .stDownloadButton>button {
-            background: white !important;
-            color: #667eea !important;
-            border: none !important;
-            font-weight: 700 !important;
+            background: var(--primary-color) !important;
+            color: white !important;
+            font-weight: 600 !important;
         }
         
         section[data-testid="stSidebar"] .stDownloadButton>button * {
-            color: #667eea !important;
+            color: white !important;
         }
         
-        section[data-testid="stSidebar"] .stDownloadButton>button:hover {
-            background: rgba(255, 255, 255, 0.9) !important;
-            transform: translateY(-2px);
+        /* File uploader styling */
+        section[data-testid="stSidebar"] .stFileUploader {
+            background: var(--card-bg) !important;
+            padding: 0 !important;
+            margin: 10px 0 !important;
+            border: none !important;
         }
         
-        /* Metric Card */
+        section[data-testid="stSidebar"] [data-testid="stFileUploadDropzone"] {
+            border: 1px dashed var(--border-color) !important;
+            background: #FAFAFA !important;
+        }
+
+        /* Metric Card in Sidebar */
         .metric-card {
-            background: white !important;
-            border-radius: 12px;
-            padding: 24px;
-            text-align: center;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            margin: 10px 0;
-            border: 1px solid #e2e8f0;
+            background: #ECF0F1 !important; /* Lighter shade for sidebar metrics */
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: none;
+            border: 1px solid var(--border-color);
         }
         
         .metric-card * {
-            color: #1e293b !important;
+            color: var(--text-color) !important;
         }
         
         .metric-value {
-            color: #0891b2 !important;
-            font-size: 36px;
-            font-weight: 700;
+            color: var(--primary-color) !important;
+            font-size: 28px;
         }
         
         .metric-label {
             color: #64748b !important;
             font-size: 13px;
-            font-weight: 600;
-            margin-top: 8px;
+            font-weight: 500;
+            margin-top: 5px;
         }
         
-        /* Resort Grid Button */
-        div[data-testid="column"] .stButton>button {
-            width: 100%;
-            height: 80px;
-            font-size: 14px;
-            white-space: normal;
-            line-height: 1.3;
+        /* Resort Grid Button - Make primary color stand out */
+        div[data-testid="column"] .stButton [data-testid="baseButton-secondary"] {
+            border: 1px solid var(--border-color);
+            background: var(--card-bg);
+            color: var(--text-color) !important;
         }
         
         /* Dataframe Styling */
         .dataframe {
             border-radius: 8px;
             overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
         
         /* Tab Styling */
@@ -411,33 +380,35 @@ def setup_page():
         }
         
         .stTabs [data-baseweb="tab"] {
-            border-radius: 8px 8px 0 0;
-            padding: 12px 24px;
-            font-weight: 600;
+            border-radius: 6px 6px 0 0;
+            padding: 10px 20px;
+            font-weight: 500;
         }
         
-        /* Number Input Enhancements */
-        .stNumberInput>div>div>input {
-            border-radius: 8px;
-            border: 2px solid #e0e0e0;
-            padding: 8px;
+        /* Input Enhancements */
+        .stNumberInput>div>div>input,
+        .stTextInput>div>div>input,
+        .stDateInput>div>div>input,
+        .stSelectbox>div>div,
+        .stMultiSelect>div>div {
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            padding: 8px 12px;
+            box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);
+            transition: border-color 0.2s;
         }
         
-        /* Text Input Enhancements */
-        .stTextInput>div>div>input {
-            border-radius: 8px;
-            border: 2px solid #e0e0e0;
-            padding: 8px;
+        .stNumberInput:focus-within>div>div>input,
+        .stTextInput:focus-within>div>div>input,
+        .stDateInput:focus-within>div>div>input,
+        .stSelectbox:focus-within>div>div,
+        .stMultiSelect:focus-within>div>div {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 1px var(--primary-color);
         }
         
-        /* Date Input Enhancements */
-        .stDateInput>div>div>input {
-            border-radius: 8px;
-            border: 2px solid #e0e0e0;
-        }
     </style>
     """, unsafe_allow_html=True)
-
 
 # ----------------------------------------------------------------------
 # SESSION STATE MANAGEMENT
