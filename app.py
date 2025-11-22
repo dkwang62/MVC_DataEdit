@@ -208,28 +208,17 @@ def setup_page():
         
         /* Metric Card */
         .metric-card {
-            background: rgba(255, 255, 255, 0.95) !important;
-            border-radius: 10px;
-            padding: 20px;
+            background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%) !important;
+            border-radius: 12px;
+            padding: 24px;
             text-align: center;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
             margin: 10px 0;
-            border: 2px solid rgba(255, 255, 255, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.2);
         }
         
         .metric-card * {
-            color: inherit !important;
-        }
-        
-        .metric-value {
-            font-size: 32px !important;
-            font-weight: 700 !important;
-        }
-        
-        .metric-label {
-            font-size: 14px !important;
-            font-weight: 600 !important;
-            margin-top: 8px !important;
+            color: white !important;
         }
         
         /* Resort Grid Button */
@@ -1434,15 +1423,15 @@ def main():
             
             st.markdown(f"""
                 <div class='metric-card'>
-                    <div style='color: #667eea !important; font-size: 32px; font-weight: 700;'>{resorts_count}</div>
-                    <div style='color: #1e293b !important; font-size: 14px; font-weight: 600; margin-top: 8px;'>Total Resorts</div>
+                    <div style='font-size: 36px; font-weight: 700; color: white;'>{resorts_count}</div>
+                    <div style='font-size: 13px; font-weight: 600; margin-top: 8px; opacity: 0.9; color: white;'>Total Resorts</div>
                 </div>
             """, unsafe_allow_html=True)
             
             st.markdown(f"""
                 <div class='metric-card'>
-                    <div style='color: #667eea !important; font-size: 32px; font-weight: 700;'>{years_count}</div>
-                    <div style='color: #1e293b !important; font-size: 14px; font-weight: 600; margin-top: 8px;'>Years Configured</div>
+                    <div style='font-size: 36px; font-weight: 700; color: white;'>{years_count}</div>
+                    <div style='font-size: 13px; font-weight: 600; margin-top: 8px; opacity: 0.9; color: white;'>Years Configured</div>
                 </div>
             """, unsafe_allow_html=True)
         
