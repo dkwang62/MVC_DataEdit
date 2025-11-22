@@ -23,7 +23,7 @@ RESORT_TIMEZONE_MAP = {
     "grande vista": "America/New_York",
     "ocean pointe": "America/New_York",
     "new york": "America/New_York",
-    "DC": "America/New_York",
+    "Pulse DC": "America/New_York",
     "harbour lake": "America/New_York",
     "orlando": "America/New_York",
     "miami": "America/New_York",
