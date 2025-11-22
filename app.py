@@ -15,6 +15,57 @@ from functools import lru_cache
 DEFAULT_YEARS = ["2025", "2026"]
 BASE_YEAR_FOR_POINTS = "2025"
 
+# Resort Name Mapping - automatically populate resort_name based on ID
+RESORT_NAME_MAP = {
+    "aruba-ocean": "Marriott's Aruba Ocean Club",
+    "aruba-surf": "Marriott's Aruba Surf Club",
+    "bali-gardens": "Marriott's Bali Nusa Dua Gardens",
+    "bali-terrace": "Marriott's Bali Nusa Dua Terrace",
+    "birch-vail": "Marriott's StreamSide Birch at Vail",
+    "boston": "Marriott Vacation Club at Custom House, Boston",
+    "canyon-villas-arizona": "Marriott's Canyon Villas",
+    "chateau-vegas": "Marriott's Grand Chateau",
+    "crystal-shores": "Marriott's Crystal Shores",
+    "cypress-orlando": "Marriott's Cypress Harbour",
+    "desert-springs-ii": "Marriott's Desert Springs Villas II",
+    "doral-miami": "Marriott's Villas at Doral",
+    "fort-lauderdale": "Marriott's BeachPlace Towers",
+    "frenchman-s-cove": "Marriott's Frenchman's Cove",
+    "grande-vista-orlando": "Marriott's Grande Vista",
+    "imperial-orlando": "Marriott's Imperial Palms Villas",
+    "kauai-beach": "Marriott's Kaua'i Beach Club",
+    "khao-lak": "Marriott Vacation Club, Khao Lak Beach Resort",
+    "ko-olina-beach": "Marriott's Ko Olina Beach Club",
+    "lakeshore-orlando": "Marriott's Lakeshore Reserve",
+    "maui-ocean": "Marriott's Maui Ocean Club",
+    "marbella-beach": "Marriott's Marbella Beach Resort",
+    "mountainside-utah": "Marriott's MountainSide",
+    "newport-coast": "Marriott's Newport Coast Villas",
+    "ocean-pointe": "Marriott's Ocean Pointe",
+    "panama-florida": "Marriott's Legends Edge at Bay Point",
+    "phuket-beach-club": "Marriott's Phuket Beach Club",
+    "playa-andaluza": "Marriott's Playa Andaluza",
+    "pulse-new-york": "Marriott Vacation Club, New York City",
+    "pulse-san-diego": "Marriott Vacation Club, San Diego",
+    "pulse-san-francisco": "Marriott Vacation Club, San Francisco",
+    "residence-tahoe": "Marriott Grand Residence Club, Lake Tahoe",
+    "ritz-san-francisco": "The Ritz-Carlton Club, San Francisco",
+    "ritz-tahoe": "The Ritz-Carlton Club, Lake Tahoe",
+    "ritz-vail": "The Ritz-Carlton Club, Vail",
+    "sabal-orlando": "Marriott's Sabal Palms",
+    "shadow-ridge": "Marriott's Shadow Ridge",
+    "sheraton-kauai": "Sheraton Kauai Resort Villas",
+    "sheraton-scottsdale": "Sheraton Desert Oasis, Scottsdale",
+    "suenos-costarica": "Marriott Vacation Club at Los Sueños",
+    "surfers-paradise": "Marriott Vacation Club at Surfers Paradise",
+    "village-paris": "Marriott's Village d'Ile-de-France",
+    "waikoloa-ocean": "Marriott's Waikoloa Ocean Club",
+    "westin-ka-anapali": "The Westin Kā'anapali Ocean Resort Villas",
+    "willow-branson": "Marriott's Willow Ridge Lodge",
+    "harbour-lake-orlando": "Marriott's Harbour Lake",
+    "washington-dc": "Marriott Vacation Club at The Mayflower, Washington, D.C."
+}
+
 # UTC Timezone mapping by resort location
 RESORT_TIMEZONE_MAP = {
     # United States - East Coast
@@ -98,6 +149,21 @@ def detect_timezone_from_name(resort_name: str) -> str:
     
     # Default fallback
     return "UTC"
+
+def get_resort_full_name(resort_id: str, display_name: str = "") -> str:
+    """Get the full resort name from mapping, fallback to display_name."""
+    if resort_id in RESORT_NAME_MAP:
+        return RESORT_NAME_MAP[resort_id]
+    return display_name or resort_id
+
+def auto_populate_resort_name(resort: Dict[str, Any]) -> None:
+    """Automatically populate resort_name if it's missing or empty."""
+    resort_id = resort.get("id", "")
+    current_resort_name = resort.get("resort_name", "")
+    
+    # Only auto-populate if resort_name is empty/missing and we have a mapping
+    if not current_resort_name and resort_id in RESORT_NAME_MAP:
+        resort["resort_name"] = RESORT_NAME_MAP[resort_id]
 
 # ----------------------------------------------------------------------
 # WIDGET KEY HELPER (RESORT-SCOPED)
@@ -519,6 +585,11 @@ def handle_file_upload():
                     st.sidebar.error("❌ Invalid V2 file format")
                     return
                 reset_state_for_new_file()
+                
+                # Auto-populate resort_name for all resorts
+                for resort in raw_data.get("resorts", []):
+                    auto_populate_resort_name(resort)
+                
                 st.session_state.data = raw_data
                 st.session_state.last_upload_sig = current_sig
                 resorts_list = get_resort_list(raw_data)
@@ -604,6 +675,10 @@ def handle_merge_from_another_file_v2(data: Dict[str, Any]):
                         if rid in existing_ids:
                             skipped.append(resort_obj.get("display_name", rid))
                             continue
+                        
+                        # Auto-populate resort_name before adding
+                        auto_populate_resort_name(resort_obj)
+                        
                         target_resorts.append(copy.deepcopy(resort_obj))
                         existing_ids.add(rid)
                         merged_count += 1
@@ -679,7 +754,7 @@ def handle_resort_creation_v2(data: Dict[str, Any], current_resort_id: Optional[
                         "id": rid,
                         "display_name": name,
                         "code": code,
-                        "region": "Unknown",
+                        "resort_name": get_resort_full_name(rid, name),
                         "timezone": detected_timezone,
                         "years": {}
                     }
@@ -712,6 +787,7 @@ def handle_resort_creation_v2(data: Dict[str, Any], current_resort_id: Optional[
                         cloned["id"] = rid
                         cloned["display_name"] = name
                         cloned["code"] = code
+                        cloned["resort_name"] = get_resort_full_name(rid, name)
                         cloned["timezone"] = detected_timezone
                         resorts.append(cloned)
                         st.session_state.current_resort_id = rid
@@ -1522,6 +1598,10 @@ def main():
             with open("data_v2.json", "r") as f:
                 raw_data = json.load(f)
                 if "schema_version" in raw_data and "resorts" in raw_data:
+                    # Auto-populate resort_name for all resorts on load
+                    for resort in raw_data.get("resorts", []):
+                        auto_populate_resort_name(resort)
+                    
                     st.session_state.data = raw_data
                     st.toast(f"✅ Auto-loaded {len(raw_data.get('resorts', []))} resorts", icon="✅")
         except FileNotFoundError:
@@ -1577,10 +1657,13 @@ def main():
         if current_resort_id not in working_resorts:
             if resort_obj := find_resort_by_id(data, current_resort_id):
                 working_resorts[current_resort_id] = copy.deepcopy(resort_obj)
+                # Auto-populate resort_name if missing
+                auto_populate_resort_name(working_resorts[current_resort_id])
         working = working_resorts.get(current_resort_id)
 
     if working:
         name = working.get("display_name", current_resort_id)
+        resort_name = working.get("resort_name", "")
         timezone = working.get("timezone", "UTC")
         
         # Auto-detect and update timezone if it's still UTC or Unknown
@@ -1596,7 +1679,7 @@ def main():
                 <p style='color: #64748b; margin: 8px 0 0 0;'>
                     Resort ID: <code>{current_resort_id}</code> | 
                     Code: <code>{working.get('code', 'N/A')}</code> | 
-                    Region: {working.get('region', 'Unknown')} | 
+                    Full Name: <strong>{resort_name or 'Not set'}</strong> | 
                     🕒 Timezone: <strong>{timezone}</strong>
                 </p>
             </div>
