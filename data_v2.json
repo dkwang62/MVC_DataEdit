@@ -272,7 +272,7 @@
       "display_name": "Aruba Ocean",
       "code": "AO",
       "region": "Unknown",
-      "timezone": "UTC",
+      "timezone": "America/Aruba",
       "years": {
         "2025": {
           "seasons": [
@@ -785,7 +785,7 @@
       "display_name": "Aruba Surf",
       "code": "AS",
       "region": "Unknown",
-      "timezone": "UTC",
+      "timezone": "America/Aruba",
       "years": {
         "2025": {
           "seasons": [
@@ -1480,7 +1480,7 @@
       "display_name": "Bali Gardens",
       "code": "BG",
       "region": "Unknown",
-      "timezone": "UTC",
+      "timezone": "Asia/Bali",
       "years": {
         "2025": {
           "seasons": [
@@ -1845,7 +1845,7 @@
       "display_name": "Bali Terrace",
       "code": "BT",
       "region": "Unknown",
-      "timezone": "UTC",
+      "timezone": "Asia/Bali",
       "years": {
         "2025": {
           "seasons": [
@@ -2210,7 +2210,7 @@
       "display_name": "Birch Vail",
       "code": "BV",
       "region": "Unknown",
-      "timezone": "UTC",
+      "timezone": "America/Denver",
       "years": {
         "2025": {
           "seasons": [
@@ -2679,7 +2679,7 @@
       "display_name": "Boston",
       "code": "B",
       "region": "Unknown",
-      "timezone": "UTC",
+      "timezone": "America/New_York",
       "years": {
         "2025": {
           "seasons": [
@@ -2950,7 +2950,7 @@
       "display_name": "Canyon Villas Arizona",
       "code": "CVA",
       "region": "Unknown",
-      "timezone": "UTC",
+      "timezone": "America/Phoenix",
       "years": {
         "2025": {
           "seasons": [
@@ -4299,7 +4299,7 @@
       "display_name": "Cypress Orlando",
       "code": "CO",
       "region": "Unknown",
-      "timezone": "UTC",
+      "timezone": "America/New_York",
       "years": {
         "2025": {
           "seasons": [
@@ -4664,7 +4664,7 @@
       "display_name": "Desert Springs II",
       "code": "DSI",
       "region": "Unknown",
-      "timezone": "UTC",
+      "timezone": "America/Los_Angeles",
       "years": {
         "2025": {
           "seasons": [
@@ -5111,7 +5111,7 @@
       "display_name": "Doral Miami",
       "code": "DM",
       "region": "Unknown",
-      "timezone": "UTC",
+      "timezone": "America/New_York",
       "years": {
         "2025": {
           "seasons": [
@@ -5390,7 +5390,7 @@
       "display_name": "Fort Lauderdale",
       "code": "FL",
       "region": "Unknown",
-      "timezone": "UTC",
+      "timezone": "America/New_York",
       "years": {
         "2025": {
           "seasons": [
@@ -5827,7 +5827,7 @@
       "display_name": "Frenchman's Cove",
       "code": "FC",
       "region": "Unknown",
-      "timezone": "UTC",
+      "timezone": "America/Virgin",
       "years": {
         "2025": {
           "seasons": [
@@ -6216,7 +6216,7 @@
       "display_name": "Grande Vista Orlando",
       "code": "GVO",
       "region": "Unknown",
-      "timezone": "UTC",
+      "timezone": "America/New_York",
       "years": {
         "2025": {
           "seasons": [
@@ -6653,7 +6653,7 @@
       "display_name": "Imperial Orlando",
       "code": "IO",
       "region": "Unknown",
-      "timezone": "UTC",
+      "timezone": "America/New_York",
       "years": {
         "2025": {
           "seasons": [
@@ -7018,7 +7018,7 @@
       "display_name": "Kauai Beach",
       "code": "KB",
       "region": "Unknown",
-      "timezone": "UTC",
+      "timezone": "Pacific/Honolulu",
       "years": {
         "2025": {
           "seasons": [
@@ -7541,7 +7541,7 @@
       "display_name": "Khao Lak",
       "code": "KL",
       "region": "Unknown",
-      "timezone": "UTC",
+      "timezone": "Asia/Bangkok",
       "years": {
         "2025": {
           "seasons": [
@@ -7808,7 +7808,7 @@
       "display_name": "Ko Olina Beach",
       "code": "KOB",
       "region": "Unknown",
-      "timezone": "UTC",
+      "timezone": "Pacific/Honolulu",
       "years": {
         "2025": {
           "seasons": [
@@ -8693,7 +8693,7 @@
       "display_name": "Lakeshore Orlando",
       "code": "LO",
       "region": "Unknown",
-      "timezone": "UTC",
+      "timezone": "America/New_York",
       "years": {
         "2025": {
           "seasons": [
@@ -9202,7 +9202,7 @@
       "display_name": "Maui Ocean",
       "code": "MO",
       "region": "Unknown",
-      "timezone": "UTC",
+      "timezone": "Pacific/Honolulu",
       "years": {
         "2025": {
           "seasons": [
@@ -9769,7 +9769,7 @@
       "display_name": "Marbella Beach",
       "code": "MB",
       "region": "Unknown",
-      "timezone": "UTC",
+      "timezone": "Europe/Madrid",
       "years": {
         "2025": {
           "seasons": [
@@ -10274,7 +10274,7 @@
       "display_name": "Mountainside Utah",
       "code": "MU",
       "region": "Unknown",
-      "timezone": "UTC",
+      "timezone": "America/Denver",
       "years": {
         "2025": {
           "seasons": [
@@ -10743,7 +10743,7 @@
       "display_name": "Newport Coast",
       "code": "NC",
       "region": "Unknown",
-      "timezone": "UTC",
+      "timezone": "America/Los_Angeles",
       "years": {
         "2025": {
           "seasons": [
@@ -11022,7 +11022,7 @@
       "display_name": "Ocean Pointe",
       "code": "OP",
       "region": "Unknown",
-      "timezone": "UTC",
+      "timezone": "America/New_York",
       "years": {
         "2025": {
           "seasons": [
@@ -11539,7 +11539,7 @@
       "display_name": "Panama Florida",
       "code": "PF",
       "region": "Unknown",
-      "timezone": "UTC",
+      "timezone": "America/New_York",
       "years": {
         "2025": {
           "seasons": [
@@ -11858,7 +11858,7 @@
       "display_name": "Phuket Beach Club",
       "code": "PBC",
       "region": "Unknown",
-      "timezone": "UTC",
+      "timezone": "Asia/Bangkok",
       "years": {
         "2025": {
           "seasons": [
@@ -12109,7 +12109,7 @@
       "display_name": "Playa Andaluza",
       "code": "PA",
       "region": "Unknown",
-      "timezone": "UTC",
+      "timezone": "Europe/Madrid",
       "years": {
         "2025": {
           "seasons": [
@@ -13247,7 +13247,7 @@
       "display_name": "Pulse New York",
       "code": "PNY",
       "region": "Unknown",
-      "timezone": "UTC",
+      "timezone": "America/New_York",
       "years": {
         "2025": {
           "seasons": [
@@ -13692,7 +13692,7 @@
       "display_name": "Pulse San Diego",
       "code": "PSD",
       "region": "Unknown",
-      "timezone": "UTC",
+      "timezone": "America/Los_Angeles",
       "years": {
         "2025": {
           "seasons": [
@@ -14209,7 +14209,7 @@
       "display_name": "Pulse San Francisco",
       "code": "PSF",
       "region": "Unknown",
-      "timezone": "UTC",
+      "timezone": "America/Los_Angeles",
       "years": {
         "2025": {
           "seasons": [
@@ -14714,7 +14714,7 @@
       "display_name": "Residence Tahoe",
       "code": "RT",
       "region": "Unknown",
-      "timezone": "UTC",
+      "timezone": "America/Los_Angeles",
       "years": {
         "2025": {
           "seasons": [
@@ -15179,7 +15179,7 @@
       "display_name": "Ritz San Francisco",
       "code": "RSF",
       "region": "Unknown",
-      "timezone": "UTC",
+      "timezone": "America/Los_Angeles",
       "years": {
         "2025": {
           "seasons": [
@@ -15654,7 +15654,7 @@
       "display_name": "Ritz Tahoe",
       "code": "RT",
       "region": "Unknown",
-      "timezone": "UTC",
+      "timezone": "America/Los_Angeles",
       "years": {
         "2025": {
           "seasons": [
@@ -16183,7 +16183,7 @@
       "display_name": "Ritz Vail",
       "code": "RV",
       "region": "Unknown",
-      "timezone": "UTC",
+      "timezone": "America/Denver",
       "years": {
         "2025": {
           "seasons": [
@@ -16748,7 +16748,7 @@
       "display_name": "Sabal Orlando",
       "code": "SO",
       "region": "Unknown",
-      "timezone": "UTC",
+      "timezone": "America/New_York",
       "years": {
         "2025": {
           "seasons": [
@@ -17113,7 +17113,7 @@
       "display_name": "Shadow Ridge",
       "code": "SR",
       "region": "Unknown",
-      "timezone": "UTC",
+      "timezone": "America/Los_Angeles",
       "years": {
         "2025": {
           "seasons": [
@@ -17560,7 +17560,7 @@
       "display_name": "Sheraton Kauai",
       "code": "SK",
       "region": "Unknown",
-      "timezone": "UTC",
+      "timezone": "Pacific/Honolulu",
       "years": {
         "2025": {
           "seasons": [
@@ -17907,7 +17907,7 @@
       "display_name": "Sheraton Scottsdale",
       "code": "SS",
       "region": "Unknown",
-      "timezone": "UTC",
+      "timezone": "America/Phoenix",
       "years": {
         "2025": {
           "seasons": [
@@ -18737,7 +18737,7 @@
       "display_name": "Surfers Paradise",
       "code": "SP",
       "region": "Unknown",
-      "timezone": "UTC",
+      "timezone": "Australia/Brisbane",
       "years": {
         "2025": {
           "seasons": [
@@ -19146,7 +19146,7 @@
       "display_name": "Village Paris",
       "code": "VP",
       "region": "Unknown",
-      "timezone": "UTC",
+      "timezone": "Europe/Paris",
       "years": {
         "2025": {
           "seasons": [
@@ -19306,7 +19306,11 @@
             {
               "name": "Mid-Term",
               "global_reference": "Mid-Term",
-              "room_points": {}
+              "room_points": {
+                "2-BDRM": 0,
+                "3-BDRM": 0,
+                "Studio": 0
+              }
             },
             {
               "name": "Christmas",
@@ -19482,7 +19486,11 @@
             {
               "name": "Mid-Term",
               "global_reference": "Mid-Term",
-              "room_points": {}
+              "room_points": {
+                "2-BDRM": 0,
+                "3-BDRM": 0,
+                "Studio": 0
+              }
             },
             {
               "name": "Christmas",
@@ -19511,7 +19519,7 @@
       "display_name": "Waikoloa Ocean",
       "code": "WO",
       "region": "Unknown",
-      "timezone": "UTC",
+      "timezone": "Pacific/Honolulu",
       "years": {
         "2025": {
           "seasons": [
@@ -19946,7 +19954,7 @@
       "display_name": "Westin Ka'anapali",
       "code": "WK",
       "region": "Unknown",
-      "timezone": "UTC",
+      "timezone": "Pacific/Honolulu",
       "years": {
         "2025": {
           "seasons": [
@@ -20425,7 +20433,7 @@
       "display_name": "Willow Branson",
       "code": "WB",
       "region": "Unknown",
-      "timezone": "UTC",
+      "timezone": "America/Chicago",
       "years": {
         "2025": {
           "seasons": [
@@ -20740,7 +20748,7 @@
       "display_name": "Harbour Lake Orlando",
       "code": "HLO",
       "region": "Unknown",
-      "timezone": "UTC",
+      "timezone": "America/New_York",
       "years": {
         "2025": {
           "seasons": [
