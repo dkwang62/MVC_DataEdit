@@ -175,17 +175,29 @@ def setup_page():
         /* File uploader styling */
         section[data-testid="stSidebar"] .stFileUploader label,
         section[data-testid="stSidebar"] .stFileUploader span,
-        section[data-testid="stSidebar"] .stFileUploader p {
+        section[data-testid="stSidebar"] .stFileUploader p,
+        section[data-testid="stSidebar"] .stFileUploader button,
+        section[data-testid="stSidebar"] .stFileUploader small {
             color: white !important;
         }
         
         section[data-testid="stSidebar"] [data-testid="stFileUploadDropzone"] {
-            background: rgba(255, 255, 255, 0.1);
-            border: 2px dashed rgba(255, 255, 255, 0.4);
+            background: rgba(255, 255, 255, 0.1) !important;
+            border: 2px dashed rgba(255, 255, 255, 0.4) !important;
         }
         
         section[data-testid="stSidebar"] [data-testid="stFileUploadDropzone"] * {
             color: white !important;
+        }
+        
+        section[data-testid="stSidebar"] [data-testid="stFileUploadDropzone"] button {
+            background: rgba(255, 255, 255, 0.2) !important;
+            color: white !important;
+            border: 1px solid rgba(255, 255, 255, 0.3) !important;
+        }
+        
+        section[data-testid="stSidebar"] [data-testid="stFileUploadDropzone"] button:hover {
+            background: rgba(255, 255, 255, 0.3) !important;
         }
         
         section[data-testid="stSidebar"] .stMarkdown,
