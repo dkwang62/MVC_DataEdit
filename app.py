@@ -166,10 +166,26 @@ def setup_page():
             color: white !important;
         }
         
-        /* Exception for metric cards - they need dark text */
+        /* Exception for metric cards - they need white text on dark background */
         .metric-card,
         .metric-card * {
-            color: inherit !important;
+            color: white !important;
+        }
+        
+        /* File uploader styling */
+        section[data-testid="stSidebar"] .stFileUploader label,
+        section[data-testid="stSidebar"] .stFileUploader span,
+        section[data-testid="stSidebar"] .stFileUploader p {
+            color: white !important;
+        }
+        
+        section[data-testid="stSidebar"] [data-testid="stFileUploadDropzone"] {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px dashed rgba(255, 255, 255, 0.4);
+        }
+        
+        section[data-testid="stSidebar"] [data-testid="stFileUploadDropzone"] * {
+            color: white !important;
         }
         
         section[data-testid="stSidebar"] .stMarkdown,
@@ -197,8 +213,12 @@ def setup_page():
         section[data-testid="stSidebar"] .stDownloadButton>button {
             background: white !important;
             color: #667eea !important;
-            border: none;
-            font-weight: 700;
+            border: none !important;
+            font-weight: 700 !important;
+        }
+        
+        section[data-testid="stSidebar"] .stDownloadButton>button * {
+            color: #667eea !important;
         }
         
         section[data-testid="stSidebar"] .stDownloadButton>button:hover {
