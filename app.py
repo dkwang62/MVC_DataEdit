@@ -272,8 +272,9 @@ def setup_page():
         section[data-testid="stSidebar"] .stFileUploader {
             background: white !important;
             padding: 16px !important;
-            border-radius: 12px !important;
+            border-radius: 8px !important;
             margin: 10px 0 !important;
+            border: 1px solid #e2e8f0 !important;
         }
         
         section[data-testid="stSidebar"] .stFileUploader label,
@@ -292,20 +293,20 @@ def setup_page():
         }
         
         section[data-testid="stSidebar"] [data-testid="stFileUploadDropzone"] {
-            background: #f8f9fa !important;
+            background: white !important;
             border: 2px dashed #cbd5e1 !important;
             padding: 12px !important;
         }
         
         section[data-testid="stSidebar"] [data-testid="stFileUploadDropzone"] * {
-            color: #1e293b !important;
+            color: #64748b !important;
             font-size: 11px !important;
         }
         
         section[data-testid="stSidebar"] [data-testid="stFileUploadDropzone"] button {
-            background: #0891b2 !important;
-            color: white !important;
-            border: none !important;
+            background: white !important;
+            color: #1e293b !important;
+            border: 1px solid #cbd5e1 !important;
             font-weight: 600 !important;
             font-size: 12px !important;
             padding: 6px 12px !important;
@@ -314,12 +315,13 @@ def setup_page():
         }
         
         section[data-testid="stSidebar"] [data-testid="stFileUploadDropzone"] button * {
-            color: white !important;
+            color: #1e293b !important;
             font-size: 12px !important;
         }
         
         section[data-testid="stSidebar"] [data-testid="stFileUploadDropzone"] button:hover {
-            background: #0e7490 !important;
+            background: #f8f9fa !important;
+            border-color: #94a3b8 !important;
         }
         
         section[data-testid="stSidebar"] .stMarkdown,
@@ -362,17 +364,30 @@ def setup_page():
         
         /* Metric Card */
         .metric-card {
-            background: linear-gradient(135deg, #0e7490 0%, #0891b2 100%) !important;
+            background: white !important;
             border-radius: 12px;
             padding: 24px;
             text-align: center;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
             margin: 10px 0;
-            border: 2px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid #e2e8f0;
         }
         
         .metric-card * {
-            color: white !important;
+            color: #1e293b !important;
+        }
+        
+        .metric-value {
+            color: #0891b2 !important;
+            font-size: 36px;
+            font-weight: 700;
+        }
+        
+        .metric-label {
+            color: #64748b !important;
+            font-size: 13px;
+            font-weight: 600;
+            margin-top: 8px;
         }
         
         /* Resort Grid Button */
@@ -1559,8 +1574,8 @@ def main():
     with st.sidebar:
         st.markdown("""
             <div style='text-align: center; padding: 20px; margin-bottom: 20px;'>
-                <h1 style='color: white !important; margin: 0; font-size: 28px;'>🏨 MVC Editor</h1>
-                <p style='color: rgba(255,255,255,0.9) !important; margin: 8px 0 0 0; font-size: 14px;'>Resort Management System</p>
+                <h1 style='color: #0891b2 !important; margin: 0; font-size: 28px;'>🏨 MVC Editor</h1>
+                <p style='color: #64748b !important; margin: 8px 0 0 0; font-size: 14px;'>Resort Management System</p>
             </div>
         """, unsafe_allow_html=True)
         
@@ -1573,8 +1588,8 @@ def main():
             handle_merge_from_another_file_v2(st.session_state.data)
             
             # Show metrics
-            st.markdown("<hr style='border: 1px solid rgba(255,255,255,0.3); margin: 30px 0;'>", unsafe_allow_html=True)
-            st.markdown("<h3 style='color: white !important; text-align: center; margin-bottom: 20px;'>📊 Statistics</h3>", unsafe_allow_html=True)
+            st.markdown("<hr style='border: 1px solid #e2e8f0; margin: 30px 0;'>", unsafe_allow_html=True)
+            st.markdown("<h3 style='color: #0891b2 !important; text-align: center; margin-bottom: 20px;'>📊 Statistics</h3>", unsafe_allow_html=True)
             
             data = st.session_state.data
             resorts_count = len(data.get("resorts", []))
@@ -1582,15 +1597,15 @@ def main():
             
             st.markdown(f"""
                 <div class='metric-card'>
-                    <div style='font-size: 36px; font-weight: 700; color: white;'>{resorts_count}</div>
-                    <div style='font-size: 13px; font-weight: 600; margin-top: 8px; opacity: 0.9; color: white;'>Total Resorts</div>
+                    <div class='metric-value'>{resorts_count}</div>
+                    <div class='metric-label'>Total Resorts</div>
                 </div>
             """, unsafe_allow_html=True)
             
             st.markdown(f"""
                 <div class='metric-card'>
-                    <div style='font-size: 36px; font-weight: 700; color: white;'>{years_count}</div>
-                    <div style='font-size: 13px; font-weight: 600; margin-top: 8px; opacity: 0.9; color: white;'>Years Configured</div>
+                    <div class='metric-value'>{years_count}</div>
+                    <div class='metric-label'>Years Configured</div>
                 </div>
             """, unsafe_allow_html=True)
         
