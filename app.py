@@ -30,7 +30,7 @@ RESORT_TIMEZONE_MAP = {
     "harbour lake": "America/New_York",
     "orlando": "America/New_York",
     "miami": "America/New_York",
-    "florida keys": "America/New_York",
+    "florida": "America/New_York",
     
     # United States - West Coast
     "desert springs": "America/Los_Angeles",
@@ -283,15 +283,23 @@ def setup_page():
         section[data-testid="stSidebar"] .stFileUploader small,
         section[data-testid="stSidebar"] .stFileUploader div {
             color: #1e293b !important;
+            font-size: 12px !important;
+        }
+        
+        section[data-testid="stSidebar"] .stFileUploader label {
+            font-size: 14px !important;
+            font-weight: 600 !important;
         }
         
         section[data-testid="stSidebar"] [data-testid="stFileUploadDropzone"] {
             background: #f8f9fa !important;
             border: 2px dashed #cbd5e1 !important;
+            padding: 12px !important;
         }
         
         section[data-testid="stSidebar"] [data-testid="stFileUploadDropzone"] * {
             color: #1e293b !important;
+            font-size: 11px !important;
         }
         
         section[data-testid="stSidebar"] [data-testid="stFileUploadDropzone"] button {
@@ -299,12 +307,15 @@ def setup_page():
             color: white !important;
             border: none !important;
             font-weight: 600 !important;
-            padding: 8px 16px !important;
+            font-size: 12px !important;
+            padding: 6px 12px !important;
             border-radius: 6px !important;
+            margin-top: 8px !important;
         }
         
         section[data-testid="stSidebar"] [data-testid="stFileUploadDropzone"] button * {
             color: white !important;
+            font-size: 12px !important;
         }
         
         section[data-testid="stSidebar"] [data-testid="stFileUploadDropzone"] button:hover {
