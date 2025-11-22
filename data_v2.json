@@ -271,6 +271,7 @@
       "id": "aruba-ocean",
       "display_name": "Aruba Ocean",
       "code": "AO",
+      "resort_name": "Marriott's Aruba Ocean Club",
       "timezone": "America/Aruba",
       "years": {
         "2025": {
@@ -777,14 +778,13 @@
             }
           ]
         }
-      },
-      "resort_name": "Marriott's Aruba Ocean Club"
+      }
     },
     {
       "id": "aruba-surf",
       "display_name": "Aruba Surf",
       "code": "AS",
-      "resort_name": "Marriott's Aruba Surf Club",      
+      "resort_name": "Marriott's Aruba Surf Club",
       "timezone": "America/Aruba",
       "years": {
         "2025": {
