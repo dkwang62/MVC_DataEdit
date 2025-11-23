@@ -15,142 +15,6 @@ from functools import lru_cache
 DEFAULT_YEARS = ["2025", "2026"]
 BASE_YEAR_FOR_POINTS = "2025"
 
-# Resort Name Mapping - used only as a default for new resorts
-RESORT_NAME_MAP = {
-    "aruba-ocean": "Marriott's Aruba Ocean Club",
-    "aruba-surf": "Marriott's Aruba Surf Club",
-    "bali-gardens": "Marriott's Bali Nusa Dua Gardens",
-    "bali-terrace": "Marriott's Bali Nusa Dua Terrace",
-    "birch-vail": "Marriott's StreamSide Birch at Vail",
-    "boston": "Marriott Vacation Club at Custom House, Boston",
-    "canyon-villas-arizona": "Marriott's Canyon Villas",
-    "chateau-vegas": "Marriott's Grand Chateau",
-    "crystal-shores": "Marriott's Crystal Shores",
-    "cypress-orlando": "Marriott's Cypress Harbour",
-    "desert-springs-ii": "Marriott's Desert Springs Villas II",
-    "doral-miami": "Marriott's Villas at Doral",
-    "fort-lauderdale": "Marriott's BeachPlace Towers",
-    "frenchman-s-cove": "Marriott's Frenchman's Cove",
-    "grande-vista-orlando": "Marriott's Grande Vista",
-    "imperial-orlando": "Marriott's Imperial Palms Villas",
-    "kauai-beach": "Marriott's Kaua'i Beach Club",
-    "khao-lak": "Marriott Vacation Club, Khao Lak Beach Resort",
-    "ko-olina-beach": "Marriott's Ko Olina Beach Club",
-    "lakeshore-orlando": "Marriott's Lakeshore Reserve",
-    "maui-ocean": "Marriott's Maui Ocean Club",
-    "marbella-beach": "Marriott's Marbella Beach Resort",
-    "mountainside-utah": "Marriott's MountainSide",
-    "newport-coast": "Marriott's Newport Coast Villas",
-    "ocean-pointe": "Marriott's Ocean Pointe",
-    "panama-florida": "Marriott's Legends Edge at Bay Point",
-    "phuket-beach-club": "Marriott's Phuket Beach Club",
-    "playa-andaluza": "Marriott's Playa Andaluza",
-    "pulse-new-york": "Marriott Vacation Club, New York City",
-    "pulse-san-diego": "Marriott Vacation Club, San Diego",
-    "pulse-san-francisco": "Marriott Vacation Club, San Francisco",
-    "residence-tahoe": "Marriott Grand Residence Club, Lake Tahoe",
-    "ritz-san-francisco": "The Ritz-Carlton Club, San Francisco",
-    "ritz-tahoe": "The Ritz-Carlton Club, Lake Tahoe",
-    "ritz-vail": "The Ritz-Carlton Club, Vail",
-    "sabal-orlando": "Marriott's Sabal Palms",
-    "shadow-ridge": "Marriott's Shadow Ridge",
-    "sheraton-kauai": "Sheraton Kauai Resort Villas",
-    "sheraton-scottsdale": "Sheraton Desert Oasis, Scottsdale",
-    "suenos-costarica": "Marriott Vacation Club at Los Sueños",
-    "surfers-paradise": "Marriott Vacation Club at Surfers Paradise",
-    "village-paris": "Marriott's Village d'Ile-de-France",
-    "waikoloa-ocean": "Marriott's Waikoloa Ocean Club",
-    "westin-ka-anapali": "The Westin Kā'anapali Ocean Resort Villas",
-    "willow-branson": "Marriott's Willow Ridge Lodge",
-    "harbour-lake-orlando": "Marriott's Harbour Lake",
-    "washington-dc": "Marriott Vacation Club at The Mayflower, Washington, D.C."
-}
-
-# UTC Timezone mapping by resort location
-RESORT_TIMEZONE_MAP = {
-    # United States - East Coast
-    "boston": "America/New_York",
-    "washington DC": "America/New_York",
-    "fort lauderdale": "America/New_York",
-    "grande vista": "America/New_York",
-    "ocean pointe": "America/New_York",
-    "new york": "America/New_York",
-    "harbour lake": "America/New_York",
-    "orlando": "America/New_York",
-    "miami": "America/New_York",
-    "florida": "America/New_York",
-   
-    # United States - West Coast
-    "desert springs": "America/Los_Angeles",
-    "newport coast": "America/Los_Angeles",
-    "san diego": "America/Los_Angeles",
-    "san francisco": "America/Los_Angeles",
-    "tahoe": "America/Los_Angeles",
-    "shadow ridge": "America/Los_Angeles",
-    "california": "America/Los_Angeles",
-   
-    # United States - Mountain
-    "vail": "America/Denver",
-    "mountainside": "America/Denver",
-    "colorado": "America/Denver",
-    "utah": "America/Denver",
-   
-    # United States - Arizona (no DST)
-    "canyon villas": "America/Phoenix",
-    "scottsdale": "America/Phoenix",
-    "arizona": "America/Phoenix",
-   
-    # United States - Central
-    "branson": "America/Chicago",
-    "missouri": "America/Chicago",
-   
-    # United States - Hawaii (no DST)
-    "Ka'anapali": "Pacific/Honolulu",
-    "olina": "Pacific/Honolulu",
-    "waikoloa": "Pacific/Honolulu",
-    "hawaii": "Pacific/Honolulu",
-    "kauai": "Pacific/Honolulu",
-    "maui": "Pacific/Honolulu",
-   
-    # Caribbean
-    "aruba": "America/Aruba",
-    "frenchman's cove": "America/Virgin",
-    "usvi": "America/Virgin",
-   
-    # Latin America
-    "costa rica": "America/Costa_Rica",
-   
-    # Europe
-    "marbella": "Europe/Madrid",
-    "playa andaluza": "Europe/Madrid",
-    "spain": "Europe/Madrid",
-    "paris": "Europe/Paris",
-   
-    # Asia
-    "bali": "Asia/Bali",
-    "khao lak": "Asia/Bangkok",
-    "phuket": "Asia/Bangkok",
-    "thailand": "Asia/Bangkok",
-   
-    # Australia
-    "surfers paradise": "Australia/Brisbane",
-    "gold coast": "Australia/Brisbane",
-}
-
-def detect_timezone_from_name(resort_name: str) -> str:
-    """Detect timezone based on resort name using fuzzy matching."""
-    name_lower = resort_name.lower()
-    for keyword, timezone in RESORT_TIMEZONE_MAP.items():
-        if keyword in name_lower:
-            return timezone
-    return "UTC"
-
-def get_resort_full_name(resort_id: str, display_name: str = "") -> str:
-    """Get the full resort name from mapping, fallback to display_name."""
-    if resort_id in RESORT_NAME_MAP:
-        return RESORT_NAME_MAP[resort_id]
-    return display_name or resort_id
-
 # ----------------------------------------------------------------------
 # WIDGET KEY HELPER (RESORT-SCOPED)
 # ----------------------------------------------------------------------
@@ -386,7 +250,7 @@ def setup_page():
         .stTextInput:focus-within>div>div>input,
         .stDateInput:focus-within>div>div>input,
         .stSelectbox:focus-within>div>div,
-        .stMultiSelect:focus-within>div>div>div {
+        .stMultiSelect:focus-within>div>div {
             border-color: var(--primary-color);
             box-shadow: 0 0 0 1px var(--primary-color);
         }
@@ -430,7 +294,18 @@ def reset_state_for_new_file():
         st.session_state[k] = {} if k == "working_resorts" else None
 
 # ----------------------------------------------------------------------
-# HELPER FUNCTIONS
+# BASIC RESORT NAME / TIMEZONE HELPERS
+# ----------------------------------------------------------------------
+def detect_timezone_from_name(name: str) -> str:
+    """Simple placeholder timezone detector; keep as UTC or customise later."""
+    return "UTC"
+
+def get_resort_full_name(resort_id: str, display_name: str) -> str:
+    """For new resorts, treat display_name as full resort name."""
+    return display_name
+
+# ----------------------------------------------------------------------
+# OPTIMIZED HELPER FUNCTIONS
 # ----------------------------------------------------------------------
 @lru_cache(maxsize=128)
 def get_years_from_data_cached(data_hash: int) -> Tuple[str, ...]:
@@ -481,7 +356,7 @@ def make_unique_resort_id(base_id: str, resorts: List[Dict[str, Any]]) -> str:
     return f"{base_id}-{i}"
 
 # ----------------------------------------------------------------------
-# FILE OPERATIONS
+# FILE OPERATIONS WITH ENHANCED UI
 # ----------------------------------------------------------------------
 def handle_file_upload():
     st.sidebar.markdown("### 📤 Upload Data")
@@ -502,7 +377,6 @@ def handle_file_upload():
                         st.error("❌ Invalid file format")
                         return
                     reset_state_for_new_file()
-                    # IMPORTANT: no auto-populate on load; respect whatever is in the file
                     st.session_state.data = raw_data
                     st.session_state.last_upload_sig = current_sig
                     resorts_list = get_resort_list(raw_data)
@@ -580,7 +454,6 @@ def handle_merge_from_another_file_v2(data: Dict[str, Any]):
                         if rid in existing_ids:
                             skipped.append(resort_obj.get("display_name", rid))
                             continue
-                        # No auto-populate here either; copy exactly as in merge file
                         target_resorts.append(copy.deepcopy(resort_obj))
                         existing_ids.add(rid)
                         merged_count += 1
@@ -594,7 +467,7 @@ def handle_merge_from_another_file_v2(data: Dict[str, Any]):
                 st.error(f"❌ Error: {str(e)}")
 
 # ----------------------------------------------------------------------
-# RESORT MANAGEMENT
+# RESORT MANAGEMENT WITH ENHANCED UI
 # ----------------------------------------------------------------------
 def render_resort_grid(resorts: List[Dict[str, Any]], current_resort_id: Optional[str]):
     st.markdown("<div class='section-header'>🏨 Resort Selection</div>", unsafe_allow_html=True)
@@ -642,11 +515,13 @@ def handle_resort_creation_v2(data: Dict[str, Any], current_resort_id: Optional[
                     rid = make_unique_resort_id(base_id, resorts)
                     code = generate_resort_code(name)
                     detected_timezone = detect_timezone_from_name(name)
+                    full_name = get_resort_full_name(rid, name)
                     new_resort = {
                         "id": rid,
                         "display_name": name,
                         "code": code,
-                        "resort_name": get_resort_full_name(rid, name),
+                        "resort_name": full_name,
+                        "address": "",
                         "timezone": detected_timezone,
                         "years": {}
                     }
@@ -677,7 +552,6 @@ def handle_resort_creation_v2(data: Dict[str, Any], current_resort_id: Optional[
                         cloned["id"] = rid
                         cloned["display_name"] = name
                         cloned["code"] = code
-                        # use mapping only as initial default
                         cloned["resort_name"] = get_resort_full_name(rid, name)
                         cloned["timezone"] = detected_timezone
                         resorts.append(cloned)
@@ -792,6 +666,7 @@ def delete_season_across_years(working: Dict[str, Any], season_name: str):
         year_obj["seasons"] = [s for s in year_obj.get("seasons", []) if s.get("name") != season_name]
 
 def rename_season_across_years(working: Dict[str, Any], old_name: str, new_name: str):
+    """Rename a season across all years for this resort."""
     old_name = (old_name or "").strip()
     new_name = (new_name or "").strip()
     if not old_name or not new_name:
@@ -800,26 +675,31 @@ def rename_season_across_years(working: Dict[str, Any], old_name: str, new_name:
     if old_name == new_name:
         st.info("Season name unchanged.")
         return
+
     all_names = get_all_season_names_for_resort(working)
     if any(n.lower() == new_name.lower() and n != old_name for n in all_names):
         st.error(f"❌ Season '{new_name}' already exists")
         return
+
     changed = False
     for year_obj in working.get("years", {}).values():
         for s in year_obj.get("seasons", []):
             if (s.get("name") or "").strip() == old_name:
                 s["name"] = new_name
                 changed = True
+
     if changed:
         st.success(f"✅ Renamed season '{old_name}' → '{new_name}' across all years")
     else:
         st.warning(f"No season named '{old_name}' found")
 
 def render_season_rename_panel_v2(working: Dict[str, Any], resort_id: str):
+    """UI to rename seasons globally across all years."""
     all_names = sorted(get_all_season_names_for_resort(working))
     if not all_names:
         st.caption("No seasons available to rename yet.")
         return
+
     st.markdown("**✏️ Rename Seasons (applies to all years)**")
     for name in all_names:
         col1, col2 = st.columns([3, 1])
@@ -838,7 +718,10 @@ def render_season_rename_panel_v2(working: Dict[str, Any], resort_id: str):
 def render_season_dates_editor_v2(working: Dict[str, Any], years: List[str], resort_id: str):
     st.markdown("<div class='section-header'>📅 Season Dates</div>", unsafe_allow_html=True)
     st.caption("Define season date ranges for each year. Season names apply across all years.")
+
+    # Season rename panel
     render_season_rename_panel_v2(working, resort_id)
+
     all_names = get_all_season_names_for_resort(working)
     for year in years:
         year_obj = ensure_year_structure(working, year)
@@ -906,7 +789,7 @@ def render_single_season_v2(working: Dict[str, Any], year: str, season: Dict[str
             st.rerun()
 
 # ----------------------------------------------------------------------
-# ROOM TYPE MANAGEMENT & SYNC
+# ROOM TYPE MANAGEMENT
 # ----------------------------------------------------------------------
 def get_all_room_types_for_resort(working: Dict[str, Any]) -> List[str]:
     rooms: Set[str] = set()
@@ -945,6 +828,7 @@ def delete_room_type_master(working: Dict[str, Any], room: str):
                 rp.pop(room, None)
 
 def rename_room_type_across_resort(working: Dict[str, Any], old_name: str, new_name: str):
+    """Rename a room type everywhere in this resort (all seasons, all holidays, all years)."""
     old_name = (old_name or "").strip()
     new_name = (new_name or "").strip()
     if not old_name or not new_name:
@@ -953,28 +837,36 @@ def rename_room_type_across_resort(working: Dict[str, Any], old_name: str, new_n
     if old_name == new_name:
         st.info("Room name unchanged.")
         return
+
     all_rooms = get_all_room_types_for_resort(working)
     if any(r.lower() == new_name.lower() and r != old_name for r in all_rooms):
         st.error(f"❌ Room type '{new_name}' already exists")
         return
+
     changed = False
     for year_obj in working.get("years", {}).values():
+        # Seasons
         for season in year_obj.get("seasons", []):
             for cat in season.get("day_categories", {}).values():
                 rp = cat.get("room_points")
                 if isinstance(rp, dict) and old_name in rp:
                     rp[new_name] = rp.pop(old_name)
                     changed = True
+        # Holidays
         for h in year_obj.get("holidays", []):
             rp = h.get("room_points")
             if isinstance(rp, dict) and old_name in rp:
                 rp[new_name] = rp.pop(old_name)
                 changed = True
+
     if changed:
         st.success(f"✅ Renamed room '{old_name}' → '{new_name}' across all years and holidays")
     else:
         st.warning(f"No room named '{old_name}' found")
 
+# ----------------------------------------------------------------------
+# SYNC FUNCTIONS
+# ----------------------------------------------------------------------
 def sync_season_room_points_across_years(working: Dict[str, Any], base_year: str):
     years = working.get("years", {})
     if not years or base_year not in years:
@@ -1030,6 +922,51 @@ def sync_holiday_room_points_across_years(working: Dict[str, Any], base_year: st
                     h["room_points"] = copy.deepcopy(base_by_key[key].get("room_points", {}))
 
 # ----------------------------------------------------------------------
+# RESORT BASIC INFO EDITOR (helper)
+# ----------------------------------------------------------------------
+def edit_resort_basics(working: Dict[str, Any], resort_id: str):
+    """
+    Renders editable fields for resort_name, timezone and address.
+    Returns nothing – directly mutates the working dict.
+    """
+    st.markdown("### Basic Resort Information")
+
+    # Current values (with fallbacks)
+    current_name = working.get("resort_name", "")
+    current_tz   = working.get("timezone", "UTC")
+    current_addr = working.get("address", "")
+
+    # Full Resort Name
+    new_name = st.text_input(
+        "Full Resort Name (resort_name)",
+        value=current_name,
+        key=rk(resort_id, "resort_name_edit"),
+        help="Official name stored in the 'resort_name' field"
+    )
+    working["resort_name"] = new_name.strip()
+
+    # Timezone & Address side-by-side
+    col_tz, col_addr = st.columns(2)
+    with col_tz:
+        new_tz = st.text_input(
+            "Timezone",
+            value=current_tz,
+            key=rk(resort_id, "timezone_edit"),
+            help="e.g. America/New_York, Europe/London, etc."
+        )
+        working["timezone"] = new_tz.strip() or "UTC"
+
+    with col_addr:
+        new_addr = st.text_area(   # text_area gives a bit more space for addresses
+            "Address",
+            value=current_addr,
+            height=80,
+            key=rk(resort_id, "address_edit"),
+            help="Full street address of the resort"
+        )
+        working["address"] = new_addr.strip()
+
+# ----------------------------------------------------------------------
 # MASTER POINTS EDITOR
 # ----------------------------------------------------------------------
 def render_reference_points_editor_v2(working: Dict[str, Any], years: List[str], resort_id: str):
@@ -1039,7 +976,7 @@ def render_reference_points_editor_v2(working: Dict[str, Any], years: List[str],
     base_year_obj = ensure_year_structure(working, base_year)
     seasons = base_year_obj.get("seasons", [])
     if not seasons:
-        st.info("💡 No seasons defined yet. Add seasons in the Season Dates section first.")
+        st.info(f"💡 No seasons defined yet. Add seasons in the Season Dates section first.")
         return
     canonical_rooms = get_all_room_types_for_resort(working)
     for s_idx, season in enumerate(seasons):
@@ -1074,6 +1011,7 @@ def render_reference_points_editor_v2(working: Dict[str, Any], years: List[str],
                         )
                         if new_val != current_val:
                             room_points[room] = int(new_val)
+
     st.markdown("---")
     st.markdown("**🏠 Manage Room Types**")
     col1, col2 = st.columns(2)
@@ -1097,6 +1035,8 @@ def render_reference_points_editor_v2(working: Dict[str, Any], years: List[str],
             delete_room_type_master(working, del_room)
             st.success(f"✅ Deleted {del_room}")
             st.rerun()
+
+    # Room rename panel
     all_rooms_list = get_all_room_types_for_resort(working)
     if all_rooms_list:
         st.markdown("**✏️ Rename Room Type (applies everywhere)**")
@@ -1116,6 +1056,7 @@ def render_reference_points_editor_v2(working: Dict[str, Any], years: List[str],
             if old_room and new_room_name:
                 rename_room_type_across_resort(working, old_room, new_room_name)
                 st.rerun()
+
     sync_season_room_points_across_years(working, base_year=base_year)
 
 # ----------------------------------------------------------------------
@@ -1221,16 +1162,22 @@ def render_resort_summary_v2(working: Dict[str, Any]):
     if not resort_years:
         st.info("💡 No data available yet")
         return
+
+    # Choose a reference year for seasons (first year that has seasons)
     sorted_years = sorted(resort_years.keys(), key=lambda y: int(y) if str(y).isdigit() else 0)
     ref_year = next((y for y in sorted_years if resort_years[y].get("seasons")), None)
     if not ref_year:
         st.info("💡 No seasons defined yet")
         return
+
     room_types = get_all_room_types_for_resort(working)
     if not room_types:
         st.info("💡 No room types defined yet")
         return
+
     rows = []
+
+    # Seasons: compute 7-night totals from nightly points
     for season in resort_years[ref_year].get("seasons", []):
         sname = season.get("name", "").strip() or "(Unnamed)"
         weekly_totals, any_data = compute_weekly_totals_for_season_v2(season, room_types)
@@ -1238,11 +1185,14 @@ def render_resort_summary_v2(working: Dict[str, Any]):
             row = {"Season": sname}
             row.update({room: (total if total else "—") for room, total in weekly_totals.items()})
             rows.append(row)
+
+    # Holidays: use weekly totals directly from LAST year only
     last_holiday_year = None
     for y in reversed(sorted_years):
         if resort_years.get(y, {}).get("holidays"):
             last_holiday_year = y
             break
+
     if last_holiday_year:
         for h in resort_years[last_holiday_year].get("holidays", []):
             hname = h.get("name", "").strip() or "(Unnamed)"
@@ -1252,9 +1202,10 @@ def render_resort_summary_v2(working: Dict[str, Any]):
                 val = rp.get(room)
                 row[room] = val if isinstance(val, (int, float)) and val not in (0, None) else "—"
             rows.append(row)
+
     if rows:
         df = pd.DataFrame(rows, columns=["Season"] + room_types)
-        st.caption("Season rows show 7-night totals computed from nightly rates. Holiday rows show weekly totals directly from holiday points.")
+        st.caption("Season rows show 7-night totals computed from nightly rates. Holiday rows show weekly totals directly from holiday points (no extra calculations).")
         st.dataframe(df, use_container_width=True, hide_index=True)
     else:
         st.info("💡 No rate or holiday data available")
@@ -1305,6 +1256,51 @@ def render_validation_panel_v2(working: Dict[str, Any], data: Dict[str, Any], ye
                 st.write(f"• {issue}")
         else:
             st.success("✅ All validation checks passed!")
+
+
+# ----------------------------------------------------------------------
+# WORKING RESORT LOADER + HEADER RENDERER (single combined helper)
+# ----------------------------------------------------------------------
+def load_and_render_resort(
+    data: Dict[str, Any],
+    current_resort_id: Optional[str]
+) -> Optional[Dict[str, Any]]:
+    """
+    Ensures a mutable working copy of the selected resort exists in session_state,
+    creates it from the main data if needed, renders the clean header card,
+    and returns the working resort dict.
+
+    Returns:
+        Dict | None – the working resort dictionary (or None if no resort selected)
+    """
+    if not current_resort_id:
+        return None
+
+    # Ensure we have a working copy in memory
+    working_resorts = st.session_state.working_resorts
+
+    if current_resort_id not in working_resorts:
+        if resort_obj := find_resort_by_id(data, current_resort_id):
+            working_resorts[current_resort_id] = copy.deepcopy(resort_obj)
+
+    working = working_resorts.get(current_resort_id)
+    if not working:
+        return None
+
+    # ------------------------------------------------------------------
+    # Render clean, professional header
+    # ------------------------------------------------------------------
+    name = working.get("resort_name", current_resort_id)
+
+    st.markdown(f"""
+        <div class='card'>
+            <h2 style='margin: 0; color: #667eea;'>Current 🏨 {name}</h2>
+        </div>
+    """, unsafe_allow_html=True)
+
+    return working
+
+
 
 # ----------------------------------------------------------------------
 # GANTT CHART
@@ -1464,13 +1460,13 @@ def render_global_settings_v2(data: Dict[str, Any], years: List[str]):
         render_global_holiday_dates_editor_v2(data, years)
 
 # ----------------------------------------------------------------------
-# MAIN APP
+# MAIN APPLICATION
 # ----------------------------------------------------------------------
 def main():
     setup_page()
     initialize_session_state()
 
-    # Auto-load data file (no auto-populate here)
+    # Auto-load data file (optional)
     if st.session_state.data is None:
         try:
             with open("data_v2.json", "r") as f:
@@ -1512,6 +1508,7 @@ def main():
 
         show_save_indicator()
 
+    # Main content
     st.markdown("<div class='big-font'>MVC Resort Editor V2</div>", unsafe_allow_html=True)
 
     if not st.session_state.data:
@@ -1531,72 +1528,14 @@ def main():
 
     render_resort_grid(resorts, current_resort_id)
     handle_resort_switch_v2(data, current_resort_id, previous_resort_id)
-    handle_resort_creation_v2(data, current_resort_id)
 
-    # Working resort copy
-    working = None
-    if current_resort_id:
-        working_resorts = st.session_state.working_resorts
-        if current_resort_id not in working_resorts:
-            if resort_obj := find_resort_by_id(data, current_resort_id):
-                working_resorts[current_resort_id] = copy.deepcopy(resort_obj)
-        working = working_resorts.get(current_resort_id)
+    # Working resort
+    working = load_and_render_resort(data, current_resort_id)
 
     if working:
-        name = working.get("display_name", current_resort_id)
-        resort_name = working.get("resort_name", "")
-
-        # Only auto-detect timezone if missing/blank/Unknown; won't override edits
-        tz_val = working.get("timezone")
-        if tz_val in [None, "", "Unknown"]:
-            detected_tz = detect_timezone_from_name(name)
-            if detected_tz:
-                working["timezone"] = detected_tz
-                tz_val = detected_tz
-        timezone = tz_val or "UTC"
-
-        st.markdown(f"""
-            <div class='card'>
-                <h2 style='margin: 0; color: #667eea;'>🏨 {name}</h2>
-                <p style='color: #64748b; margin: 8px 0 0 0;'>
-                    Resort ID: <code>{current_resort_id}</code> |
-                    Code: <code>{working.get('code', 'N/A')}</code> |
-                    Full Name: <strong>{resort_name or 'Not set'}</strong> |
-                    🕒 Timezone: <strong>{timezone}</strong>
-                </p>
-            </div>
-        """, unsafe_allow_html=True)
-
-        # Editable metadata: display_name, resort_name, timezone
-        with st.expander("✏️ Resort Metadata (display_name, resort_name & timezone)", expanded=False):
-            new_display_name = st.text_input(
-                "Display name (display_name)",
-                value=name or "",
-                key=rk(current_resort_id, "edit_display_name")
-            )
-            new_resort_name = st.text_input(
-                "Full resort name (resort_name)",
-                value=resort_name or "",
-                key=rk(current_resort_id, "edit_resort_name")
-            )
-            new_timezone = st.text_input(
-                "Timezone (IANA, e.g. America/New_York)",
-                value=timezone or "",
-                key=rk(current_resort_id, "edit_timezone")
-            )
-
-            # Apply edits to working copy; persisted when Save All Changes is clicked
-            if new_display_name != (name or ""):
-                working["display_name"] = new_display_name.strip()
-            if new_resort_name != (resort_name or ""):
-                working["resort_name"] = new_resort_name.strip()
-            if new_timezone != (timezone or ""):
-                working["timezone"] = new_timezone.strip()
-
-            st.caption("These values are saved to the JSON as `display_name`, `resort_name` and `timezone`. Use the main Save button above to commit to file.")
-
         render_validation_panel_v2(working, data, years)
         render_save_button_v2(data, working, current_resort_id)
+        handle_resort_creation_v2(data, current_resort_id)
         handle_resort_deletion_v2(data, current_resort_id)
 
         tab1, tab2, tab3, tab4, tab5 = st.tabs([
@@ -1604,11 +1543,12 @@ def main():
             "📅 Season Dates",
             "💰 Room Points",
             "🎄 Holidays",
-            "📈 Summary"
+            "📈 Points Summary"
         ])
         with tab1:
-            render_gantt_charts_v2(working, years, data)
+            edit_resort_basics(working, current_resort_id)
         with tab2:
+            render_gantt_charts_v2(working, years, data)
             render_season_dates_editor_v2(working, years, current_resort_id)
         with tab3:
             render_reference_points_editor_v2(working, years, current_resort_id)
