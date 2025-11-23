@@ -1206,7 +1206,7 @@ def render_resort_summary_v2(working: Dict[str, Any]):
         st.info("💡 No data available yet")
         return
 
-    # Use first year that has seasons as reference for the season rows
+    # Use the first year that has seasons for the season rows
     ref_year = next((y for y in sorted(resort_years.keys()) if resort_years[y].get("seasons")), None)
     if not ref_year:
         st.info("💡 No seasons defined yet")
@@ -1219,7 +1219,7 @@ def render_resort_summary_v2(working: Dict[str, Any]):
 
     rows = []
 
-    # -------- Seasons (weekly totals – existing behaviour) --------
+    # ---------- Seasons (weekly totals – existing behaviour) ----------
     for season in resort_years[ref_year].get("seasons", []):
         sname = season.get("name", "").strip() or "(Unnamed)"
         weekly_totals, any_data = compute_weekly_totals_for_season_v2(season, room_types)
@@ -1228,36 +1228,21 @@ def render_resort_summary_v2(working: Dict[str, Any]):
             row.update({room: (total if total else "—") for room, total in weekly_totals.items()})
             rows.append(row)
 
-    # -------- Holidays (use stored total points, no calculations) --------
-    for year in sorted(resort_years.keys()):
-        year_obj = resort_years[year]
-        for holiday in year_obj.get("holidays", []):
-            hname = holiday.get("name", "").strip() or "(Holiday)"
-            rp = holiday.get("room_points", {}) or {}
+    # ---------- Holidays (only show last year, e.g. 2026) ----------
+    # Prefer 2026 if present, otherwise fall back to the latest year we have
+    year_keys = list(resort_years.keys())
+    if not year_keys:
+        # no years at all (already handled above), but guard anyway
+        if rows:
+            df = pd.DataFrame(rows, columns=["Season"] + room_types)
+            st.dataframe(df, use_container_width=True, hide_index=True)
+        else:
+            st.info("💡 No rate data available")
+        return
 
-            if not isinstance(rp, dict):
-                continue
+    if "2026" in resort_years:
+        holiday_year = "2026"
 
-            # Only add the row if there is at least one non-empty / non-zero value
-            any_data = any(
-                rp.get(room) not in (None, "", 0, 0.0)
-                for room in room_types
-            )
-            if not any_data:
-                continue
-
-            label = f"{hname} – {year} (Holiday)"
-            row = {"Season": label}
-            for room in room_types:
-                val = rp.get(room)
-                row[room] = val if val else "—"
-            rows.append(row)
-
-    if rows:
-        df = pd.DataFrame(rows, columns=["Season"] + room_types)
-        st.dataframe(df, use_container_width=True, hide_index=True)
-    else:
-        st.info("💡 No rate data available")
 
 # ----------------------------------------------------------------------
 # VALIDATION
