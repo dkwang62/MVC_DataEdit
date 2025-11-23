@@ -1200,19 +1200,26 @@ def compute_weekly_totals_for_season_v2(season: Dict[str, Any], room_types: List
     return weekly_totals, any_data
 def render_resort_summary_v2(working: Dict[str, Any]):
     st.markdown("<div class='section-header'>📊 Resort Summary</div>", unsafe_allow_html=True)
+
     resort_years = working.get("years", {})
     if not resort_years:
         st.info("💡 No data available yet")
         return
+
+    # Use first year that has seasons as reference for the season rows
     ref_year = next((y for y in sorted(resort_years.keys()) if resort_years[y].get("seasons")), None)
     if not ref_year:
         st.info("💡 No seasons defined yet")
         return
+
     room_types = get_all_room_types_for_resort(working)
     if not room_types:
         st.info("💡 No room types defined yet")
         return
+
     rows = []
+
+    # -------- Seasons (weekly totals – existing behaviour) --------
     for season in resort_years[ref_year].get("seasons", []):
         sname = season.get("name", "").strip() or "(Unnamed)"
         weekly_totals, any_data = compute_weekly_totals_for_season_v2(season, room_types)
@@ -1220,11 +1227,38 @@ def render_resort_summary_v2(working: Dict[str, Any]):
             row = {"Season": sname}
             row.update({room: (total if total else "—") for room, total in weekly_totals.items()})
             rows.append(row)
+
+    # -------- Holidays (use stored total points, no calculations) --------
+    for year in sorted(resort_years.keys()):
+        year_obj = resort_years[year]
+        for holiday in year_obj.get("holidays", []):
+            hname = holiday.get("name", "").strip() or "(Holiday)"
+            rp = holiday.get("room_points", {}) or {}
+
+            if not isinstance(rp, dict):
+                continue
+
+            # Only add the row if there is at least one non-empty / non-zero value
+            any_data = any(
+                rp.get(room) not in (None, "", 0, 0.0)
+                for room in room_types
+            )
+            if not any_data:
+                continue
+
+            label = f"{hname} – {year} (Holiday)"
+            row = {"Season": label}
+            for room in room_types:
+                val = rp.get(room)
+                row[room] = val if val else "—"
+            rows.append(row)
+
     if rows:
         df = pd.DataFrame(rows, columns=["Season"] + room_types)
         st.dataframe(df, use_container_width=True, hide_index=True)
     else:
         st.info("💡 No rate data available")
+
 # ----------------------------------------------------------------------
 # VALIDATION
 # ----------------------------------------------------------------------
