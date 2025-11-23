@@ -578,10 +578,10 @@ def create_download_button_v2(data: Dict[str, Any]):
             if "resort_name" in keys and "code" in keys and keys.index("resort_name") != keys.index("code") + 1:
                 st.sidebar.warning(f"⚠️ resort_name position shifted in {resort.get('id')}")
         
-        st.sidebar.markdown("### 📥 Download Data")
+        st.sidebar.markdown("### 📥 Save Data")
         json_data = json.dumps(data, indent=2, ensure_ascii=False)
         st.sidebar.download_button(
-            label="💾 Save JSON",
+            label="💾 Save",
             data=json_data,
             file_name="data_v2.json",
             mime="application/json",
@@ -591,7 +591,7 @@ def create_download_button_v2(data: Dict[str, Any]):
 def handle_file_verification():
     with st.sidebar.expander("🔍 Verify File", expanded=False):
         verify_upload = st.file_uploader(
-            "Verify file",
+            "Verify",
             type="json",
             key="verify_uploader"
         )
@@ -607,7 +607,7 @@ def handle_file_verification():
             except Exception as e:
                 st.error(f"❌ Error: {str(e)}")
 def handle_merge_from_another_file_v2(data: Dict[str, Any]):
-    with st.sidebar.expander("🔀 Merge Resorts", expanded=False):
+    with st.sidebar.expander("🔀 Merge", expanded=False):
         merge_upload = st.file_uploader(
             "Upload to merge resorts",
             type="json",
