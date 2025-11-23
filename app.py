@@ -1242,6 +1242,40 @@ def render_resort_summary_v2(working: Dict[str, Any]):
 
     if "2026" in resort_years:
         holiday_year = "2026"
+    else:
+        # sort numerically if possible, otherwise lexicographically
+        try:
+            holiday_year = sorted(year_keys, key=lambda y: int(y))[-1]
+        except ValueError:
+            holiday_year = sorted(year_keys)[-1]
+
+    year_obj = resort_years.get(holiday_year, {})
+    for holiday in year_obj.get("holidays", []):
+        hname = holiday.get("name", "").strip() or "(Holiday)"
+        rp = holiday.get("room_points", {}) or {}
+        if not isinstance(rp, dict):
+            continue
+
+        # Only add the row if there is at least one non-empty / non-zero value
+        any_data = any(
+            rp.get(room) not in (None, "", 0, 0.0)
+            for room in room_types
+        )
+        if not any_data:
+            continue
+
+        label = f"{hname} – {holiday_year} (Holiday)"
+        row = {"Season": label}
+        for room in room_types:
+            val = rp.get(room)
+            row[room] = val if val else "—"
+        rows.append(row)
+
+    if rows:
+        df = pd.DataFrame(rows, columns=["Season"] + room_types)
+        st.dataframe(df, use_container_width=True, hide_index=True)
+    else:
+        st.info("💡 No rate data available")
 
 
 # ----------------------------------------------------------------------
