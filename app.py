@@ -1478,7 +1478,7 @@ def main():
             - Option: Loading another file will replace data in memory 
             - Edits in memory are temporary — SAVE or they may be lost on refresh.
             - Verify by matching saved file to what’s in memory.
-            - Upload a different file to merge selected resorts to memory.
+            - Upload a different file to selectively merge/add resorts to memory.
             """)
 
         handle_file_upload()
