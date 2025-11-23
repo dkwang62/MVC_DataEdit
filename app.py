@@ -579,6 +579,7 @@ def create_download_button_v2(data: Dict[str, Any]):
                 st.sidebar.warning(f"⚠️ resort_name position shifted in {resort.get('id')}")
         
         st.sidebar.markdown("### 📥 Save Data")
+
         json_data = json.dumps(data, indent=2, ensure_ascii=False)
         st.sidebar.download_button(
             label="💾 Save",
@@ -606,6 +607,8 @@ def handle_file_verification():
                     st.error("❌ Files differ")
             except Exception as e:
                 st.error(f"❌ Error: {str(e)}")
+
+        st.sidebar.markdown("### 📥 Merge Data")
 def handle_merge_from_another_file_v2(data: Dict[str, Any]):
     with st.sidebar.expander("🔀 Merge", expanded=False):
         merge_upload = st.file_uploader(
