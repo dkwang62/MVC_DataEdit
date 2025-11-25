@@ -1446,7 +1446,6 @@ def validate_resort_data_v2(working: Dict[str, Any], data: Dict[str, Any], years
             issues.append(f"[{year}] No date ranges defined (entire year is uncovered)")
     
     return issues
-
 def render_validation_panel_v2(working: Dict[str, Any], data: Dict[str, Any], years: List[str]):
     with st.expander("🔍 Data Validation", expanded=False):
         issues = validate_resort_data_v2(working, data, years)
