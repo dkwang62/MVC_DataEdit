@@ -528,7 +528,7 @@ def handle_merge_from_another_file_v2(data: Dict[str, Any]):
 # RESORT MANAGEMENT WITH ENHANCED UI
 # ----------------------------------------------------------------------
 def render_resort_grid(resorts: List[Dict[str, Any]], current_resort_id: Optional[str]):
-    st.markdown("<div class='section-header'>🏨 Resorts in Memory (West to East); Select a resort to work on</div>", unsafe_allow_html=True)
+    st.markdown("<div class='section-header'>🏨 Resorts in Memory (West to East); Select a resort to edit</div>", unsafe_allow_html=True)
     if not resorts:
         st.info("No resorts available. Create one below!")
         return
