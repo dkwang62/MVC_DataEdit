@@ -374,13 +374,13 @@ class MVCCalculator:
             for col in ["Rate Cost", "Capital Cost", "Depreciation", "Total Cost"]:
                 if col in df.columns:
                     df[col] = df[col].apply(
-                        lambda x: f"${x:,.2f}" if isinstance(x, (int, float)) else x
+                        lambda x: f"${x:,.0f}" if isinstance(x, (int, float)) else x
                     )
         else:
             for col in df.columns:
                 if col not in ["Date", "Day", "Points"]:
                     df[col] = df[col].apply(
-                        lambda x: f"${x:,.2f}" if isinstance(x, (int, float)) else x
+                        lambda x: f"${x:,.0f}" if isinstance(x, (int, float)) else x
                     )
         return CalculationResult(
             breakdown_df=df,
@@ -544,7 +544,7 @@ class MVCCalculator:
                         )
                     else:
                         val = 0.0
-                new_row[room] = f"${val:,.2f}"
+                new_row[room] = f"${val:,.0f}"
             pivot_rows.append(new_row)
         # Total row
         total_label = "Total Cost" if is_owner else "Total Rent"
@@ -553,7 +553,7 @@ class MVCCalculator:
             tot_sum = sum(
                 x[val_key] for x in daily_data if x["Room Type"] == r
             ) + sum(holiday_data[r].values())
-            tot_row[r] = f"${tot_sum:,.2f}"
+            tot_row[r] = f"${tot_sum:,.0f}"
         pivot_rows.append(tot_row)
         # Holiday chart rows
         h_chart_rows: List[Dict[str, Any]] = []
@@ -619,7 +619,7 @@ def render_metrics_grid(
         with cols[1]:
             st.metric(
                 label="💰 Total Cost",
-                value=f"${result.financial_total:,.2f}",
+                value=f"${result.financial_total:,.0f}",
                 help="Total ownership cost including all selected components",
             )
         col_idx = 2
@@ -627,7 +627,7 @@ def render_metrics_grid(
             with cols[col_idx]:
                 st.metric(
                     label="🔧 Rate Cost",
-                    value=f"${result.m_cost:,.2f}",
+                    value=f"${result.m_cost:,.0f}",
                     help="Annual rate costs attributable to this stay",
                 )
             col_idx += 1
@@ -635,7 +635,7 @@ def render_metrics_grid(
             with cols[col_idx]:
                 st.metric(
                     label="💼 Capital Cost",
-                    value=f"${result.c_cost:,.2f}",
+                    value=f"${result.c_cost:,.0f}",
                     help="Opportunity cost of capital tied up in ownership",
                 )
             col_idx += 1
@@ -643,7 +643,7 @@ def render_metrics_grid(
             with cols[col_idx]:
                 st.metric(
                     label="📉 Depreciation",
-                    value=f"${result.d_cost:,.2f}",
+                    value=f"${result.d_cost:,.0f}",
                     help="Share of asset depreciation for this usage",
                 )
             col_idx += 1
@@ -660,7 +660,7 @@ def render_metrics_grid(
             with cols[1]:
                 st.metric(
                     label="💰 Total Rent",
-                    value=f"${result.financial_total:,.2f}",
+                    value=f"${result.financial_total:,.0f}",
                     help="Total rental cost (based on discounted points)",
                 )
             with cols[2]:
@@ -681,7 +681,7 @@ def render_metrics_grid(
             with cols[1]:
                 st.metric(
                     label="💰 Total Rent",
-                    value=f"${result.financial_total:,.2f}",
+                    value=f"${result.financial_total:,.0f}",
                     help="Total rental cost (no points discount)",
                 )
 # ==============================================================================
@@ -1071,7 +1071,7 @@ def main() -> None:
                     ### 💰 Owner Cost Calculation
                     **Rate Cost**
                     - Formula: Rate per point × points used
-                    - Current rate: **${rate:.2f}** per point
+                    - Current rate: **${rate:.0f}** per point
                     - Covers: Property upkeep, utilities, staff, amenities
                     **Capital Cost**
                     - Formula: Purchase price × cost of capital rate × points used
@@ -1100,7 +1100,7 @@ def main() -> None:
                 st.markdown(
                     f"""
                     ### 🏨 Rent Calculation
-                    **Current Rate:** **${rate:.2f}** per point.
+                    **Current Rate:** **${rate:.0f}** per point.
                     {discount_text}
                     - The **Points** column may show reduced points if last-minute discounts apply.
                     - 💰 Rent is always computed from the **discounted** points.
