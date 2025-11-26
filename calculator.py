@@ -8,7 +8,7 @@ from collections import defaultdict
 import pandas as pd
 import plotly.express as px
 import streamlit as st
-from common.ui import render_resort_card, render_resort_grid
+from common.ui import render_resort_card, render_resort_grid, render_page_header
 from common.charts import create_gantt_chart_from_resort_data
 from common.data import ensure_data_in_session
 
@@ -855,31 +855,12 @@ def main() -> None:
     calc = MVCCalculator(repo)
 
     # ===== Main content =====
-    st.title("🖖 Marriott Vacation Club Calculator")
-
-    # Mode badge
-    if mode == UserMode.OWNER:
-        st.markdown(
-            """
-            <div style="display: inline-block; background-color: #059669; color: white;
-                        padding: 8px 16px; border-radius: 20px; font-weight: 600;
-                        margin-bottom: 16px;">
-                👤 Owner Mode: Ownership Cost Analysis
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
-    else:
-        st.markdown(
-            """
-            <div style="display: inline-block; background-color: #2563eb; color: white;
-                        padding: 8px 16px; border-radius: 20px; font-weight: 600;
-                        margin-bottom: 16px;">
-                👤 Renter Mode: Rental Cost Analysis
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
+    render_page_header(
+        "Calculator",
+        f"👤 {mode.value} Mode: {'Ownership' if mode == UserMode.OWNER else 'Rental'} Cost Analysis",
+        icon="🖖",
+        badge_color="#059669" if mode == UserMode.OWNER else "#2563eb"
+    )
 
     # Resorts list & current selection by id
     resorts_full = repo.get_resort_list_full()  # list of resort dicts
