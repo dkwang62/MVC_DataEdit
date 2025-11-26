@@ -720,7 +720,7 @@ def main() -> None:
         owner_params: Optional[dict] = None
         policy: DiscountPolicy = DiscountPolicy.NONE
         # Temporarily set rate; may be overridden later based on mode + year
-        rate = 0.86
+        rate = 0.50
         if mode == UserMode.OWNER:
             st.markdown("#### 💰 Ownership Parameters")
             rate = st.number_input(
