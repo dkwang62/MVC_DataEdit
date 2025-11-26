@@ -196,13 +196,13 @@ def create_download_button_v2(data: Dict[str, Any]):
         # Let user choose filename
         filename = st.text_input(
             "File name",
-            value="data.json",
+            value="data_v2.json",
             key="download_filename_input",
         ).strip()
 
         # Fallback + ensure .json extension
         if not filename:
-            filename = "data.json"
+            filename = "data_v2.json"
         if not filename.lower().endswith(".json"):
             filename += ".json"
 
@@ -1836,7 +1836,7 @@ def main():
             """
             <div class='info-box'>
                 <h3>👋 Welcome!</h3>
-                <p>Load data.json file from the sidebar to begin editing resort data.</p>
+                <p>Load json file from the sidebar to begin editing resort data.</p>
             </div>
         """,
             unsafe_allow_html=True,
