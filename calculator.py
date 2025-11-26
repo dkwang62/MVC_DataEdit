@@ -731,103 +731,103 @@ def main() -> None:
             )
 #            show_advanced = st.checkbox("Show Advanced Options", value=False)
 #            if show_advanced:
-                opt = st.radio(
-                    "Discount Option",
-                    [
-                        "No Discount",
-                        "Executive: 25% Points Discount (within 30 days)",
-                        "Presidential: 30% Points Discount (within 60 days)",
-                    ],
-                    help="Select discount options.",
-                )
-                cap = st.number_input(
-                    "Purchase Price per Point ($)",
-                    value=18.0,
-                    step=1,
-                    min_value=0.0,
-                    help="Initial purchase price per MVC point.",
-                )
-                coc = (
-                    st.number_input(
-                        "Cost of Capital (%)",
-                        value=6.0,
-                        step=0.5,
-                        min_value=0.0,
-                        help="Expected return on alternative investments.",
-                    )
-                    / 100.0
-                )
-                life = st.number_input(
-                    "Useful Life (yrs)", value=15, min_value=1
-                )
-                salvage = st.number_input(
-                    "Salvage ($/pt)",
-                    value=3.0,
+            opt = st.radio(
+                "Discount Option",
+                [
+                    "No Discount",
+                    "Executive: 25% Points Discount (within 30 days)",
+                    "Presidential: 30% Points Discount (within 60 days)",
+                ],
+                help="Select discount options.",
+            )
+            cap = st.number_input(
+                "Purchase Price per Point ($)",
+                value=18.0,
+                step=1,
+                min_value=0.0,
+                help="Initial purchase price per MVC point.",
+            )
+            coc = (
+                st.number_input(
+                    "Cost of Capital (%)",
+                    value=6.0,
                     step=0.5,
                     min_value=0.0,
+                    help="Expected return on alternative investments.",
                 )
-                inc_m = st.checkbox(
-                    "Include Maintenance",
-                    True,
-                    help="Annual Maintenance.",
-                )
-                inc_c = st.checkbox(
-                    "Include Capital Cost",
-                    True,
-                    help="Opportunity cost of capital invested.",
-                )
-                inc_d = st.checkbox(
-                    "Include Depreciation",
-                    True,
-                    help="Asset depreciation over time.",
-                )
-            else:
-                opt = "No Discount"
-                coc = 6.0 / 100.0
-                life = 15
-                salvage = 3.0
-                inc_m = True
-                inc_c = True
-                inc_d = True
-            disc_mul = 1.0
-            if "Executive" in opt:
-                disc_mul = 0.75
-            elif "Presidential" in opt:
-                disc_mul = 0.7
-            owner_params = {
-                "disc_mul": disc_mul,
-                "inc_m": inc_m,
-                "inc_c": inc_c,
-                "inc_d": inc_d,
-                "cap_rate": cap * coc,
-                "dep_rate": (cap - salvage) / life if life > 0 else 0.0,
-            }
-        else:
-            st.markdown("#### 🏨 Rental Parameters")
-            rate = st.number_input(
-                "Maintenance per Point ($)",
-                value=0.50,
-                step=0.01,
+                / 100.0
+            )
+            life = st.number_input(
+                "Useful Life (yrs)", value=15, min_value=1
+            )
+            salvage = st.number_input(
+                "Salvage ($/pt)",
+                value=3.0,
+                step=0.5,
                 min_value=0.0,
             )
-            show_advanced = st.checkbox("Show Advanced Options", value=False)
-            if show_advanced:
-                opt = st.radio(
-                    "Discount Option",
-                    [
-                        "No Discount",
-                        "Executive: 25% Points Discount (within 30 days)",
-                        "Presidential: 30% Points Discount (within 60 days)",
-                    ],
-                    help="Select discount options.",
-                )
-                if "Presidential" in opt:
-                    policy = DiscountPolicy.PRESIDENTIAL
-                elif "Executive" in opt:
-                    policy = DiscountPolicy.EXECUTIVE
-                # "No Discount" uses NONE
-            else:
-                st.info("💡 Using no discount.")
+            inc_m = st.checkbox(
+                "Include Maintenance",
+                True,
+                help="Annual Maintenance.",
+            )
+            inc_c = st.checkbox(
+                "Include Capital Cost",
+                True,
+                help="Opportunity cost of capital invested.",
+            )
+            inc_d = st.checkbox(
+                "Include Depreciation",
+                True,
+                help="Asset depreciation over time.",
+            )
+        else:
+            opt = "No Discount"
+            coc = 6.0 / 100.0
+            life = 15
+            salvage = 3.0
+            inc_m = True
+            inc_c = True
+            inc_d = True
+        disc_mul = 1.0
+        if "Executive" in opt:
+            disc_mul = 0.75
+        elif "Presidential" in opt:
+            disc_mul = 0.7
+        owner_params = {
+            "disc_mul": disc_mul,
+            "inc_m": inc_m,
+            "inc_c": inc_c,
+            "inc_d": inc_d,
+            "cap_rate": cap * coc,
+            "dep_rate": (cap - salvage) / life if life > 0 else 0.0,
+        }
+    else:
+        st.markdown("#### 🏨 Rental Parameters")
+        rate = st.number_input(
+            "Maintenance per Point ($)",
+            value=0.50,
+            step=0.01,
+            min_value=0.0,
+        )
+#        show_advanced = st.checkbox("Show Advanced Options", value=False)
+#            if show_advanced:
+ #               opt = st.radio(
+  #                  "Discount Option",
+   #                 [
+    #                    "No Discount",
+     #                   "Executive: 25% Points Discount (within 30 days)",
+      #                  "Presidential: 30% Points Discount (within 60 days)",
+       #             ],
+        #            help="Select discount options.",
+  #              )
+   #             if "Presidential" in opt:
+    #                policy = DiscountPolicy.PRESIDENTIAL
+     #           elif "Executive" in opt:
+      #              policy = DiscountPolicy.EXECUTIVE
+       #         # "No Discount" uses NONE
+        #    else:
+         #       st.info("💡 Using no discount.")
     # ===== Data presence check =====
     if not st.session_state.data:
         st.warning("⚠️ Please upload data_v2.json (or a compatible JSON) to begin.")
