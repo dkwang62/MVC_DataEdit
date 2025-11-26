@@ -729,13 +729,6 @@ def main() -> None:
                 step=0.01,
                 min_value=0.0,
             )
-            cap = st.number_input(
-                "Purchase Price per Point ($)",
-                value=16.0,
-                step=0.5,
-                min_value=0.0,
-                help="Initial purchase price per MVC point.",
-            )
             show_advanced = st.checkbox("Show Advanced Options", value=False)
             if show_advanced:
                 opt = st.radio(
@@ -747,10 +740,17 @@ def main() -> None:
                     ],
                     help="Select discount options.",
                 )
+                cap = st.number_input(
+                    "Purchase Price per Point ($)",
+                    value=18.0,
+                    step=1,
+                    min_value=0.0,
+                    help="Initial purchase price per MVC point.",
+                )
                 coc = (
                     st.number_input(
                         "Cost of Capital (%)",
-                        value=7.0,
+                        value=6.0,
                         step=0.5,
                         min_value=0.0,
                         help="Expected return on alternative investments.",
@@ -783,7 +783,7 @@ def main() -> None:
                 )
             else:
                 opt = "No Discount"
-                coc = 7.0 / 100.0
+                coc = 6.0 / 100.0
                 life = 15
                 salvage = 3.0
                 inc_m = True
