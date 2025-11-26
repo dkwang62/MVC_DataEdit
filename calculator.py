@@ -729,8 +729,8 @@ def main() -> None:
                 step=0.01,
                 min_value=0.0,
             )
-            show_advanced = st.checkbox("Show Advanced Options", value=False)
-            if show_advanced:
+#            show_advanced = st.checkbox("Show Advanced Options", value=False)
+#            if show_advanced:
                 opt = st.radio(
                     "Discount Option",
                     [
