@@ -185,8 +185,11 @@ def handle_file_upload():
 
 
 def create_download_button_v2(data: Dict[str, Any]):
-    # Everything lives inside a sidebar expander
-    with st.sidebar.expander("📥 Memory to File", expanded=False):
+    # Header text stays OUTSIDE the expander
+    st.sidebar.markdown("### 📥 Memory to File")
+
+    # Everything else INSIDE the expander
+    with st.sidebar.expander("💾 Save to File", expanded=False):
 
         st.caption("You can change file name")
 
@@ -218,7 +221,6 @@ def create_download_button_v2(data: Dict[str, Any]):
             f"File will be downloaded as **{filename}** "
             "to your browser’s default **Downloads** folder."
         )
-
 
 def handle_file_verification():
     with st.sidebar.expander("🔍 Verify File", expanded=False):
