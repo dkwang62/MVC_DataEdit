@@ -725,7 +725,7 @@ def main() -> None:
             st.markdown("#### 💰 Ownership Parameters")
             rate = st.number_input(
                 "Rate per Point ($)",
-                value=0.86,
+                value=0.50,
                 step=0.01,
                 min_value=0.0,
             )
@@ -806,7 +806,7 @@ def main() -> None:
             st.markdown("#### 🏨 Rental Parameters")
             rate = st.number_input(
                 "Rate per Point ($)",
-                value=0.86,
+                value=0.50,
                 step=0.01,
                 min_value=0.0,
             )
