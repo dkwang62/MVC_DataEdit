@@ -185,35 +185,39 @@ def handle_file_upload():
 
 
 def create_download_button_v2(data: Dict[str, Any]):
-    st.sidebar.markdown("### 📥 Memory to File")
+    # Everything lives inside a sidebar expander
+    with st.sidebar.expander("📥 Memory to File", expanded=False):
 
-    # Let user choose filename
-    filename = st.sidebar.text_input(
-        "You can change file name",
-        value="data.json",
-        key="download_filename_input",
-    ).strip()
+        st.caption("You can change file name")
 
-    # Fallback + ensure .json extension
-    if not filename:
-        filename = "data.json"
-    if not filename.lower().endswith(".json"):
-        filename += ".json"
+        # Let user choose filename
+        filename = st.text_input(
+            "File name",
+            value="data.json",
+            key="download_filename_input",
+        ).strip()
 
-    json_data = json.dumps(data, indent=2, ensure_ascii=False)
+        # Fallback + ensure .json extension
+        if not filename:
+            filename = "data.json"
+        if not filename.lower().endswith(".json"):
+            filename += ".json"
 
-    st.sidebar.download_button(
-        label="💾 Save",
-        data=json_data,
-        file_name=filename,
-        mime="application/json",
-        key="download_v2_btn",
-        use_container_width=True,
-    )
-    st.sidebar.caption(
-        f"File will be downloaded as **{filename}** "
-        "to your browser’s default **Downloads** folder."
-    )
+        json_data = json.dumps(data, indent=2, ensure_ascii=False)
+
+        st.download_button(
+            label="💾 Save",
+            data=json_data,
+            file_name=filename,
+            mime="application/json",
+            key="download_v2_btn",
+            use_container_width=True,
+        )
+
+        st.caption(
+            f"File will be downloaded as **{filename}** "
+            "to your browser’s default **Downloads** folder."
+        )
 
 
 def handle_file_verification():
