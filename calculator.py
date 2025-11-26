@@ -11,44 +11,53 @@ import streamlit as st
 from common.ui import render_resort_card, render_resort_grid
 from common.charts import create_gantt_chart_from_resort_data
 from common.data import ensure_data_in_session
+
 # ==============================================================================
 # LAYER 1: DOMAIN MODELS (Type-Safe Data Structures)
 # ==============================================================================
 class UserMode(Enum):
     RENTER = "Renter"
     OWNER = "Owner"
+
 class DiscountPolicy(Enum):
     NONE = "None"
-    EXECUTIVE = "within_30_days" # 25%
-    PRESIDENTIAL = "within_60_days" # 30%
+    EXECUTIVE = "within_30_days"  # 25%
+    PRESIDENTIAL = "within_60_days"  # 30%
+
 @dataclass
 class Holiday:
     name: str
     start_date: date
     end_date: date
     room_points: Dict[str, int]
+
 @dataclass
 class DayCategory:
     days: List[str]
     room_points: Dict[str, int]
+
 @dataclass
 class SeasonPeriod:
     start: date
     end: date
+
 @dataclass
 class Season:
     name: str
     periods: List[SeasonPeriod]
     day_categories: List[DayCategory]
+
 @dataclass
 class ResortData:
     id: str
     name: str
     years: Dict[str, "YearData"]
+
 @dataclass
 class YearData:
     holidays: List[Holiday]
     seasons: List[Season]
+
 @dataclass
 class CalculationResult:
     breakdown_df: pd.DataFrame
@@ -59,11 +68,13 @@ class CalculationResult:
     m_cost: float = 0.0
     c_cost: float = 0.0
     d_cost: float = 0.0
+
 @dataclass
 class ComparisonResult:
     pivot_df: pd.DataFrame
     daily_chart_df: pd.DataFrame
     holiday_chart_df: pd.DataFrame
+
 # ==============================================================================
 # LAYER 2: REPOSITORY (Data Access Layer)
 # ==============================================================================
@@ -72,11 +83,14 @@ class MVCRepository:
         self._raw = raw_data
         self._resort_cache: Dict[str, ResortData] = {}
         self._global_holidays = self._parse_global_holidays()
+
     def get_resort_list(self) -> List[str]:
         return sorted([r["display_name"] for r in self._raw.get("resorts", [])])
+
     def get_resort_list_full(self) -> List[Dict[str, Any]]:
         """Return raw resort dictionaries (used for grid rendering)."""
         return self._raw.get("resorts", [])
+
     def _parse_global_holidays(
         self,
     ) -> Dict[str, Dict[str, Tuple[date, date]]]:
@@ -92,6 +106,7 @@ class MVCRepository:
                 except Exception:
                     continue
         return parsed
+
     def get_resort(self, resort_name: str) -> Optional[ResortData]:
         if resort_name in self._resort_cache:
             return self._resort_cache[resort_name]
@@ -144,6 +159,7 @@ class MVCRepository:
         )
         self._resort_cache[resort_name] = resort_obj
         return resort_obj
+
     def get_resort_info(self, resort_name: str) -> Dict[str, str]:
         """Get additional resort information for card display."""
         raw_r = next(
@@ -161,14 +177,18 @@ class MVCRepository:
             "timezone": "Unknown",
             "address": "Address not available",
         }
+
 # ==============================================================================
 # LAYER 3: SERVICE (Pure Business Logic Engine)
 # ==============================================================================
 class MVCCalculator:
     def __init__(self, repo: MVCRepository):
         self.repo = repo
+
     def _get_daily_points(
-        self, resort: ResortData, day: date
+        self,
+        resort: ResortData,
+        day: date
     ) -> Tuple[Dict[str, int], Optional[Holiday]]:
         year_str = str(day.year)
         if year_str not in resort.years:
@@ -196,6 +216,7 @@ class MVCCalculator:
                         if dow in cat.days:
                             return cat.room_points, None
         return {}, None
+
     def calculate_breakdown(
         self,
         resort_name: str,
@@ -392,6 +413,7 @@ class MVCCalculator:
             c_cost=tot_c,
             d_cost=tot_d,
         )
+
     def compare_stays(
         self,
         resort_name: str,
@@ -569,6 +591,7 @@ class MVCCalculator:
             daily_chart_df=daily_df,
             holiday_chart_df=holiday_df,
         )
+
     def adjust_holiday(
         self, resort_name: str, checkin: date, nights: int
     ) -> Tuple[date, int, bool]:
@@ -590,6 +613,7 @@ class MVCCalculator:
         adjusted_end = max(end, latest_end)
         adjusted_nights = (adjusted_end - adjusted_start).days + 1
         return adjusted_start, adjusted_nights, True
+
 # ==============================================================================
 # LAYER 4: UI HELPERS
 # ==============================================================================
@@ -684,6 +708,7 @@ def render_metrics_grid(
                     value=f"${result.financial_total:,.0f}",
                     help="Total rental cost (no points discount)",
                 )
+
 # ==============================================================================
 # MAIN PAGE LOGIC
 # ==============================================================================
@@ -695,8 +720,10 @@ def main() -> None:
         st.session_state.current_resort_id = None
     if "show_help" not in st.session_state:
         st.session_state.show_help = False
+
     # 1) Shared data auto-load (no uploader here)
     ensure_data_in_session()
+
     # 2) If no data, bail out early
     if not st.session_state.data:
         st.warning("⚠️ Please open the Editor and upload/merge data_v2.json first.")
@@ -705,6 +732,7 @@ def main() -> None:
             "Once the Editor has loaded your JSON file, you can use the calculator here."
         )
         return
+
     # 3) Sidebar: user settings only
     with st.sidebar:
         st.divider()
@@ -721,6 +749,8 @@ def main() -> None:
         policy: DiscountPolicy = DiscountPolicy.NONE
         # Temporarily set rate; may be overridden later based on mode + year
         rate = 0.50
+        opt = "No Discount"  # Default
+
         if mode == UserMode.OWNER:
             st.markdown("#### 💰 Ownership Parameters")
             rate = st.number_input(
@@ -729,73 +759,58 @@ def main() -> None:
                 step=0.01,
                 min_value=0.0,
             )
+            opt = st.radio(
+                "Discount Option",
+                [
+                    "No Discount",
+                    "Executive: 25% Points Discount (within 30 days)",
+                    "Presidential: 30% Points Discount (within 60 days)",
+                ],
+                help="Select discount options.",
+            )
             cap = st.number_input(
                 "Purchase Price per Point ($)",
-                value=16.0,
-                step=0.5,
+                value=18.0,
+                step=1.0,
                 min_value=0.0,
                 help="Initial purchase price per MVC point.",
             )
-            show_advanced = st.checkbox("Show Advanced Options", value=False)
-            if show_advanced:
-                opt = st.radio(
-                    "Discount Option",
-                    [
-                        "No Discount",
-                        "Executive: 25% Points Discount (within 30 days)",
-                        "Presidential: 30% Points Discount (within 60 days)",
-                    ],
-                    help="Select discount options.",
-                )
-                coc = (
-                    st.number_input(
-                        "Cost of Capital (%)",
-                        value=7.0,
-                        step=0.5,
-                        min_value=0.0,
-                        help="Expected return on alternative investments.",
-                    )
-                    / 100.0
-                )
-                life = st.number_input(
-                    "Useful Life (yrs)", value=15, min_value=1
-                )
-                salvage = st.number_input(
-                    "Salvage ($/pt)",
-                    value=3.0,
+            coc = (
+                st.number_input(
+                    "Cost of Capital (%)",
+                    value=6.0,
                     step=0.5,
                     min_value=0.0,
+                    help="Expected return on alternative investments.",
                 )
-                inc_m = st.checkbox(
-                    "Include Maintenance",
-                    True,
-                    help="Annual Maintenance.",
-                )
-                inc_c = st.checkbox(
-                    "Include Capital Cost",
-                    True,
-                    help="Opportunity cost of capital invested.",
-                )
-                inc_d = st.checkbox(
-                    "Include Depreciation",
-                    True,
-                    help="Asset depreciation over time.",
-                )
-            else:
-                opt = "No Discount"
-                coc = 7.0 / 100.0
-                life = 15
-                salvage = 3.0
-                inc_m = True
-                inc_c = True
-                inc_d = True
-            disc_mul = 1.0
-            if "Executive" in opt:
-                disc_mul = 0.75
-            elif "Presidential" in opt:
-                disc_mul = 0.7
+                / 100.0
+            )
+            life = st.number_input(
+                "Useful Life (yrs)", value=15, min_value=1
+            )
+            salvage = st.number_input(
+                "Salvage ($/pt)",
+                value=3.0,
+                step=0.5,
+                min_value=0.0,
+            )
+            inc_m = st.checkbox(
+                "Include Maintenance",
+                True,
+                help="Annual Maintenance.",
+            )
+            inc_c = st.checkbox(
+                "Include Capital Cost",
+                True,
+                help="Opportunity cost of capital invested.",
+            )
+            inc_d = st.checkbox(
+                "Include Depreciation",
+                True,
+                help="Asset depreciation over time.",
+            )
             owner_params = {
-                "disc_mul": disc_mul,
+                "disc_mul": 1.0,  # Will be set below
                 "inc_m": inc_m,
                 "inc_c": inc_c,
                 "inc_d": inc_d,
@@ -810,37 +825,38 @@ def main() -> None:
                 step=0.01,
                 min_value=0.0,
             )
-            show_advanced = st.checkbox("Show Advanced Options", value=False)
-            if show_advanced:
-                opt = st.radio(
-                    "Discount Option",
-                    [
-                        "No Discount",
-                        "Executive: 25% Points Discount (within 30 days)",
-                        "Presidential: 30% Points Discount (within 60 days)",
-                    ],
-                    help="Select discount options.",
-                )
-                if "Presidential" in opt:
-                    policy = DiscountPolicy.PRESIDENTIAL
-                elif "Executive" in opt:
-                    policy = DiscountPolicy.EXECUTIVE
-                # "No Discount" uses NONE
-            else:
-                st.info("💡 Using no discount.")
-    # ===== Data presence check =====
-    if not st.session_state.data:
-        st.warning("⚠️ Please upload data_v2.json (or a compatible JSON) to begin.")
-        st.info(
-            "The calculator requires MVC resort data to function. "
-            "Upload your JSON data file using the sidebar."
-        )
-        return
+            opt = st.radio(
+                "Discount Option",
+                [
+                    "No Discount",
+                    "Executive: 25% Points Discount (within 30 days)",
+                    "Presidential: 30% Points Discount (within 60 days)",
+                ],
+                help="Select discount options.",
+            )
+            if "Presidential" in opt:
+                policy = DiscountPolicy.PRESIDENTIAL
+            elif "Executive" in opt:
+                policy = DiscountPolicy.EXECUTIVE
+            # "No Discount" uses NONE
+
+        # Set disc_mul for owners
+        disc_mul = 1.0
+        if "Executive" in opt:
+            disc_mul = 0.75
+        elif "Presidential" in opt:
+            disc_mul = 0.7
+
+        if owner_params:  # Only for owners
+            owner_params["disc_mul"] = disc_mul
+
     # ===== Core calculator objects =====
     repo = MVCRepository(st.session_state.data)
     calc = MVCCalculator(repo)
+
     # ===== Main content =====
     st.title("🖖 Marriott Vacation Club Calculator")
+
     # Mode badge
     if mode == UserMode.OWNER:
         st.markdown(
@@ -864,13 +880,16 @@ def main() -> None:
             """,
             unsafe_allow_html=True,
         )
+
     # Resorts list & current selection by id
-    resorts_full = repo.get_resort_list_full() # list of resort dicts
+    resorts_full = repo.get_resort_list_full()  # list of resort dicts
     if resorts_full and st.session_state.current_resort_id is None:
         st.session_state.current_resort_id = resorts_full[0].get("id")
     current_resort_id = st.session_state.current_resort_id
+
     # Shared grid (column-first) from common.ui
     render_resort_grid(resorts_full, current_resort_id)
+
     # Resolve selected resort object
     resort_obj = next(
         (r for r in resorts_full if r.get("id") == current_resort_id),
@@ -881,6 +900,7 @@ def main() -> None:
     r_name = resort_obj.get("display_name")
     if not r_name:
         return
+
     # Resort info card
     resort_info = repo.get_resort_info(r_name)
     render_resort_card(
@@ -889,6 +909,7 @@ def main() -> None:
         resort_info["address"],
     )
     st.divider()
+
     # ===== Booking details =====
     st.markdown("### 📅 Booking Details")
     input_cols = st.columns([2, 1, 2, 2])
@@ -907,6 +928,7 @@ def main() -> None:
             value=7,
             help="Number of nights to stay.",
         )
+
     # Holiday adjustment (extend stay to full holiday span)
     adj_in, adj_n, adj = calc.adjust_holiday(r_name, checkin, nights)
     if adj:
@@ -916,6 +938,7 @@ def main() -> None:
             f"{adj_in.strftime('%b %d, %Y')} — {end_date.strftime('%b %d, %Y')} "
             f"({adj_n} nights)"
         )
+
     # Derive available room types from daily points for adjusted start
     pts, _ = calc._get_daily_points(calc.repo.get_resort(r_name), adj_in)
     if not pts:
@@ -928,6 +951,7 @@ def main() -> None:
     if not room_types:
         st.error("❌ No room data available for selected dates.")
         return
+
     with input_cols[2]:
         room_sel = st.selectbox(
             "Room Type",
@@ -941,18 +965,21 @@ def main() -> None:
             help="Select additional room types to compare.",
         )
     st.divider()
+
     # ===== Calculation =====
     res = calc.calculate_breakdown(
         r_name, room_sel, adj_in, adj_n, mode, rate, policy, owner_params
     )
     st.markdown(f"### 📊 Results: {room_sel}")
     render_metrics_grid(res, mode, owner_params, policy)
+
     if res.discount_applied and mode == UserMode.RENTER:
         pct = "30%" if policy == DiscountPolicy.PRESIDENTIAL else "25%"
         st.success(
             f"🎉 **Discount Applied!** {pct} off points for {len(res.discounted_days)} day(s)."
         )
     st.divider()
+
     # Detailed breakdown
     st.markdown("### 📋 Detailed Breakdown")
     st.dataframe(
@@ -961,6 +988,7 @@ def main() -> None:
         hide_index=True,
         height=min(400, (len(res.breakdown_df) + 1) * 35 + 50),
     )
+
     # Actions
     col1, col2, _ = st.columns([1, 1, 2])
     with col1:
@@ -975,6 +1003,7 @@ def main() -> None:
     with col2:
         if st.button("ℹ️ How it is calculated", use_container_width=True):
             st.session_state.show_help = not st.session_state.show_help
+
     # Comparison section
     if comp_rooms:
         st.divider()
@@ -1048,6 +1077,7 @@ def main() -> None:
                     hovermode="x unified",
                 )
                 st.plotly_chart(h_fig, use_container_width=True)
+
     # Season / Holiday timeline
     year_str = str(adj_in.year)
     res_data = calc.repo.get_resort(r_name)
@@ -1061,6 +1091,7 @@ def main() -> None:
                 height=500,
             )
             st.plotly_chart(gantt_fig, use_container_width=True)
+
     # Help section
     if st.session_state.show_help:
         st.divider()
@@ -1107,5 +1138,6 @@ def main() -> None:
                     - Holiday periods are treated as full blocks for pricing.
                     """
                 )
+
 def run() -> None:
     main()
