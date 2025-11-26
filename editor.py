@@ -1786,22 +1786,22 @@ def main():
     # Sidebar
     with st.sidebar:
         st.divider()
-        st.markdown(
-            """
-            <div style='text-align: center; padding: 12px; margin-bottom: 12px;'>
-                <h3 style='color: #0891b2 !important; margin: 0; font-size: 22px;'>🏨 File Operations</h3>
-            </div>
-        """,
-            unsafe_allow_html=True,
-        )
-        with st.expander("ℹ️ How File Operations Work", expanded=False):
+#        st.markdown(
+#            """
+#            <div style='text-align: center; padding: 12px; margin-bottom: 12px;'>
+#                <h3 style='color: #0891b2 !important; margin: 0; font-size: 22px;'>🏨 File Operations</h3>
+#            </div>
+#        """,
+#            unsafe_allow_html=True,
+#        )
+        with st.expander("ℹ️ How data is saved and retrieved", expanded=False):
             st.markdown(
                 """
-            - Data are pre-loaded into memory and can be edited.
-            - Loading another file will replace data in memory.
+            - The most updated data is pre-loaded into memory and can be edited.
+            - Loading another file will replace the data in memory.
             - Edits in memory are temporary — SAVE or they may be lost on refresh.
             - Verify by matching saved file to what’s in memory.
-            - Upload a different file to merge selected resorts to memory.
+            - Load a different file to merge selected resorts to memory.
             """
             )
 
