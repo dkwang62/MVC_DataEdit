@@ -10,6 +10,7 @@ def setup_page() -> None:
         initial_sidebar_state="expanded",
         menu_items={"About": "Marriott Vacation Club – internal tools"},
     )
+    
     # Shared CSS
     st.markdown(
         """
@@ -21,11 +22,81 @@ def setup_page() -> None:
             --bg-color: #F9FAFB;
             --text-color: #111827;
         }
+
+        /* -------------------------------------------------------- */
+        /* HIDE STREAMLIT UI ELEMENTS                               */
+        /* -------------------------------------------------------- */
+        #MainMenu {visibility: hidden;}
+        footer {visibility: hidden;}
+        header {visibility: hidden;}
+
+        /* -------------------------------------------------------- */
+        /* SIDEBAR SPACING & STYLING (AGGRESSIVE FIXES)             */
+        /* -------------------------------------------------------- */
+        
+        /* 1. Force Sidebar background */
+        section[data-testid="stSidebar"] {
+            background-color: var(--card-bg);
+            border-right: 1px solid var(--border-color);
+        }
+
+        /* 2. REMOVE DEFAULT STREAMLIT GAPS */
+        /* Streamlit adds a large 'gap' between every element by default. */
+        /* We set it to 0 so we can control spacing manually via margins. */
+        section[data-testid="stSidebar"] .block-container {
+            gap: 0rem !important;
+            padding-top: 1.5rem !important;
+            padding-bottom: 2rem !important;
+        }
+
+        /* 3. TIGHTEN EXPANDERS */
+        /* This sets the specific gap between expanders to be narrow (8px). */
+        [data-testid="stExpander"] {
+            margin-bottom: 0.5rem !important;
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            background-color: #ffffff;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+
+        /* 4. REDUCE INTERNAL PADDING OF EXPANDERS */
+        [data-testid="stExpanderDetails"] {
+            padding: 0.75rem !important;
+        }
+
+        /* 5. ADJUST HEADERS (e.g., "File to Memory") */
+        /* Add space ABOVE headers to separate sections, remove space BELOW */
+        section[data-testid="stSidebar"] h3 {
+            margin-top: 1.5rem !important;    /* Push away from previous section */
+            margin-bottom: 0.4rem !important; /* Pull closer to the expander below */
+            font-size: 1.0rem !important;
+            font-weight: 600 !important;
+            color: var(--primary-color) !important;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        /* 6. ADJUST PARAGRAPHS/TEXT */
+        section[data-testid="stSidebar"] p {
+            margin-bottom: 0.25rem !important;
+            font-size: 0.9rem;
+        }
+
+        /* 7. TIGHTEN THE DIVIDER LINE */
+        section[data-testid="stSidebar"] hr {
+            margin: 1rem 0 !important;
+        }
+
+        /* -------------------------------------------------------- */
+        /* MAIN CONTENT STYLING                                     */
+        /* -------------------------------------------------------- */
         .main, [data-testid="stAppViewContainer"] {
             background-color: var(--bg-color);
             font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI",
                          Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+            color: var(--text-color);
         }
+
         .section-header {
             font-size: 1.1rem;
             font-weight: 600;
@@ -33,6 +104,7 @@ def setup_page() -> None:
             border-bottom: 1px solid var(--border-color);
             margin-bottom: 0.75rem;
         }
+
         .resort-card {
             background: var(--card-bg);
             border-radius: 0.75rem;
@@ -41,21 +113,32 @@ def setup_page() -> None:
             box-shadow: 0 2px 4px rgba(15, 23, 42, 0.06);
             margin-bottom: 1rem;
         }
+
         .resort-card h2 {
             margin: 0;
             font-size: 1.4rem;
             font-weight: 700;
             color: var(--primary-color);
         }
+
         .resort-meta {
             margin-top: 0.35rem;
             font-size: 0.9rem;
             color: #4B5563;
+            opacity: 0.9;
         }
-        section[data-testid="stSidebar"] {
-            background-color: var(--card-bg);
-            border-right: 1px solid var(--border-color);
+        
+        /* Utility boxes */
+        .success-box, .info-box, .error-box {
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-top: 1rem;
+            border: 1px solid transparent;
         }
+        .success-box { background-color: #ECFDF5; border-color: #A7F3D0; color: #065F46; }
+        .info-box { background-color: #EFF6FF; border-color: #BFDBFE; color: #1E40AF; }
+        .error-box { background-color: #FEF2F2; border-color: #FECACA; color: #991B1B; }
+
     </style>
     """,
         unsafe_allow_html=True,
@@ -138,7 +221,6 @@ def render_resort_grid(
                     key=f"resort_btn_{rid or name}",
                     type=btn_type,
                     use_container_width=True,
-# help=resort.get("address", f"{region} • {tz}"),
                 ):
                     # Normalised selection for both apps
                     st.session_state.current_resort_id = rid
