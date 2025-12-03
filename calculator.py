@@ -218,9 +218,9 @@ class MVCCalculator:
         if not resort:
             return CalculationResult(pd.DataFrame(), 0, 0.0, False, [])
 
-        # --- 1. Renter Rate Rounding ---
-        if user_mode == UserMode.RENTER:
-            rate = round(float(rate), 2)
+        # --- 1. Universal Rate Precision ---
+        # Ensure rate is treated identically (2 decimal places) for both modes
+        rate = round(float(rate), 2)
 
         rows: List[Dict[str, Any]] = []
         tot_eff_pts = 0
@@ -265,7 +265,7 @@ class MVCCalculator:
                     for j in range(holiday_days):
                         disc_days.append((holiday.start_date + timedelta(days=j)).strftime("%Y-%m-%d"))
 
-                # Cost Calculation
+                # Cost Calculation (Daily - for display only)
                 cost = 0.0
                 m = c = dp = 0.0
                 if is_owner and owner_config:
@@ -295,8 +295,6 @@ class MVCCalculator:
                 
                 rows.append(row)
                 tot_eff_pts += eff
-                tot_financial += cost
-                tot_m += m; tot_c += c; tot_d += dp
                 i += holiday_days
 
             elif not holiday:
@@ -352,30 +350,40 @@ class MVCCalculator:
 
                 rows.append(row)
                 tot_eff_pts += eff
-                tot_financial += cost
-                tot_m += m; tot_c += c; tot_d += dp
                 i += 1
             else:
-                # Fallback for overlapping holiday oddities
                 i += 1
 
         df = pd.DataFrame(rows)
 
-        # --- 2. Final Total Calculation ---
-        # Ensure totals are driven by total points but rounded up to avoid float discrepancies
+        # --- 2. Final Total Calculation (UNIFIED) ---
+        # Formula: Total = ceil( TotalPoints * SumOfRates )
+        # This prevents "rounding of components" errors.
+        
         if user_mode == UserMode.RENTER:
-            # Renter: Total Rent = ceil(total effective points * renter rate)
             tot_financial = math.ceil(tot_eff_pts * rate)
-        elif user_mode == UserMode.OWNER and owner_config:
-            # Owner: Calculate components based on totals
-            maint_total = math.ceil(tot_eff_pts * rate)
-            cap_total = math.ceil(tot_eff_pts * owner_config.get("cap_rate", 0.0)) if owner_config.get("inc_c", False) else 0.0
-            dep_total = math.ceil(tot_eff_pts * owner_config.get("dep_rate", 0.0)) if owner_config.get("inc_d", False) else 0.0
             
-            tot_m = maint_total
-            tot_c = cap_total
-            tot_d = dep_total
-            tot_financial = maint_total + cap_total + dep_total
+        elif user_mode == UserMode.OWNER and owner_config:
+            # Calculate raw float components
+            raw_maint = tot_eff_pts * rate
+            
+            raw_cap = 0.0
+            if owner_config.get("inc_c", False):
+                raw_cap = tot_eff_pts * owner_config.get("cap_rate", 0.0)
+                
+            raw_dep = 0.0
+            if owner_config.get("inc_d", False):
+                raw_dep = tot_eff_pts * owner_config.get("dep_rate", 0.0)
+
+            # Sum first, then Ceil ONCE
+            tot_financial = math.ceil(raw_maint + raw_cap + raw_dep)
+            
+            # For the sub-metrics, we ceil them individually for display 
+            # (Note: These might add up to slightly more than tot_financial due to rounding, 
+            # but the Tot Financial will be mathematically correct relative to the Renter formula)
+            tot_m = math.ceil(raw_maint)
+            tot_c = math.ceil(raw_cap)
+            tot_d = math.ceil(raw_dep)
 
         # Formatting for Display
         if not df.empty:
@@ -401,6 +409,9 @@ class MVCCalculator:
         if not user_mode == UserMode.OWNER:
             if policy == DiscountPolicy.PRESIDENTIAL: renter_mul = 0.7
             elif policy == DiscountPolicy.EXECUTIVE: renter_mul = 0.75
+
+        # Ensure rate matches the main calc logic
+        rate = round(float(rate), 2)
 
         for room in rooms:
             i = 0
