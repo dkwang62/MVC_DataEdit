@@ -102,18 +102,21 @@ class MVCRepository:
                 ref = h.get("global_reference") or h.get("name")
                 start_end = self._global_holidays.get(year_str, {}).get(ref)
                 if start_end:
-                    holidays.append(Holiday(name=h.get("name", ref),
-                                            start_date=start_end[0],
-                                            end_date=start_end[1],
-                                            room_points=h.get("room_points", {})))
+                    holidays.append(Holiday(
+                        name=h.get("name", ref),
+                        start_date=start_end[0],
+                        end_date=start_end[1],
+                        room_points=h.get("room_points", {})
+                    ))
 
             # Seasons
             seasons: List[Season] = []
             for s in y_content.get("seasons", []):
                 periods = [
-                    SeasonPeriod(start=date.fromisoformat(p["start"]),
-                                 end=date.fromisoformat(p["end"]))
-                    for p in s.get("periods", [])
+                    SeasonPeriod(
+                        start=date.fromisoformat(p["start"]),
+                        end=date.fromisoformat(p["end"])
+                    ) for p in s.get("periods", [])
                 ]
                 day_cats = [
                     DayCategory(days=cat.get("day_pattern", []), room_points=cat.get("room_points", {}))
@@ -207,7 +210,7 @@ def apply_settings_from_dict(d: dict):
     st.session_state.renter_rate_val = d.get("renter_rate", 0.817)
     st.session_state.renter_discount_tier = d.get("renter_discount_tier", TIER_NO_DISCOUNT)
     if d.get("preferred_resort_id"):
-        st.session_state.current_resort_id = d["preferred_resort_id]
+        st.session_state.current_resort_id = d["preferred_resort_id"]
 
 
 # ==============================================================================
@@ -224,7 +227,7 @@ def main():
 
     render_page_header("Calculator", "Points & Cost Calculator", icon="Calculator")
 
-    # ------------------------------------------------------------------ Sidebar
+    # Sidebar – Resort selection
     with st.sidebar:
         st.markdown("### Resort Selection")
         render_resort_grid(calc.repo.get_resort_list_full(),
@@ -240,53 +243,55 @@ def main():
         st.error("Resort not found.")
         return
 
-    # Basic resort card
-    tz = resort.years.get("2025", YearData([], [])).seasons[0].periods[0].start.strftime(
-        "%Z") if resort.years and resort.years["2025"].seasons else "UTC"
+    # Resort card
+    tz = "UTC"
+    if resort.years and "2025" in resort.years and resort.years["2025"].seasons:
+        tz = resort.years["2025"].seasons[0].periods[0].start.strftime("%Z") or "UTC"
     render_resort_card(resort_name, tz, "Address not available")
 
-    # ------------------------------------------------------------------ Inputs
+    # Inputs
     col1, col2 = st.columns(2)
     with col1:
         mode = st.radio("Mode", [UserMode.OWNER.value, UserMode.RENTER.value],
                         horizontal=True, key="calc_mode")
         mode = UserMode.OWNER if mode == UserMode.OWNER.value else UserMode.RENTER
-
     with col2:
         year = st.selectbox("Year", sorted(resort.years.keys()))
 
     col1, col2 = st.columns(2)
     with col1:
-        checkin = st.date_input(
-            "Check-in", value=date(int(year), 1, 10),
-            min_value=date(int(year), 1, 1), max_value=date(int(year), 12, 31))
+        checkin = st.date_input("Check-in", value=date(int(year), 1, 10),
+                                min_value=date(int(year), 1, 1),
+                                max_value=date(int(year), 12, 31))
     with col2:
         nights = st.number_input("Nights", 1, 21, 7, step=1)
 
-    # ------------------------------------------------------------------ Financial settings
+    # Financial settings
     with st.expander("Financial Settings", expanded=True):
         col1, col2 = st.columns(2)
         with col1:
             if mode == UserMode.OWNER:
-                rate = st.number_input(
-                    "Maintenance $/1k pts", value=st.session_state.get("pref_maint_rate", 0.56),
-                    step=0.01, format="%.3f")
-                purchase_price = st.number_input(
-                    "Purchase price $/pt", value=st.session_state.get("pref_purchase_price", 18.0))
-                capital_pct = st.number_input(
-                    "Capital %", value=st.session_state.get("pref_capital_cost", 5.0))
+                rate = st.number_input("Maintenance $/1k pts",
+                                       value=st.session_state.get("pref_maint_rate", 0.56),
+                                       step=0.01, format="%.3f")
+                purchase_price = st.number_input("Purchase price $/pt",
+                                                 value=st.session_state.get("pref_purchase_price", 18.0))
+                capital_pct = st.number_input("Capital %",
+                                              value=st.session_state.get("pref_capital_cost", 5.0))
                 inc_cap = st.checkbox("Include Capital", value=st.session_state.get("pref_inc_c", True))
-                salvage = st.number_input(
-                    "Salvage $/pt", value=st.session_state.get("pref_salvage_value", 3.0))
-                life = st.number_input(
-                    "Useful life (years)", value=st.session_state.get("pref_useful_life", 20), min_value=1)
+                salvage = st.number_input("Salvage $/pt",
+                                          value=st.session_state.get("pref_salvage_value", 3.0))
+                life = st.number_input("Useful life (years)",
+                                       value=st.session_state.get("pref_useful_life", 20), min_value=1)
                 inc_dep = st.checkbox("Include Depreciation", value=st.session_state.get("pref_inc_d", True))
             else:
-                rate = st.number_input(
-                    "Rental $/pt", value=st.session_state.get("renter_rate_val", 0.817),
-                    step=0.01, format="%.3f")
+                rate = st.number_input("Rental $/pt",
+                                       value=st.session_state.get("renter_rate_val", 0.817),
+                                       step=0.01, format="%.3f")
+                inc_cap = inc_dep = False
+                purchase_price = salvage = life = capital_pct = 0
 
-    # ------------------------------------------------------------------ All room types table
+    # All Room Types Table
     st.divider()
     st.subheader("Cost for All Room Types")
 
@@ -296,7 +301,6 @@ def main():
         st.error("No data for this year.")
         return
 
-    # Gather every room type
     room_types = set()
     for s in yd.seasons:
         for cat in s.day_categories:
@@ -311,19 +315,22 @@ def main():
         cost = calc.calculate_financial_cost(
             pts, rate,
             include_maintenance=True,
-            include_capital=inc_cap if mode == UserMode.OWNER else False,
-            include_depreciation=inc_dep if mode == UserMode.OWNER else False,
-            capital_pct=capital_pct if mode == UserMode.OWNER else 0,
-            salvage=salvage if mode == UserMode.OWNER else 0,
-            useful_life=life if mode == UserMode.OWNER else 1,
-            purchase_price=purchase_price if mode == UserMode.OWNER else 0,
+            include_capital=inc_cap,
+            include_depreciation=inc_dep,
+            capital_pct=capital_pct,
+            salvage=salvage,
+            useful_life=life,
+            purchase_price=purchase_price,
         )
-        rows.append({"Room Type": rt, "Points Required": pts, "Total Cost ($)": f"${cost:,.2f}"})
+        rows.append({
+            "Room Type": rt,
+            "Points Required": pts,
+            "Total Cost ($)": f"${cost:,.2f}"
+        })
 
     df = pd.DataFrame(rows)
     st.dataframe(df.style.format({"Points Required": "{:,}"}), use_container_width=True, hide_index=True)
 
-    # Cheapest / most expensive highlight
     if len(df) > 1:
         costs = df["Total Cost ($)"].str.replace("[$,]", "", regex=True).astype(float)
         cheapest = df.iloc[costs.idxmin()]
@@ -334,14 +341,13 @@ def main():
         with c2:
             st.warning(f"Most Expensive → {expensive['Room Type']}: {expensive['Total Cost ($)']} ({expensive['Points Required']:,} pts)")
 
-    # ------------------------------------------------------------------ Gantt calendar
+    # Gantt calendar
     st.divider()
     with st.expander("Season & Holiday Calendar", expanded=False):
-        st.plotly_chart(
-            create_gantt_chart_from_resort_data(resort, year_str, data.get("global_holidays", {})),
-            use_container_width=True)
+        fig = create_gantt_chart_from_resort_data(resort, year_str, data.get("global_holidays", {}))
+        st.plotly_chart(fig, use_container_width=True)
 
-    # ------------------------------------------------------------------ Settings save/load (sidebar bottom)
+    # Settings persistence
     with st.sidebar:
         with st.expander("Your Settings", expanded=False):
             st.info("Save your profile and reload anytime.")
@@ -375,6 +381,7 @@ def main():
             )
 
 
+# Required by app.py
 def run():
     main()
 
