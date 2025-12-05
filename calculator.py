@@ -4,13 +4,12 @@ import json
 from dataclasses import dataclass
 from datetime import datetime, timedelta, date
 from enum import Enum
-from typing import List, Dict, Optional, Any
+from typing import List, Dict, Optional, Any, Tuple
 import pandas as pd
 import streamlit as st
 from common.ui import render_resort_card, render_resort_grid, render_page_header
 from common.charts import create_gantt_chart_from_resort_data
 from common.data import ensure_data_in_session
-
 # ==============================================================================
 # LAYER 1: DOMAIN MODELS
 # ==============================================================================
