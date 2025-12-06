@@ -173,15 +173,15 @@ class MVCCalculator:
 TIER_NO_DISCOUNT = "No Discount"
 
 def apply_settings_from_dict(settings: dict):
-    st.session_state.pref_maint_rate = settings.get("maintenance_rate", 0.56)
+    st.session_state.pref_maint_rate = settings.get("maintenance_rate", 0.55)
     st.session_state.pref_purchase_price = settings.get("purchase_price", 18.0)
     st.session_state.pref_capital_cost = settings.get("capital_cost_pct", 5.0)
     st.session_state.pref_salvage_value = settings.get("salvage_value", 3.0)
-    st.session_state.pref_useful_life = settings.get("useful_life", 20)
+    st.session_state.pref_useful_life = settings.get("useful_life", 10)
     st.session_state.pref_discount_tier = settings.get("discount_tier", TIER_NO_DISCOUNT)
     st.session_state.pref_inc_c = settings.get("include_capital", True)
     st.session_state.pref_inc_d = settings.get("include_depreciation", True)
-    st.session_state.renter_rate_val = settings.get("renter_rate", 0.817)
+    st.session_state.renter_rate_val = settings.get("renter_rate", 0.50)
     st.session_state.renter_discount_tier = settings.get("renter_discount_tier", TIER_NO_DISCOUNT)
     if settings.get("preferred_resort_id"):
         st.session_state.current_resort_id = settings["preferred_resort_id"]
@@ -200,10 +200,9 @@ def main():
 
     render_page_header("Calculator", "Points & Cost Calculator", icon="Calculator")
 
-    # RESORT SELECTION MOVED TO MAIN AREA (exactly like your original app)
+    # Resort selection in main area
     st.markdown("### Resort Selection")
     render_resort_grid(calc.repo.get_resort_list_full(), st.session_state.get("current_resort_id"))
-
     if not st.session_state.get("current_resort_id"):
         st.info("Please select a resort above to continue.")
         return
@@ -239,21 +238,17 @@ def main():
         col1, col2 = st.columns(2)
         with col1:
             if mode == UserMode.OWNER:
-                rate_to_use = st.number_input("Maintenance Fee ($ per 1,000 pts)", value=st.session_state.get("pref_maint_rate", 0.56), step=0.01, format="%.3f")
+                rate_to_use = st.number_input("Maintenance Fee ($ per 1,000 pts)", value=st.session_state.get("pref_maint_rate", 0.55), step=0.01, format="%.3f")
                 purchase_price = st.number_input("Purchase Price ($ per point)", value=st.session_state.get("pref_purchase_price", 18.0), step=0.5)
                 capital_pct = st.number_input("Capital Reserve %", value=st.session_state.get("pref_capital_cost", 5.0), step=0.5)
                 include_capital = st.checkbox("Include Capital Reserve", value=st.session_state.get("pref_inc_c", True))
                 salvage = st.number_input("Salvage Value ($ per point)", value=st.session_state.get("pref_salvage_value", 3.0), step=0.5)
-                useful_life = st.number_input("Useful Life (years)", value=st.session_state.get("pref_useful_life", 20), min_value=1)
+                useful_life = st.number_input("Useful Life (years)", value=st.session_state.get("pref_useful_life", 10), min_value=1)
                 include_depreciation = st.checkbox("Include Depreciation", value=st.session_state.get("pref_inc_d", True))
             else:
-                rate_to_use = st.number_input("Rental Rate ($ per point)", value=st.session_state.get("renter_rate_val", 0.817), step=0.01, format="%.3f")
+                rate_to_use = st.number_input("Rental Rate ($ per point)", value=st.session_state.get("renter_rate_val", 0.50), step=0.01, format="%.3f")
                 include_capital = include_depreciation = False
                 purchase_price = salvage = useful_life = capital_pct = 0
-
-    # NEW: Cost for All Room Types
-    st.divider()
-    st.subheader("Cost for All Room Types")
 
     year_str = str(year)
     year_data = resort.years.get(year_str)
@@ -261,6 +256,7 @@ def main():
         st.error("No data for selected year.")
         return
 
+    # Get all room types
     all_room_types = set()
     for season in year_data.seasons:
         for cat in season.day_categories:
@@ -268,6 +264,34 @@ def main():
     for h in year_data.holidays:
         all_room_types.update(h.room_points.keys())
     all_room_types = sorted(all_room_types)
+
+    # DAILY BREAKDOWN — restored!
+    st.divider()
+    st.subheader("Daily Points Breakdown")
+
+    breakdown_rows = []
+    current_date = adj_in
+    for i in range(nights):
+        holiday = calc._is_holiday(current_date, year_data)
+        if holiday:
+            source = f"Holiday: {holiday.name}"
+        else:
+            season_name, _ = calc._get_season_day_category(current_date, current_date.strftime("%a"), year_data)
+            source = season_name or "Unknown"
+
+        breakdown_rows.append({
+            "Date": current_date.strftime("%Y-%m-%d"),
+            "Day": current_date.strftime("%a"),
+            "Season/Holiday": source,
+        })
+        current_date += timedelta(days=1)
+
+    breakdown_df = pd.DataFrame(breakdown_rows)
+    st.dataframe(breakdown_df, use_container_width=True, hide_index=True)
+
+    # COST FOR ALL ROOM TYPES
+    st.divider()
+    st.subheader("Cost for All Room Types")
 
     rows = []
     for room_type in all_room_types:
@@ -290,11 +314,10 @@ def main():
         })
 
     df = pd.DataFrame(rows)
-    st.dataframe(df, use_container_width=True, hide_index=True)
+    st.dataframe(df.style.format({"Points Required": "{:,}"}), use_container_width=True, hide_index=True)
 
-    # Cheapest / Most Expensive highlight
     if len(df) > 1:
-        cost_vals = df["Total Cost ($)"].str.replace("$", "").str.replace(",", "").astype(float)
+        cost_vals = df["Total Cost ($)"].str.replace("[$,]", "", regex=True).astype(float)
         cheapest = df.iloc[cost_vals.idxmin()]
         expensive = df.iloc[cost_vals.idxmax()]
         c1, c2 = st.columns(2)
@@ -309,14 +332,12 @@ def main():
         with st.expander("Season and Holiday Calendar", expanded=False):
             st.plotly_chart(create_gantt_chart_from_resort_data(resort, year_str, data.get("global_holidays", {})), use_container_width=True)
 
-    # Your original Settings panel in the sidebar
+    # Settings panel
     with st.sidebar:
         with st.expander("Your Calculator Settings", expanded=False):
             st.info("**Save time by saving your profile.**\nStore your costs, membership tier, and resort preference to a file.\nUpload it anytime to instantly restore your setup.")
-
             st.markdown("###### Load/Save Settings")
             config_file = st.file_uploader("Load Settings (JSON)", type="json", key="user_cfg_upload")
-
             if config_file:
                 file_sig = f"{config_file.name}_{config_file.size}"
                 if "last_loaded_cfg" not in st.session_state or st.session_state.last_loaded_cfg != file_sig:
@@ -328,16 +349,16 @@ def main():
 
             current_pref_resort = st.session_state.current_resort_id or ""
             current_settings = {
-                "maintenance_rate": st.session_state.get("pref_maint_rate", 0.56),
+                "maintenance_rate": st.session_state.get("pref_maint_rate", 0.55),
                 "purchase_price": st.session_state.get("pref_purchase_price", 18.0),
                 "capital_cost_pct": st.session_state.get("pref_capital_cost", 5.0),
                 "salvage_value": st.session_state.get("pref_salvage_value", 3.0),
-                "useful_life": st.session_state.get("pref_useful_life", 20),
+                "useful_life": st.session_state.get("pref_useful_life", 10),
                 "discount_tier": st.session_state.get("pref_discount_tier", TIER_NO_DISCOUNT),
                 "include_maintenance": True,
                 "include_capital": st.session_state.get("pref_inc_c", True),
                 "include_depreciation": st.session_state.get("pref_inc_d", True),
-                "renter_rate": st.session_state.get("renter_rate_val", 0.817),
+                "renter_rate": st.session_state.get("renter_rate_val", 0.50),
                 "renter_discount_tier": st.session_state.get("renter_discount_tier", TIER_NO_DISCOUNT),
                 "preferred_resort_id": current_pref_resort
             }
