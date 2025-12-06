@@ -609,9 +609,7 @@ def main() -> None:
                     st.session_state.pref_useful_life = val_life
                     life = val_life
                 with c2:
-                    val_salvage = st.number_input("Salvage ($/pt)", value=st.session_state.get("pref_salvage_value", 3.0), key="widget_salvage_# ... (continuing from where the artifact was cut off)
-
-value", step=0.5)
+                    val_salvage = st.number_input("Salvage ($/pt)", value=st.session_state.get("pref_salvage_value", 3.0), key="widget_salvage_value", step=0.5)
                     st.session_state.pref_salvage_value = val_salvage
                     salvage = val_salvage
             else:
