@@ -824,32 +824,37 @@ def main() -> None:
         with st.expander("📅 Season and Holiday Calendar", expanded=False):
             st.plotly_chart(create_gantt_chart_from_resort_data(res_data, year_str, st.session_state.data.get("global_holidays", {})), use_container_width=True)
 
-    # ONLY ADDITION: Cost for All Room Types (safe version)
+    # --- NEW: Cost for All Room Types (safe, works with your real code) ---
     st.divider()
     st.subheader("Cost for All Room Types")
 
-    # Safely collect all room types
+    # Collect all room types safely
     all_room_types = set()
     for season in year_data.seasons:
         for cat in season.day_categories:
             all_room_types.update(cat.room_points.keys())
-    for holiday in year_data.holidays:
-        all_room_types.update(holiday.room_points.keys())
+    for h in year_data.holidays:
+        all_room_types.update(h.room_points.keys())
     all_room_types = sorted(all_room_types)
 
-    # Build table
-    rows = []
-    for room_type in all_room_types:
-        points = calc.get_points_for_room(resort, year_str, adj_in, nights, room_type, mode)
-        cost = calc.calculate_financial_cost(points, rate_to_use, True, include_capital, include_depreciation,
-                                            capital_pct, salvage, useful_life, purchase_price)
-        rows.append({
-            "Room Type": room_type,
-            "Points Required": f"{points:,}",
+    # Build the table
+    table_data = []
+    for rt in all_room_types:
+        pts = calc.get_points_for_room(resort, year_str, adj_in, nights, rt, mode)
+        cost = calc.calculate_financial_cost(
+            pts, rate_to_use, True,
+            include_capital if mode == UserMode.OWNER else False,
+            include_depreciation if mode == UserMode.OWNER else False,
+            capital_pct, salvage, useful_life, purchase_price
+        )
+        table_data.append({
+            "Room Type": rt,
+            "Points Required": f"{pts:,}",
             "Total Cost ($)": f"${cost:,.2f}"
         })
 
-    st.dataframe(pd.DataFrame(rows), use_container_width=True, hide_index=True)
+    st.dataframe(pd.DataFrame(table_data), use_container_width=True, hide_index=True)
+    # --- END OF NEW TABLE ---
             
     # --- CONFIGURATION SECTION ---
     with st.sidebar:
