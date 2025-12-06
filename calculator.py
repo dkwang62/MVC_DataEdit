@@ -211,7 +211,7 @@ def apply_settings_from_dict(settings: dict):
         st.session_state.current_resort_id = settings["preferred_resort_id"]
 
 # ==============================================================================
-# MAIN APP — 100% your original
+# MAIN APP — 100% your original code
 # ==============================================================================
 def main():
     ensure_data_in_session()
@@ -301,7 +301,7 @@ def main():
         current_date += timedelta(days=1)
     st.dataframe(pd.DataFrame(breakdown_rows), use_container_width=True, hide_index=True)
 
-    # NEW: Cost for All Room Types — replaces old comparison
+    # [NEW] Cost for All Room Types — only addition
     st.divider()
     st.subheader("Cost for All Room Types")
 
@@ -314,27 +314,26 @@ def main():
         for k in h.room_points.keys()
     })
 
-    rows = []
+    table_rows = []
     for room_type in all_room_types:
         points = calc.get_points_for_room(resort, year_str, adj_in, nights, room_type, mode)
         cost = calc.calculate_financial_cost(points, rate_to_use, True, include_capital, include_depreciation,
                                             capital_pct, salvage, useful_life, purchase_price)
-        rows.append({
+        table_rows.append({
             "Room Type": room_type,
-            "Points Required": points,
-            "Total Cost ($)": cost
+            "Points Required": f"{points:,}",
+            "Total Cost ($)": f"${cost:,.2f}"
         })
 
-    df = pd.DataFrame(rows)
-    st.dataframe(df.style.format({"Points Required": "{:,}", "Total Cost ($)": "${:,.2f}"}), use_container_width=True, hide_index=True)
+    st.dataframe(pd.DataFrame(table_rows), use_container_width=True, hide_index=True)
 
-    # Gantt chart
+    # Gantt chart — your original
     if year_str in resort.years:
         st.divider()
         with st.expander("Season and Holiday Calendar", expanded=False):
             st.plotly_chart(create_gantt_chart_from_resort_data(resort, year_str, data.get("global_holidays", {})), use_container_width=True)
 
-    # Your ORIGINAL settings sidebar
+    # Your original settings sidebar — untouched
     with st.sidebar:
         with st.expander("Your Calculator Settings", expanded=False):
             st.info(
