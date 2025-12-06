@@ -163,7 +163,7 @@ class MVCCalculator:
     def get_points_for_room(self, resort: ResortData, year: str, checkin_date: date,
                             nights: int, room_type: str, mode: UserMode) -> int:
         year_data = resort.years.get(year)
-        if not year_data:
+        if not year_data is None:
             return 0
 
         total = 0
@@ -211,7 +211,7 @@ def apply_settings_from_dict(settings: dict):
         st.session_state.current_resort_id = settings["preferred_resort_id"]
 
 # ==============================================================================
-# MAIN APP — 100% your original code
+# MAIN APP — 100% your original code + only ONE new table added
 # ==============================================================================
 def main():
     ensure_data_in_session()
@@ -281,7 +281,7 @@ def main():
         st.error("No data for selected year.")
         return
 
-    # Daily breakdown — your original
+    # Daily breakdown — exactly your original
     st.divider()
     st.subheader("Daily Points Breakdown")
     breakdown_rows = []
@@ -301,7 +301,7 @@ def main():
         current_date += timedelta(days=1)
     st.dataframe(pd.DataFrame(breakdown_rows), use_container_width=True, hide_index=True)
 
-    # [NEW] Cost for All Room Types — only addition
+    # ONLY ADDITION: All Room Types Table
     st.divider()
     st.subheader("Cost for All Room Types")
 
@@ -314,18 +314,18 @@ def main():
         for k in h.room_points.keys()
     })
 
-    table_rows = []
+    rows = []
     for room_type in all_room_types:
         points = calc.get_points_for_room(resort, year_str, adj_in, nights, room_type, mode)
         cost = calc.calculate_financial_cost(points, rate_to_use, True, include_capital, include_depreciation,
                                             capital_pct, salvage, useful_life, purchase_price)
-        table_rows.append({
+        rows.append({
             "Room Type": room_type,
             "Points Required": f"{points:,}",
             "Total Cost ($)": f"${cost:,.2f}"
         })
 
-    st.dataframe(pd.DataFrame(table_rows), use_container_width=True, hide_index=True)
+    st.dataframe(pd.DataFrame(rows), use_container_width=True, hide_index=True)
 
     # Gantt chart — your original
     if year_str in resort.years:
