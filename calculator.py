@@ -204,7 +204,7 @@ def main():
         st.info("Please select a resort above to continue.")
         return
 
-    r_name = st.session_state.current_resort_id
+    r_name = st.session_state.current_resort
     st.session_state.current_resort = r_name
 
     resort = calc.repo.get_resort(r_name)
