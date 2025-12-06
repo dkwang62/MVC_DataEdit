@@ -803,6 +803,55 @@ def main() -> None:
         cols[1].metric("Total Rent", f"${res.financial_total:,.0f}")
         if res.discount_applied: st.success(f"Discount Applied: {len(res.discounted_days)} days")
 
+    # 📊 Room-type summary table for the selected period
+    # Computes total points and corresponding $ cost/rent for every room type
+    # in this resort over the selected date range, respecting the selected
+    # discount tier and mode (Renter vs Owner).
+    summary_rows = []
+    for rt in room_types:
+        rt_res = calc.calculate_breakdown(
+            r_name,
+            rt,
+            adj_in,
+            adj_n,
+            mode,
+            rate_to_use,
+            policy,
+            owner_params,
+        )
+        row = {
+            "Room Type": rt,
+            "Total Points": rt_res.total_points,
+        }
+        if mode == UserMode.OWNER:
+            row["Total Cost"] = rt_res.financial_total
+        else:
+            row["Total Rent"] = rt_res.financial_total
+        summary_rows.append(row)
+
+    if summary_rows:
+        summary_df = pd.DataFrame(summary_rows)
+        if mode == UserMode.OWNER and "Total Cost" in summary_df.columns:
+            summary_df["Total Cost"] = summary_df["Total Cost"].apply(
+                lambda x: f"${x:,.0f}" if isinstance(x, (int, float)) else x
+            )
+        if mode == UserMode.RENTER and "Total Rent" in summary_df.columns:
+            summary_df["Total Rent"] = summary_df["Total Rent"].apply(
+                lambda x: f"${x:,.0f}" if isinstance(x, (int, float)) else x
+            )
+
+        st.markdown("### 📊 Room Type Summary (Selected Period)")
+        st.dataframe(summary_df, use_container_width=True, hide_index=True)
+
+
+
+
+
+
+
+
+
+    
     st.dataframe(res.breakdown_df, use_container_width=True, hide_index=True)
 
     if comp_rooms:
