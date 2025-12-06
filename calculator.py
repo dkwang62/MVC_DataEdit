@@ -824,19 +824,20 @@ def main() -> None:
         with st.expander("📅 Season and Holiday Calendar", expanded=False):
             st.plotly_chart(create_gantt_chart_from_resort_data(res_data, year_str, st.session_state.data.get("global_holidays", {})), use_container_width=True)
 
-# ONLY ADDITION: Cost for All Room Types (20 lines)
+    # ONLY ADDITION: Cost for All Room Types (safe version)
     st.divider()
     st.subheader("Cost for All Room Types")
 
-    all_room_types = sorted({
-        k for season in year_data.seasons
-        for cat in season.day_categories
-        for k in cat.room_points.keys()
-    } | {
-        k for h in year_data.holidays
-        for k in h.room_points.keys()
-    })
+    # Safely collect all room types
+    all_room_types = set()
+    for season in year_data.seasons:
+        for cat in season.day_categories:
+            all_room_types.update(cat.room_points.keys())
+    for holiday in year_data.holidays:
+        all_room_types.update(holiday.room_points.keys())
+    all_room_types = sorted(all_room_types)
 
+    # Build table
     rows = []
     for room_type in all_room_types:
         points = calc.get_points_for_room(resort, year_str, adj_in, nights, room_type, mode)
@@ -849,8 +850,6 @@ def main() -> None:
         })
 
     st.dataframe(pd.DataFrame(rows), use_container_width=True, hide_index=True)
-
-    
             
     # --- CONFIGURATION SECTION ---
     with st.sidebar:
