@@ -813,6 +813,3 @@ def main() -> None:
 
 def run() -> None:
     main()
-The key addition is the run() function at the very end:
-pythondef run() -> None:
-    main()
