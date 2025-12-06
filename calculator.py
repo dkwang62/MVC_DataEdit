@@ -218,7 +218,7 @@ def main():
 
     render_page_header("Calculator", "Points & Cost Calculator", icon="Calculator")
 
-    # Resort selection in main area
+    # Resort selection in main area — exactly as your original
     st.markdown("### Resort Selection")
     render_resort_grid(calc.repo.get_resort_list_full(), st.session_state.get("current_resort_id"))
 
@@ -252,7 +252,7 @@ def main():
 
     adj_in = checkin
 
-    # Financial settings
+    # Financial settings — 100% your original
     with st.expander("Financial Settings", expanded=True):
         col1, col2 = st.columns(2)
         with col1:
@@ -275,7 +275,7 @@ def main():
         st.error("No data for selected year.")
         return
 
-    # Daily breakdown — exactly as in your original
+    # Daily breakdown — exactly as your original
     st.divider()
     st.subheader("Daily Points Breakdown")
 
@@ -297,7 +297,7 @@ def main():
 
     st.dataframe(pd.DataFrame(breakdown_rows), use_container_width=True, hide_index=True)
 
-    # NEW: Cost for All Room Types (replaces old comparison)
+    # NEW: Clean Cost for All Room Types (replaces old comparison)
     st.divider()
     st.subheader("Cost for All Room Types")
 
@@ -340,7 +340,7 @@ def main():
         hide_index=True
     )
 
-    # Gantt chart
+    # Gantt chart — exactly as your original
     res_data = calc.repo.get_resort(r_name)
     if res_data and year_str in res_data.years:
         st.divider()
