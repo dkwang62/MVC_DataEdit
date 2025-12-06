@@ -200,14 +200,13 @@ def main():
 
     render_page_header("Calculator", "Points & Cost Calculator", icon="Calculator")
 
-    # Sidebar – Resort selection (your original layout)
-    with st.sidebar:
-        st.markdown("### Resort Selection")
-        render_resort_grid(calc.repo.get_resort_list_full(), st.session_state.get("current_resort_id"))
+    # RESORT SELECTION MOVED TO MAIN AREA (exactly like your original app)
+    st.markdown("### Resort Selection")
+    render_resort_grid(calc.repo.get_resort_list_full(), st.session_state.get("current_resort_id"))
 
-        if not st.session_state.get("current_resort_id"):
-            st.info("Please select a resort to continue.")
-            return
+    if not st.session_state.get("current_resort_id"):
+        st.info("Please select a resort above to continue.")
+        return
 
     r_name = st.session_state.current_resort
     resort = calc.repo.get_resort(r_name)
@@ -252,7 +251,7 @@ def main():
                 include_capital = include_depreciation = False
                 purchase_price = salvage = useful_life = capital_pct = 0
 
-    # NEW: Cost for All Room Types (replaces old comparison)
+    # NEW: Cost for All Room Types
     st.divider()
     st.subheader("Cost for All Room Types")
 
@@ -291,9 +290,9 @@ def main():
         })
 
     df = pd.DataFrame(rows)
-    st.dataframe(df.style.set_properties(**{'text-align': 'left'}), use_container_width=True, hide_index=True)
+    st.dataframe(df, use_container_width=True, hide_index=True)
 
-    # Cheapest / Most Expensive
+    # Cheapest / Most Expensive highlight
     if len(df) > 1:
         cost_vals = df["Total Cost ($)"].str.replace("$", "").str.replace(",", "").astype(float)
         cheapest = df.iloc[cost_vals.idxmin()]
@@ -310,7 +309,7 @@ def main():
         with st.expander("Season and Holiday Calendar", expanded=False):
             st.plotly_chart(create_gantt_chart_from_resort_data(resort, year_str, data.get("global_holidays", {})), use_container_width=True)
 
-    # Your original Settings panel (unchanged)
+    # Your original Settings panel in the sidebar
     with st.sidebar:
         with st.expander("Your Calculator Settings", expanded=False):
             st.info("**Save time by saving your profile.**\nStore your costs, membership tier, and resort preference to a file.\nUpload it anytime to instantly restore your setup.")
