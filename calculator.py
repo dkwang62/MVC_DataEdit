@@ -13,7 +13,32 @@ from common.charts import create_gantt_chart_from_resort_data
 from common.data import ensure_data_in_session
 
 # ==============================================================================
-# LAYER 1: DOMAIN MODELS
+# AUTO-LOAD SETTINGS WHEN CALCULATOR IS CHOSEN
+# ==============================================================================
+SETTINGS_FILE = "mvc_owner_settings.json"
+if "calc_settings_loaded" not in st.session_state:
+    if os.path.exists(SETTINGS_FILE):
+        try:
+            with open(SETTINGS_FILE) as f:
+                settings = json.load(f)
+            # Apply all settings
+            st.session_state.pref_maint_rate = settings.get("maintenance_rate", 0.55)
+            st.session_state.pref_purchase_price = settings.get("purchase_price", 18.0)
+            st.session_state.pref_capital_cost = settings.get("capital_cost_pct", 5.0)
+            st.session_state.pref_salvage_value = settings.get("salvage_value", 3.0)
+            st.session_state.pref_useful_life = settings.get("useful_life", 10)
+            st.session_state.pref_inc_c = settings.get("include_capital", True)
+            st.session_state.pref_inc_d = settings.get("include_depreciation", True)
+            st.session_state.renter_rate_val = settings.get("renter_rate", 0.50)
+            if settings.get("preferred_resort_id"):
+                st.session_state.current_resort_id = settings["preferred_resort_id"]
+            st.toast("Loaded mvc_owner_settings.json", icon="Success")
+        except Exception as e:
+            st.warning(f"Could not load settings: {e}")
+    st.session_state.calc_settings_loaded = True
+
+# ==============================================================================
+# MODELS & REPOSITORY (unchanged)
 # ==============================================================================
 class UserMode(Enum):
     RENTER = "Renter"
@@ -53,9 +78,6 @@ class YearData:
     holidays: List[Holiday]
     seasons: List[Season]
 
-# ==============================================================================
-# REPOSITORY
-# ==============================================================================
 class MVCRepository:
     def __init__(self, raw_data: dict):
         self._raw = raw_data
@@ -168,38 +190,6 @@ class MVCCalculator:
         return round(cost, 2)
 
 # ==============================================================================
-# SETTINGS HELPERS
-# ==============================================================================
-TIER_NO_DISCOUNT = "No Discount"
-
-def apply_settings_from_dict(settings: dict):
-    st.session_state.pref_maint_rate = settings.get("maintenance_rate", 0.55)
-    st.session_state.pref_purchase_price = settings.get("purchase_price", 18.0)
-    st.session_state.pref_capital_cost = settings.get("capital_cost_pct", 5.0)
-    st.session_state.pref_salvage_value = settings.get("salvage_value", 3.0)
-    st.session_state.pref_useful_life = settings.get("useful_life", 10)
-    st.session_state.pref_inc_c = settings.get("include_capital", True)
-    st.session_state.pref_inc_d = settings.get("include_depreciation", True)
-    st.session_state.renter_rate_val = settings.get("renter_rate", 0.50)
-    st.session_state.renter_discount_tier = settings.get("renter_discount_tier", TIER_NO_DISCOUNT)
-    if settings.get("preferred_resort_id"):
-        st.session_state.current_resort_id = settings["preferred_resort_id"]
-
-# AUTO-LOAD MVC_owner_settings.json on startup
-if "settings_loaded" not in st.session_state:
-    settings_path = "MVC_owner_settings.json"
-    if os.path.exists(settings_path):
-        try:
-            with open(settings_path) as f:
-                user_settings = json.load(f)
-            apply_settings_from_dict(user_settings)
-            st.session_state.settings_loaded = True
-        except Exception as e:
-            st.warning(f"Could not load settings: {e}")
-    else:
-        st.session_state.settings_loaded = True
-
-# ==============================================================================
 # MAIN APP
 # ==============================================================================
 def main():
@@ -213,7 +203,6 @@ def main():
 
     render_page_header("Calculator", "Points & Cost Calculator", icon="Calculator")
 
-    # Resort selection
     st.markdown("### Resort Selection")
     render_resort_grid(calc.repo.get_resort_list_full(), st.session_state.get("current_resort_id"))
     if not st.session_state.get("current_resort_id"):
@@ -226,7 +215,6 @@ def main():
         st.error("Resort data not found.")
         return
 
-    # Real address & timezone
     all_resorts = calc.repo.get_resort_list_full()
     current_resort_data = next((r for r in all_resorts if r["display_name"] == r_name), {})
     address = current_resort_data.get("address", "Address not available")
@@ -247,14 +235,19 @@ def main():
     with col2:
         nights = st.number_input("Nights", min_value=1, max_value=21, value=7, step=1)
 
-    adj_in = checkin
+    # RATE INPUTS OUTSIDE EXPANDER
+    if mode == UserMode.OWNER:
+        rate_to_use = st.number_input("Maintenance Fee ($ per 1,000 pts)", 
+                                    value=st.session_state.get("pref_maint_rate", 0.55), step=0.01, format="%.3f")
+    else:
+        rate_to_use = st.number_input("Rental Rate ($ per point)", 
+                                    value=st.session_state.get("renter_rate_val", 0.50), step=0.01, format="%.3f")
 
-    # Financial settings
-    with st.expander("Financial Settings", expanded=True):
+    # Other financial settings in expander
+    with st.expander("Advanced Financial Settings", expanded=False):
         col1, col2 = st.columns(2)
         with col1:
             if mode == UserMode.OWNER:
-                rate_to_use = st.number_input("Maintenance Fee ($ per 1,000 pts)", value=st.session_state.get("pref_maint_rate", 0.55), step=0.01, format="%.3f")
                 purchase_price = st.number_input("Purchase Price ($ per point)", value=st.session_state.get("pref_purchase_price", 18.0), step=0.5)
                 capital_pct = st.number_input("Capital Reserve %", value=st.session_state.get("pref_capital_cost", 5.0), step=0.5)
                 include_capital = st.checkbox("Include Capital Reserve", value=st.session_state.get("pref_inc_c", True))
@@ -262,9 +255,8 @@ def main():
                 useful_life = st.number_input("Useful Life (years)", value=st.session_state.get("pref_useful_life", 10), min_value=1)
                 include_depreciation = st.checkbox("Include Depreciation", value=st.session_state.get("pref_inc_d", True))
             else:
-                rate_to_use = st.number_input("Rental Rate ($ per point)", value=st.session_state.get("renter_rate_val", 0.50), step=0.01, format="%.3f")
-                include_capital = include_depreciation = False
                 purchase_price = salvage = useful_life = capital_pct = 0
+                include_capital = include_depreciation = False
 
     year_str = str(year)
     year_data = resort.years.get(year_str)
@@ -272,33 +264,72 @@ def main():
         st.error("No data for selected year.")
         return
 
-    # Daily breakdown
+    # DAILY BREAKDOWN with Points & Cost (rounded up)
     st.divider()
-    st.subheader("Daily Points Breakdown")
+    st.subheader("Daily Points & Cost Breakdown")
+
     breakdown_rows = []
-    current_date = adj_in
+    current_date = checkin
     for _ in range(nights):
         holiday = calc._is_holiday(current_date, year_data)
-        source = f"Holiday: {holiday.name}" if holiday else (calc._get_season_day_category(current_date, current_date.strftime("%a"), year_data)[0] or "Unknown Season")
-        breakdown_rows.append({"Date": current_date.strftime("%Y-%m-%d"), "Day": current_date.strftime("%a"), "Period": source})
+        if holiday:
+            source = f"Holiday: {holiday.name}"
+        else:
+            season_name, _ = calc._get_season_day_category(current_date, current_date.strftime("%a"), year_data)
+            source = season_name or "Unknown Season"
+
+        # Find points for any room type (they should be the same per day)
+        points_day = 0
+        for room_type in ["1BR", "2BR", "Studio"]:  # try common ones
+            if holiday and room_type in holiday.room_points:
+                points_day = holiday.room_points[room_type]
+                break
+            else:
+                _, points_map = calc._get_season_day_category(current_date, current_date.strftime("%a"), year_data)
+                if room_type in points_map:
+                    points_day = points_map[room_type]
+                    break
+
+        cost_day = calc.calculate_financial_cost(
+            points_day, rate_to_use, True, include_capital, include_depreciation,
+            capital_pct, salvage, useful_life, purchase_price
+        )
+        cost_day_rounded = math.ceil(cost_day * 100) / 100  # round up to nearest cent
+
+        breakdown_rows.append({
+            "Date": current_date.strftime("%Y-%m-%d"),
+            "Day": current_date.strftime("%a"),
+            "Period": source,
+            "Points": points_day,
+            "Cost ($)": f"${cost_day_rounded:,.2f}"
+        })
         current_date += timedelta(days=1)
+
     st.dataframe(pd.DataFrame(breakdown_rows), use_container_width=True, hide_index=True)
 
-    # Cost for All Room Types
+    # TOTAL COST TABLE (correct total)
     st.divider()
-    st.subheader("Cost for All Room Types")
+    st.subheader("Total Cost for All Room Types")
+
     all_room_types = sorted({
-        k for season in year_data.seasons for cat in season.day_categories for k in cat.room_points.keys()
+        k for season in year_data.seasons
+        for cat in season.day_categories
+        for k in cat.room_points.keys()
     } | {
-        k for h in year_data.holidays for k in h.room_points.keys()
+        k for h in year_data.holidays
+        for k in h.room_points.keys()
     })
 
     rows = []
     for room_type in all_room_types:
-        points = calc.get_points_for_room(resort, year_str, adj_in, nights, room_type, mode)
+        points = calc.get_points_for_room(resort, year_str, checkin, nights, room_type, mode)
         cost = calc.calculate_financial_cost(points, rate_to_use, True, include_capital, include_depreciation,
                                             capital_pct, salvage, useful_life, purchase_price)
-        rows.append({"Room Type": room_type, "Points Required": points, "Total Cost ($)": cost})
+        rows.append({
+            "Room Type": room_type,
+            "Points Required": points,
+            "Total Cost ($)": cost
+        })
 
     df = pd.DataFrame(rows)
     st.dataframe(df.style.format({"Points Required": "{:,}", "Total Cost ($)": "${:,.2f}"}), use_container_width=True, hide_index=True)
@@ -332,7 +363,7 @@ def main():
                 "renter_rate": st.session_state.get("renter_rate_val", 0.50),
                 "preferred_resort_id": st.session_state.current_resort_id or ""
             }
-            st.download_button("Save Settings", json.dumps(current_settings, indent=2), "MVC_owner_settings.json", "application/json", use_container_width=True)
+            st.download_button("Save Settings", json.dumps(current_settings, indent=2), "mvc_owner_settings.json", "application/json", use_container_width=True)
 
 def run():
     main()
