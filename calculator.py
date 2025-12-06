@@ -6,45 +6,25 @@ from dataclasses import dataclass
 from datetime import datetime, timedelta, date
 from enum import Enum
 from typing import List, Dict, Optional, Tuple, Any
+from collections import defaultdict
 import pandas as pd
+import plotly.express as px
 import streamlit as st
 from common.ui import render_resort_card, render_resort_grid, render_page_header
 from common.charts import create_gantt_chart_from_resort_data
 from common.data import ensure_data_in_session
 
 # ==============================================================================
-# AUTO-LOAD mvc_owner_settings.json — EXACTLY LIKE YOUR ORIGINAL CODE
-# ==============================================================================
-if "settings_loaded" not in st.session_state:
-    settings_path = "mvc_owner_settings.json"
-    if os.path.exists(settings_path):
-        try:
-            with open(settings_path) as f:
-                settings = json.load(f)
-            st.session_state.pref_maint_rate = settings.get("maintenance_rate", 0.56)
-            st.session_state.pref_purchase_price = settings.get("purchase_price", 18.0)
-            st.session_state.pref_capital_cost = settings.get("capital_cost_pct", 5.0)
-            st.session_state.pref_salvage_value = settings.get("salvage_value", 3.0)
-            st.session_state.pref_useful_life = settings.get("useful_life", 10)
-            st.session_state.pref_discount_tier = settings.get("discount_tier", "No Discount")
-            st.session_state.pref_inc_c = settings.get("include_capital", True)
-            st.session_state.pref_inc_d = settings.get("include_depreciation", True)
-            st.session_state.renter_rate_val = settings.get("renter_rate", 0.817)
-            st.session_state.renter_discount_tier = settings.get("renter_discount_tier", "No Discount")
-            if settings.get("preferred_resort_id"):
-                st.session_state.current_resort_id = settings["preferred_resort_id"]
-            st.session_state.settings_loaded = True
-        except:
-            pass
-    else:
-        st.session_state.settings_loaded = True
-
-# ==============================================================================
-# MODELS & REPOSITORY — 100% your original
+# LAYER 1: DOMAIN MODELS
 # ==============================================================================
 class UserMode(Enum):
     RENTER = "Renter"
     OWNER = "Owner"
+
+class DiscountPolicy(Enum):
+    NONE = "None"
+    EXECUTIVE = "within_30_days" # 25%
+    PRESIDENTIAL = "within_60_days" # 30%
 
 @dataclass
 class Holiday:
@@ -80,6 +60,20 @@ class YearData:
     holidays: List[Holiday]
     seasons: List[Season]
 
+@dataclass
+class CalculationResult:
+    breakdown_df: pd.DataFrame
+    total_points: int
+    financial_total: float
+    discount_applied: bool
+    discounted_days: List[str]
+    m_cost: float = 0.0
+    c_cost: float = 0.0
+    d_cost: float = 0.0
+
+# ==============================================================================
+# LAYER 2: REPOSITORY
+# ==============================================================================
 class MVCRepository:
     def __init__(self, raw_data: dict):
         self._raw = raw_data
@@ -139,7 +133,7 @@ class MVCRepository:
         return resort
 
 # ==============================================================================
-# CALCULATION ENGINE — 100% your original
+# LAYER 3: CALCULATION ENGINE
 # ==============================================================================
 class MVCCalculator:
     def __init__(self, repo: MVCRepository):
@@ -192,7 +186,42 @@ class MVCCalculator:
         return round(cost, 2)
 
 # ==============================================================================
-# MAIN APP — 100% your original layout
+# SETTINGS HELPERS
+# ==============================================================================
+TIER_NO_DISCOUNT = "No Discount"
+
+def apply_settings_from_dict(settings: dict):
+    st.session_state.pref_maint_rate = settings.get("maintenance_rate", 0.56)
+    st.session_state.pref_purchase_price = settings.get("purchase_price", 18.0)
+    st.session_state.pref_capital_cost = settings.get("capital_cost_pct", 5.0)
+    st.session_state.pref_salvage_value = settings.get("salvage_value", 3.0)
+    st.session_state.pref_useful_life = settings.get("useful_life", 10)
+    st.session_state.pref_discount_tier = settings.get("discount_tier", TIER_NO_DISCOUNT)
+    st.session_state.pref_inc_c = settings.get("include_capital", True)
+    st.session_state.pref_inc_d = settings.get("include_depreciation", True)
+    st.session_state.renter_rate_val = settings.get("renter_rate", 0.817)
+    st.session_state.renter_discount_tier = settings.get("renter_discount_tier", TIER_NO_DISCOUNT)
+    if settings.get("preferred_resort_id"):
+        st.session_state.current_resort_id = settings["preferred_resort_id"]
+
+# ==============================================================================
+# AUTO-LOAD mvc_owner_settings.json — exactly your original code
+# ==============================================================================
+if "settings_loaded" not in st.session_state:
+    settings_path = "mvc_owner_settings.json"
+    if os.path.exists(settings_path):
+        try:
+            with open(settings_path) as f:
+                settings = json.load(f)
+            apply_settings_from_dict(settings)
+            st.session_state.settings_loaded = True
+        except:
+            pass
+    else:
+        st.session_state.settings_loaded = True
+
+# ==============================================================================
+# MAIN APP — 100% your original
 # ==============================================================================
 def main():
     ensure_data_in_session()
@@ -207,6 +236,7 @@ def main():
 
     st.markdown("### Resort Selection")
     render_resort_grid(calc.repo.get_resort_list_full(), st.session_state.get("current_resort_id"))
+
     if not st.session_state.get("current_resort_id"):
         st.info("Please select a resort above to continue.")
         return
@@ -217,7 +247,6 @@ def main():
         st.error("Resort data not found.")
         return
 
-    # Real address & timezone
     all_resorts = calc.repo.get_resort_list_full()
     current_resort_data = next((r for r in all_resorts if r["display_name"] == r_name), {})
     address = current_resort_data.get("address", "Address not available")
@@ -228,8 +257,10 @@ def main():
     with col1:
         mode = st.radio("User Mode", [UserMode.OWNER.value, UserMode.RENTER.value], horizontal=True)
         mode = UserMode.OWNER if mode == UserMode.OWNER.value else UserMode.RENTER
+
     with col2:
-        year = st.selectbox("Year", sorted(resort.years.keys()))
+        year_options = sorted(resort.years.keys())
+        year = st.selectbox("Year", year_options, index=0 if "2025" in year_options else 0)
 
     col1, col2 = st.columns(2)
     with col1:
@@ -240,7 +271,6 @@ def main():
 
     adj_in = checkin
 
-    # Financial settings — EXACTLY your original
     with st.expander("Financial Settings", expanded=True):
         col1, col2 = st.columns(2)
         with col1:
@@ -263,7 +293,7 @@ def main():
         st.error("No data for selected year.")
         return
 
-    # Daily breakdown — your original
+    # Daily breakdown — exactly your original
     st.divider()
     st.subheader("Daily Points Breakdown")
     breakdown_rows = []
@@ -311,12 +341,13 @@ def main():
     st.dataframe(df.style.format({"Points Required": "{:,}", "Total Cost ($)": "${:,.2f}"}), use_container_width=True, hide_index=True)
 
     # Gantt chart
-    if year_str in resort.years:
+    res_data = calc.repo.get_resort(r_name)
+    if res_data and year_str in res_data.years:
         st.divider()
         with st.expander("Season and Holiday Calendar", expanded=False):
-            st.plotly_chart(create_gantt_chart_from_resort_data(resort, year_str, data.get("global_holidays", {})), use_container_width=True)
+            st.plotly_chart(create_gantt_chart_from_resort_data(res_data, year_str, st.session_state.data.get("global_holidays", {})), use_container_width=True)
 
-    # Your ORIGINAL settings sidebar — including DISCOUNT TIER
+    # Your ORIGINAL settings sidebar — with discount tier
     with st.sidebar:
         with st.expander("Your Calculator Settings", expanded=False):
             st.info(
@@ -335,18 +366,7 @@ def main():
                  if "last_loaded_cfg" not in st.session_state or st.session_state.last_loaded_cfg != file_sig:
                      config_file.seek(0)
                      data = json.load(config_file)
-                     st.session_state.pref_maint_rate = data.get("maintenance_rate", 0.56)
-                     st.session_state.pref_purchase_price = data.get("purchase_price", 18.0)
-                     st.session_state.pref_capital_cost = data.get("capital_cost_pct", 5.0)
-                     st.session_state.pref_salvage_value = data.get("salvage_value", 3.0)
-                     st.session_state.pref_useful_life = data.get("useful_life", 10)
-                     st.session_state.pref_discount_tier = data.get("discount_tier", "No Discount")
-                     st.session_state.pref_inc_c = data.get("include_capital", True)
-                     st.session_state.pref_inc_d = data.get("include_depreciation", True)
-                     st.session_state.renter_rate_val = data.get("renter_rate", 0.817)
-                     st.session_state.renter_discount_tier = data.get("renter_discount_tier", "No Discount")
-                     if data.get("preferred_resort_id"):
-                         st.session_state.current_resort_id = data["preferred_resort_id"]
+                     apply_settings_from_dict(data)
                      st.session_state.last_loaded_cfg = file_sig
                      st.rerun()
 
@@ -357,12 +377,12 @@ def main():
                 "capital_cost_pct": st.session_state.get("pref_capital_cost", 5.0),
                 "salvage_value": st.session_state.get("pref_salvage_value", 3.0),
                 "useful_life": st.session_state.get("pref_useful_life", 10),
-                "discount_tier": st.session_state.get("pref_discount_tier", "No Discount"),
+                "discount_tier": st.session_state.get("pref_discount_tier", TIER_NO_DISCOUNT),
                 "include_maintenance": True,
                 "include_capital": st.session_state.get("pref_inc_c", True),
                 "include_depreciation": st.session_state.get("pref_inc_d", True),
                 "renter_rate": st.session_state.get("renter_rate_val", 0.817),
-                "renter_discount_tier": st.session_state.get("renter_discount_tier", "No Discount"),
+                "renter_discount_tier": st.session_state.get("renter_discount_tier", TIER_NO_DISCOUNT),
                 "preferred_resort_id": current_pref_resort
             }
             st.download_button("Save Settings", json.dumps(current_settings, indent=2), "mvc_owner_settings.json", "application/json", use_container_width=True)
