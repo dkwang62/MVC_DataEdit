@@ -719,24 +719,55 @@ def main() -> None:
 
     if summary_rows:
         summary_df = pd.DataFrame(summary_rows)
-        if mode == UserMode.OWNER and "Total Cost" in summary_df.columns:
-            summary_df["Total Cost"] = summary_df["Total Cost"].apply(lambda x: f"${x:,.0f}" if isinstance(x, (int, float)) else x)
-        if mode == UserMode.RENTER and "Total Rent" in summary_df.columns:
-            summary_df["Total Rent"] = summary_df["Total Rent"].apply(lambda x: f"${x:,.0f}" if isinstance(x, (int, float)) else x)
-
-        st.markdown("### 📊 Room Type Summary (Selected Period)")
-        st.dataframe(summary_df, use_container_width=True, hide_index=True)
         
-        st.markdown("**Select a room type to view detailed breakdown:**")
-        btn_cols = st.columns(len(room_types))
-        for idx, rt in enumerate(room_types):
-            with btn_cols[idx]:
-                if st.button(f"📋 {rt}", key=f"btn_detail_{rt}", use_container_width=True):
-                    st.session_state.selected_breakdown_room = rt
+        st.markdown("### 📊 Room Type Summary (Selected Period)")
+        st.markdown("*Click 'View' to see detailed daily breakdown for any room type*")
+        
+        # Create table header
+        header_cols = st.columns([3, 2, 2, 1])
+        with header_cols[0]:
+            st.markdown("**Room Type**")
+        with header_cols[1]:
+            st.markdown("**Total Points**")
+        with header_cols[2]:
+            if mode == UserMode.OWNER:
+                st.markdown("**Total Cost**")
+            else:
+                st.markdown("**Total Rent**")
+        with header_cols[3]:
+            st.markdown("**Action**")
+        
+        st.divider()
+        
+        # Create interactive table rows
+        for idx, row in summary_df.iterrows():
+            cols = st.columns([3, 2, 2, 1])
+            with cols[0]:
+                st.text(row["Room Type"])
+            with cols[1]:
+                st.text(f"{row['Total Points']:,}" if isinstance(row['Total Points'], int) else row['Total Points'])
+            with cols[2]:
+                if mode == UserMode.OWNER:
+                    cost_val = row["Total Cost"]
+                    if isinstance(cost_val, (int, float)):
+                        st.text(f"${cost_val:,.0f}")
+                    else:
+                        st.text(cost_val)
+                else:
+                    rent_val = row["Total Rent"]
+                    if isinstance(rent_val, (int, float)):
+                        st.text(f"${rent_val:,.0f}")
+                    else:
+                        st.text(rent_val)
+            with cols[3]:
+                if st.button("📋 View", key=f"btn_detail_{row['Room Type']}", use_container_width=True):
+                    st.session_state.selected_breakdown_room = row['Room Type']
+                    st.rerun()
+        
+        st.divider()
         
         if "selected_breakdown_room" in st.session_state and st.session_state.selected_breakdown_room in room_types:
             selected_room = st.session_state.selected_breakdown_room
-            st.divider()
             st.markdown(f"### 📝 Daily Breakdown: {selected_room}")
             
             selected_res = calc.calculate_breakdown(r_name, selected_room, adj_in, adj_n, mode, rate_to_use, policy, owner_params)
