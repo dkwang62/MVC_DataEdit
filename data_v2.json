@@ -16931,12 +16931,12 @@
                     "Thu"
                   ],
                   "room_points": {
-                    "Studio CV": 320,
-                    "Studio LV": 350,
-                    "1-BDRM CV": 460,
-                    "1-BDRM LV": 495,
-                    "2-BDRM CV": 730,
-                    "2-BDRM LV": 790
+                    "1BR City": 460,
+                    "1BR Lagoon": 495,
+                    "2BR Lagoon": 790,
+                    "2BR City": 730,
+                    "0Studio City": 320,
+                    "0Studio Lagoon": 350
                   }
                 },
                 "fri_sat": {
@@ -16945,12 +16945,12 @@
                     "Sat"
                   ],
                   "room_points": {
-                    "Studio CV": 520,
-                    "Studio LV": 560,
-                    "1-BDRM CV": 740,
-                    "1-BDRM LV": 825,
-                    "2-BDRM CV": 1200,
-                    "2-BDRM LV": 1325
+                    "1BR City": 740,
+                    "1BR Lagoon": 825,
+                    "2BR Lagoon": 1325,
+                    "2BR City": 1200,
+                    "0Studio City": 520,
+                    "0Studio Lagoon": 560
                   }
                 }
               }
@@ -16985,12 +16985,12 @@
                     "Thu"
                   ],
                   "room_points": {
-                    "Studio CV": 230,
-                    "Studio LV": 250,
-                    "1-BDRM CV": 340,
-                    "1-BDRM LV": 410,
-                    "2-BDRM CV": 540,
-                    "2-BDRM LV": 620
+                    "1BR City": 340,
+                    "1BR Lagoon": 410,
+                    "2BR City": 540,
+                    "2BR Lagoon": 620,
+                    "0Studio City": 230,
+                    "0Studio Lagoon": 250
                   }
                 },
                 "fri_sat": {
@@ -16999,12 +16999,12 @@
                     "Sat"
                   ],
                   "room_points": {
-                    "Studio CV": 370,
-                    "Studio LV": 400,
-                    "1-BDRM CV": 560,
-                    "1-BDRM LV": 670,
-                    "2-BDRM CV": 875,
-                    "2-BDRM LV": 1025
+                    "1BR City": 560,
+                    "1BR Lagoon": 670,
+                    "2BR Lagoon": 1025,
+                    "2BR City": 875,
+                    "0Studio City": 370,
+                    "0Studio Lagoon": 400
                   }
                 }
               }
@@ -17035,12 +17035,12 @@
                     "Thu"
                   ],
                   "room_points": {
-                    "Studio CV": 170,
-                    "Studio LV": 180,
-                    "1-BDRM CV": 240,
-                    "1-BDRM LV": 260,
-                    "2-BDRM CV": 385,
-                    "2-BDRM LV": 415
+                    "1BR City": 240,
+                    "1BR Lagoon": 260,
+                    "2BR Lagoon": 415,
+                    "2BR City": 385,
+                    "0Studio City": 170,
+                    "0Studio Lagoon": 180
                   }
                 },
                 "fri_sat": {
@@ -17049,12 +17049,12 @@
                     "Sat"
                   ],
                   "room_points": {
-                    "Studio CV": 270,
-                    "Studio LV": 290,
-                    "1-BDRM CV": 380,
-                    "1-BDRM LV": 420,
-                    "2-BDRM CV": 620,
-                    "2-BDRM LV": 675
+                    "0Studio City": 270,
+                    "0Studio Lagoon": 290,
+                    "1BR City": 380,
+                    "1BR Lagoon": 420,
+                    "2BR City": 620,
+                    "2BR Lagoon": 675
                   }
                 }
               }
@@ -17065,36 +17065,36 @@
               "name": "Easter2",
               "global_reference": "Easter2",
               "room_points": {
-                "Studio CV": 2640,
-                "Studio LV": 2870,
-                "1-BDRM CV": 3780,
-                "1-BDRM LV": 4125,
-                "2-BDRM CV": 6050,
-                "2-BDRM LV": 6600
+                "1BR City": 3780,
+                "1BR Lagoon": 4125,
+                "2BR Lagoon": 6600,
+                "2BR City": 6050,
+                "0Studio City": 2640,
+                "0Studio Lagoon": 2870
               }
             },
             {
               "name": "Christmas",
               "global_reference": "Christmas",
               "room_points": {
-                "Studio CV": 2640,
-                "Studio LV": 2870,
-                "1-BDRM CV": 3780,
-                "1-BDRM LV": 4125,
-                "2-BDRM CV": 6050,
-                "2-BDRM LV": 6600
+                "1BR City": 3780,
+                "1BR Lagoon": 4125,
+                "2BR Lagoon": 6600,
+                "2BR City": 6050,
+                "0Studio City": 2640,
+                "0Studio Lagoon": 2870
               }
             },
             {
               "name": "NewYear",
               "global_reference": "NewYear",
               "room_points": {
-                "Studio CV": 2640,
-                "Studio LV": 2870,
-                "1-BDRM CV": 3780,
-                "1-BDRM LV": 4125,
-                "2-BDRM CV": 6050,
-                "2-BDRM LV": 6600
+                "1BR City": 3780,
+                "1BR Lagoon": 4125,
+                "2BR Lagoon": 6600,
+                "2BR City": 6050,
+                "0Studio City": 2640,
+                "0Studio Lagoon": 2870
               }
             }
           ]
@@ -17131,12 +17131,12 @@
                     "Thu"
                   ],
                   "room_points": {
-                    "Studio CV": 320,
-                    "Studio LV": 350,
-                    "1-BDRM CV": 460,
-                    "1-BDRM LV": 495,
-                    "2-BDRM CV": 730,
-                    "2-BDRM LV": 790
+                    "1BR City": 460,
+                    "1BR Lagoon": 495,
+                    "2BR Lagoon": 790,
+                    "2BR City": 730,
+                    "0Studio City": 320,
+                    "0Studio Lagoon": 350
                   }
                 },
                 "fri_sat": {
@@ -17145,12 +17145,12 @@
                     "Sat"
                   ],
                   "room_points": {
-                    "Studio CV": 520,
-                    "Studio LV": 560,
-                    "1-BDRM CV": 740,
-                    "1-BDRM LV": 825,
-                    "2-BDRM CV": 1200,
-                    "2-BDRM LV": 1325
+                    "1BR City": 740,
+                    "1BR Lagoon": 825,
+                    "2BR Lagoon": 1325,
+                    "2BR City": 1200,
+                    "0Studio City": 520,
+                    "0Studio Lagoon": 560
                   }
                 }
               }
@@ -17185,12 +17185,12 @@
                     "Thu"
                   ],
                   "room_points": {
-                    "Studio CV": 230,
-                    "Studio LV": 250,
-                    "1-BDRM CV": 340,
-                    "1-BDRM LV": 410,
-                    "2-BDRM CV": 540,
-                    "2-BDRM LV": 620
+                    "1BR City": 340,
+                    "1BR Lagoon": 410,
+                    "2BR City": 540,
+                    "2BR Lagoon": 620,
+                    "0Studio City": 230,
+                    "0Studio Lagoon": 250
                   }
                 },
                 "fri_sat": {
@@ -17199,12 +17199,12 @@
                     "Sat"
                   ],
                   "room_points": {
-                    "Studio CV": 370,
-                    "Studio LV": 400,
-                    "1-BDRM CV": 560,
-                    "1-BDRM LV": 670,
-                    "2-BDRM CV": 875,
-                    "2-BDRM LV": 1025
+                    "1BR City": 560,
+                    "1BR Lagoon": 670,
+                    "2BR Lagoon": 1025,
+                    "2BR City": 875,
+                    "0Studio City": 370,
+                    "0Studio Lagoon": 400
                   }
                 }
               }
@@ -17235,12 +17235,12 @@
                     "Thu"
                   ],
                   "room_points": {
-                    "Studio CV": 170,
-                    "Studio LV": 180,
-                    "1-BDRM CV": 240,
-                    "1-BDRM LV": 260,
-                    "2-BDRM CV": 385,
-                    "2-BDRM LV": 415
+                    "1BR City": 240,
+                    "1BR Lagoon": 260,
+                    "2BR Lagoon": 415,
+                    "2BR City": 385,
+                    "0Studio City": 170,
+                    "0Studio Lagoon": 180
                   }
                 },
                 "fri_sat": {
@@ -17249,12 +17249,12 @@
                     "Sat"
                   ],
                   "room_points": {
-                    "Studio CV": 270,
-                    "Studio LV": 290,
-                    "1-BDRM CV": 380,
-                    "1-BDRM LV": 420,
-                    "2-BDRM CV": 620,
-                    "2-BDRM LV": 675
+                    "0Studio City": 270,
+                    "0Studio Lagoon": 290,
+                    "1BR City": 380,
+                    "1BR Lagoon": 420,
+                    "2BR City": 620,
+                    "2BR Lagoon": 675
                   }
                 }
               }
@@ -17265,36 +17265,36 @@
               "name": "Easter2",
               "global_reference": "Easter2",
               "room_points": {
-                "Studio CV": 2640,
-                "Studio LV": 2870,
-                "1-BDRM CV": 3780,
-                "1-BDRM LV": 4125,
-                "2-BDRM CV": 6050,
-                "2-BDRM LV": 6600
+                "1BR City": 3780,
+                "1BR Lagoon": 4125,
+                "2BR Lagoon": 6600,
+                "2BR City": 6050,
+                "0Studio City": 2640,
+                "0Studio Lagoon": 2870
               }
             },
             {
               "name": "Christmas",
               "global_reference": "Christmas",
               "room_points": {
-                "Studio CV": 2640,
-                "Studio LV": 2870,
-                "1-BDRM CV": 3780,
-                "1-BDRM LV": 4125,
-                "2-BDRM CV": 6050,
-                "2-BDRM LV": 6600
+                "1BR City": 3780,
+                "1BR Lagoon": 4125,
+                "2BR Lagoon": 6600,
+                "2BR City": 6050,
+                "0Studio City": 2640,
+                "0Studio Lagoon": 2870
               }
             },
             {
               "name": "NewYear",
               "global_reference": "NewYear",
               "room_points": {
-                "Studio CV": 2640,
-                "Studio LV": 2870,
-                "1-BDRM CV": 3780,
-                "1-BDRM LV": 4125,
-                "2-BDRM CV": 6050,
-                "2-BDRM LV": 6600
+                "1BR City": 3780,
+                "1BR Lagoon": 4125,
+                "2BR Lagoon": 6600,
+                "2BR City": 6050,
+                "0Studio City": 2640,
+                "0Studio Lagoon": 2870
               }
             }
           ]
