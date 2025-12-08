@@ -888,4 +888,25 @@ def main(forced_mode: str = "Renter") -> None:
 
         c1, c2 = st.columns(2)
         if not comp_res.daily_chart_df.empty:
-             with c1: st.plotly_chart(px.bar(comp_res.daily_chart_df, x="Day", y="TotalCostValue" if mode==UserMode.OWNER
+             with c1: st.plotly_chart(px.bar(comp_res.daily_chart_df, x="Day", y="TotalCostValue" if mode==UserMode.OWNER else "RentValue", color="Room Type", barmode="group", title="Daily Cost"), use_container_width=True)
+        if not comp_res.holiday_chart_df.empty:
+             with c2: st.plotly_chart(px.bar(comp_res.holiday_chart_df, x="Holiday", y="TotalCostValue" if mode==UserMode.OWNER else "RentValue", color="Room Type", barmode="group", title="Holiday Cost"), use_container_width=True)
+
+    year_str = str(adj_in.year)
+    res_data = calc.repo.get_resort(r_name)
+    if res_data and year_str in res_data.years:
+        st.divider()
+        with st.expander("Season and Holiday Calendar", expanded=False):
+            st.plotly_chart(create_gantt_chart_from_resort_data(res_data, year_str, st.session_state.data.get("global_holidays", {})), use_container_width=True)
+
+            cost_df = build_season_cost_table(res_data, int(year_str), rate_to_use, disc_mul, mode, owner_params)
+            if cost_df is not None:
+                title = "7-Night Rental Costs" if mode == UserMode.RENTER else "7-Night Ownership Costs"
+                note = " — Discount applied" if disc_mul < 1 else ""
+                st.markdown(f"**{title}** @ ${rate_to_use:.2f}/pt{note}")
+                st.dataframe(cost_df, use_container_width=True, hide_index=True)
+            else:
+                st.info("No season or holiday pricing data for this year.")
+
+def run(forced_mode="Renter") -> None:
+    main(forced_mode)
