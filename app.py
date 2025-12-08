@@ -62,21 +62,52 @@ def main():
         unsafe_allow_html=True,
     )
 
-    # --- SIDEBAR NAVIGATION ---
-    with st.sidebar:
-        st.markdown("### 🛠️ TOOLS")
-        # Changed to short names "Calc" and "Edit"
-        choice = st.radio(
-            "Choose tool",
-            ["Calc", "Edit"],
-            index=0,
-            label_visibility="collapsed",
-            horizontal=True
-        )
+    # --- 1. SESSION STATE FOR NAVIGATION ---
+    if "app_phase" not in st.session_state:
+        st.session_state.app_phase = "renter"
 
-    if choice == "Calc":
-        calculator.run()
-    else:
+    # --- 2. SIDEBAR NAVIGATION CONTROLS ---
+    with st.sidebar:
+        st.header("Navigation")
+        
+        # LOGIC: RENTER MODE
+        if st.session_state.app_phase == "renter":
+            st.info("Currently: **Renter Mode**")
+            st.markdown("---")
+            if st.button("Go to Owner Mode ➡️", use_container_width=True):
+                st.session_state.app_phase = "owner"
+                st.rerun()
+
+        # LOGIC: OWNER MODE
+        elif st.session_state.app_phase == "owner":
+            if st.button("⬅️ Back to Renter", use_container_width=True):
+                st.session_state.app_phase = "renter"
+                st.rerun()
+            
+            st.markdown("---")
+            st.info("Currently: **Owner Mode**")
+            st.markdown("---")
+            
+            if st.button("Go to Editor 🛠️", use_container_width=True):
+                st.session_state.app_phase = "editor"
+                st.rerun()
+
+        # LOGIC: EDITOR MODE
+        elif st.session_state.app_phase == "editor":
+            if st.button("⬅️ Back to Calculator", use_container_width=True):
+                st.session_state.app_phase = "owner"
+                st.rerun()
+            st.markdown("---")
+            st.info("Currently: **Data Editor**")
+
+    # --- 3. MAIN PAGE ROUTING ---
+    if st.session_state.app_phase == "renter":
+        calculator.run(forced_mode="Renter")
+        
+    elif st.session_state.app_phase == "owner":
+        calculator.run(forced_mode="Owner")
+        
+    elif st.session_state.app_phase == "editor":
         editor.run()
 
 if __name__ == "__main__":
