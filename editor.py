@@ -1840,20 +1840,20 @@ Restarting the app resets everything to the default dataset, so be sure to save 
             ]
         )
         with tab1:
-            render_seasons_summary_table(working)
-            render_holidays_summary_table(working)
             edit_resort_basics(working, current_resort_id)
         with tab2:
             render_gantt_charts_v2(working, years, data)
             render_validation_panel_v2(working, data, years)
             render_season_dates_editor_v2(working, years, current_resort_id)
         with tab3:
-            render_seasons_summary_table(working) # Moved season table here
             render_reference_points_editor_v2(working, years, current_resort_id)
+            st.markdown("---")
+            render_seasons_summary_table(working) # Moved season table here
         with tab4:
+            render_holiday_management_v2(working, years, current_resort_id, data)
+            st.markdown("---")
             render_holidays_summary_table(working) # Moved holiday table here
-           render_holiday_management_v2(working, years, current_resort_id, data)
-             
+            
     st.markdown("---")
     render_global_settings_v2(data, years)
     st.markdown(
