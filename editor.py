@@ -1320,7 +1320,7 @@ def render_holiday_management_v2(
     sync_holiday_room_points_across_years(working, base_year=base_year)
 
 # ----------------------------------------------------------------------
-# RESORT SUMMARY
+# RESORT SUMMARY HELPERS
 # ----------------------------------------------------------------------
 def compute_weekly_totals_for_season_v2(
     season: Dict[str, Any], room_types: List[str]
@@ -1385,11 +1385,8 @@ def _build_holiday_rows(resort_years: Dict[str, Any], sorted_years: List[str], r
             rows.append(row)
     return rows
 
-def render_resort_summary_v2(working: Dict[str, Any]):
-    st.markdown(
-        "<div class='section-header'>📊 Resort Summary</div>",
-        unsafe_allow_html=True,
-    )
+def render_seasons_summary_table(working: Dict[str, Any]):
+    st.markdown("#### 📆 Seasons Summary (7-night)")
     resort_years = working.get("years", {})
     if not resort_years:
         st.info("💡 No data available yet")
@@ -1410,24 +1407,39 @@ def render_resort_summary_v2(working: Dict[str, Any]):
         st.info("💡 No room types defined yet")
         return
 
-    # --- 1. Render Season Table ---
+    # --- Render Season Table ---
     season_rows = []
     if ref_year:
         season_rows = _build_season_rows(resort_years, ref_year, room_types)
         
     if season_rows:
-        st.markdown("#### Seasons")
-        st.caption("7-night totals computed from nightly rates.")
+        st.caption("Calculated weekly totals derived from nightly points.")
         df_seasons = pd.DataFrame(season_rows, columns=["Season"] + room_types)
         st.dataframe(df_seasons, width="stretch", hide_index=True)
     else:
         st.info("💡 No season data available")
 
-    # --- 2. Render Holiday Table ---
+def render_holidays_summary_table(working: Dict[str, Any]):
+    st.markdown("#### 🎄 Holidays Summary")
+    resort_years = working.get("years", {})
+    if not resort_years:
+        st.info("💡 No data available yet")
+        return
+
+    # Sort years numerically
+    sorted_years = sorted(
+        resort_years.keys(), key=lambda y: int(y) if str(y).isdigit() else 0
+    )
+    
+    room_types = get_all_room_types_for_resort(working)
+    if not room_types:
+        st.info("💡 No room types defined yet")
+        return
+
+    # --- Render Holiday Table ---
     holiday_rows = _build_holiday_rows(resort_years, sorted_years, room_types)
     
     if holiday_rows:
-        st.markdown("#### Holidays")
         st.caption("Weekly totals directly from holiday points.")
         df_holidays = pd.DataFrame(holiday_rows, columns=["Season"] + room_types)
         st.dataframe(df_holidays, width="stretch", hide_index=True)
@@ -1828,7 +1840,6 @@ Restarting the app resets everything to the default dataset, so be sure to save 
             ]
         )
         with tab1:
-            render_resort_summary_v2(working)
             edit_resort_basics(working, current_resort_id)
         with tab2:
             render_gantt_charts_v2(working, years, data)
@@ -1836,8 +1847,12 @@ Restarting the app resets everything to the default dataset, so be sure to save 
             render_season_dates_editor_v2(working, years, current_resort_id)
         with tab3:
             render_reference_points_editor_v2(working, years, current_resort_id)
+            st.markdown("---")
+            render_seasons_summary_table(working) # Moved season table here
         with tab4:
             render_holiday_management_v2(working, years, current_resort_id, data)
+            st.markdown("---")
+            render_holidays_summary_table(working) # Moved holiday table here
             
     st.markdown("---")
     render_global_settings_v2(data, years)
