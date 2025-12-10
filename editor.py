@@ -1664,10 +1664,6 @@ Restarting the app resets everything to the default dataset, so be sure to save 
            
         handle_file_upload()
         if st.session_state.data:
-            # st.markdown(
-            # "<div style='margin: 20px 0;'></div>", unsafe_allow_html=True
-            # )
-            # Move merge logic to File to Memory
             handle_merge_from_another_file_v2(st.session_state.data)
             create_download_button_v2(st.session_state.data)
             handle_file_verification()
@@ -1731,10 +1727,10 @@ Restarting the app resets everything to the default dataset, so be sure to save 
             render_validation_panel_v2(working, data, years)
             render_season_dates_editor_v2(working, years, current_resort_id)
         with tab3:
-            render_resort_seasons(working, current_resort_id)
+            # removed render_resort_seasons(working, current_resort_id) as it is undefined
             render_reference_points_editor_v2(working, years, current_resort_id)
         with tab4:
-            render_resort_holidays(working, current_resort_id)
+            # removed render_resort_holidays(working, current_resort_id) as it is undefined
             render_holiday_management_v2(working, years, current_resort_id)
             
     st.markdown("---")
