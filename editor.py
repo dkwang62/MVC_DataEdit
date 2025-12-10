@@ -1850,11 +1850,9 @@ Restarting the app resets everything to the default dataset, so be sure to save 
         with tab3:
             render_seasons_summary_table(working) # Moved season table here
             render_reference_points_editor_v2(working, years, current_resort_id)
-#            st.markdown("---")
         with tab4:
             render_holidays_summary_table(working) # Moved holiday table here
            render_holiday_management_v2(working, years, current_resort_id, data)
-#            st.markdown("---")
              
     st.markdown("---")
     render_global_settings_v2(data, years)
