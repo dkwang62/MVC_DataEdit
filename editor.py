@@ -1243,10 +1243,6 @@ def compute_weekly_totals_for_season_v2(
                     any_data = True
     return weekly_totals, any_data
 def render_resort_summary_v2(working: Dict[str, Any]):
-    st.markdown(
-        "<div class='section-header'>📊 Resort Summary</div>",
-        unsafe_allow_html=True,
-    )
     resort_years = working.get("years", {})
     if not resort_years:
         st.info("💡 No data available yet")
