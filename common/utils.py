@@ -9,14 +9,26 @@ from typing import List, Dict, Any
 
 # Logical West → East ordering for common MVC timezones
 COMMON_TZ_ORDER = [
-    "Pacific/Honolulu", "America/Anchorage", "America/Los_Angeles", "America/Denver",
-    "America/Chicago", "America/New_York", "America/Vancouver", "America/Edmonton",
-    "America/Winnipeg", "America/Toronto", "America/Halifax", "America/St_Johns",
-    "US/Hawaii", "US/Alaska", "US/Pacific", "US/Mountain", "US/Central", "US/Eastern",
-    "America/Aruba", "America/St_Thomas", "Asia/Denpasar",  # Aruba, Virgin Islands, Bali
-    "Europe/London", "Europe/Paris", "Europe/Madrid",  # Europe
-    "Asia/Bangkok", "Asia/Singapore", "Asia/Tokyo", "Australia/Sydney"
+    "Pacific/Honolulu",      # Hawaii (farthest west)
+    "America/Los_Angeles",   # US West Coast
+    "America/Denver",        # Mountain US
+    "America/Chicago",       # Central US
+    "America/New_York",      # US East Coast
+    "America/Puerto_Rico",   # Caribbean / Aruba / Bahamas / USVI
+
+    # Europe (Eastward from Americas)
+    "Europe/London",
+    "Europe/Paris",
+    "Europe/Madrid",
+
+    # Asia-Pacific (moving eastward)
+    "Asia/Bangkok",
+    "Asia/Singapore",
+
+    # Far East / Oceania
+    "Australia/Sydney"
 ]
+
 
 TZ_TO_REGION = {
     "Pacific/Honolulu": "Hawaii",
