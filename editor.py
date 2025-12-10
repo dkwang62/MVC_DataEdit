@@ -1223,7 +1223,7 @@ def render_holiday_management_v2(
                         st.rerun()
     sync_holiday_room_points_across_years(working, base_year=base_year)
 # ----------------------------------------------------------------------
-# RESORT SUMMARY
+# RESORT SUMMARY HELPERS
 # ----------------------------------------------------------------------
 def compute_weekly_totals_for_season_v2(
     season: Dict[str, Any], room_types: List[str]
@@ -1242,24 +1242,9 @@ def compute_weekly_totals_for_season_v2(
                     weekly_totals[room] += int(rp[room]) * n_days
                     any_data = True
     return weekly_totals, any_data
-def render_resort_summary_v2(working: Dict[str, Any]):
-    resort_years = working.get("years", {})
-    if not resort_years:
-        st.info("💡 No data available yet")
-        return
-    sorted_years = sorted(
-        resort_years.keys(), key=lambda y: int(y) if str(y).isdigit() else 0
-    )
-    ref_year = next(
-        (y for y in sorted_years if resort_years[y].get("seasons")), None
-    )
-    if not ref_year:
-        st.info("💡 No seasons defined yet")
-        return
-    room_types = get_all_room_types_for_resort(working)
-    if not room_types:
-        st.info("💡 No room types defined yet")
-        return
+
+def _build_season_rows(resort_years: Dict[str, Any], ref_year: str, room_types: List[str]) -> List[Dict[str, Any]]:
+    """Helper: Build 7-night totals for seasons."""
     rows = []
     for season in resort_years[ref_year].get("seasons", []):
         sname = season.get("name", "").strip() or "(Unnamed)"
@@ -1275,11 +1260,19 @@ def render_resort_summary_v2(working: Dict[str, Any]):
                 }
             )
             rows.append(row)
+    return rows
+
+def _build_holiday_rows(resort_years: Dict[str, Any], sorted_years: List[str], room_types: List[str]) -> List[Dict[str, Any]]:
+    """Helper: Extract totals for holidays (uses the most recent year with data)."""
+    rows = []
     last_holiday_year = None
+    
+    # Find the most recent year that actually has holidays defined
     for y in reversed(sorted_years):
         if resort_years.get(y, {}).get("holidays"):
             last_holiday_year = y
             break
+            
     if last_holiday_year:
         for h in resort_years[last_holiday_year].get("holidays", []):
             hname = h.get("name", "").strip() or "(Unnamed)"
@@ -1293,10 +1286,50 @@ def render_resort_summary_v2(working: Dict[str, Any]):
                     else "—"
                 )
             rows.append(row)
+    return rows
+
+def render_resort_summary_v2(working: Dict[str, Any]):
+    st.markdown(
+        "<div class='section-header'>📊 Resort Summary</div>",
+        unsafe_allow_html=True,
+    )
+    resort_years = working.get("years", {})
+    if not resort_years:
+        st.info("💡 No data available yet")
+        return
+
+    # Sort years numerically
+    sorted_years = sorted(
+        resort_years.keys(), key=lambda y: int(y) if str(y).isdigit() else 0
+    )
+    
+    # Find a reference year that has seasons defined
+    ref_year = next(
+        (y for y in sorted_years if resort_years[y].get("seasons")), None
+    )
+    
+    room_types = get_all_room_types_for_resort(working)
+    if not room_types:
+        st.info("💡 No room types defined yet")
+        return
+
+    # --- 1. Get Season Rows ---
+    rows = []
+    if ref_year:
+        rows.extend(_build_season_rows(resort_years, ref_year, room_types))
+    else:
+        # It's possible to have holidays but no seasons defined yet
+        pass 
+
+    # --- 2. Get Holiday Rows ---
+    rows.extend(_build_holiday_rows(resort_years, sorted_years, room_types))
+
+    # --- 3. Render ---
     if rows:
         df = pd.DataFrame(rows, columns=["Season"] + room_types)
         st.caption(
-            "Rows show 7-night totals"
+            "Season rows show 7-night totals computed from nightly rates. "
+            "Holiday rows show weekly totals directly from holiday points (no extra calculations)."
         )
         st.dataframe(df, width="stretch", hide_index=True)
     else:
@@ -1698,10 +1731,10 @@ Restarting the app resets everything to the default dataset, so be sure to save 
             render_validation_panel_v2(working, data, years)
             render_season_dates_editor_v2(working, years, current_resort_id)
         with tab3:
-            render_resort_summary_v2(working)
+            render_resort_seasons(working, current_resort_id)
             render_reference_points_editor_v2(working, years, current_resort_id)
         with tab4:
-            render_resort_summary_v2(working)
+            render_resort_holidays(working, current_resort_id)
             render_holiday_management_v2(working, years, current_resort_id)
             
     st.markdown("---")
