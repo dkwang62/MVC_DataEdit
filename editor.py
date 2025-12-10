@@ -819,7 +819,7 @@ def edit_resort_basics(working: Dict[str, Any], resort_id: str):
     Renders editable fields for resort_name, timezone, address, AND display_name.
     Returns nothing – directly mutates the working dict.
     """
-    st.markdown("### Basic Resort Information")
+#    st.markdown("### Basic Resort Information")
     # --- Added: Display Name Editor ---
     col_disp, col_code = st.columns([3, 1])
     with col_disp:
