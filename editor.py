@@ -1698,8 +1698,10 @@ Restarting the app resets everything to the default dataset, so be sure to save 
             render_validation_panel_v2(working, data, years)
             render_season_dates_editor_v2(working, years, current_resort_id)
         with tab3:
+            render_resort_summary_v2(working)
             render_reference_points_editor_v2(working, years, current_resort_id)
         with tab4:
+            render_resort_summary_v2(working)
             render_holiday_management_v2(working, years, current_resort_id)
             
     st.markdown("---")
