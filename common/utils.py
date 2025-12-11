@@ -39,14 +39,14 @@ COMMON_TZ_ORDER = [
 
     # Asia / Australia
     "Asia/Bangkok",
-    "Asia/Singapore",
-    "Asia/Makassar",         # Bali region (Denpasar alias)
+    "Asia/Singapore",        # used for Bali in data_v2.json
+    "Asia/Makassar",         # Bali region (Denpasar alias, if used later)
     "Asia/Tokyo",
     "Australia/Brisbane",    # Surfers Paradise
     "Australia/Sydney",
 ]
 
-# Region priority:
+# Region priority (controls top→bottom dropdown order)
 #   0 = USA + Canada + Caribbean
 #   1 = Mexico + Costa Rica
 #   2 = Europe
@@ -58,20 +58,20 @@ REGION_EUROPE = 2
 REGION_ASIA_AU = 3
 REGION_FALLBACK = 99
 
-# US state and DC we treat as "USA" region
+# US states + DC
 US_STATE_CODES = {
-    "AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "IL", "IN", "IA",
+    "AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IL", "IN", "IA",
     "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ",
     "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT",
     "VA", "WA", "WV", "WI", "WY", "DC",
 }
 
-# Canadian provinces (kept in same region bucket as USA for navigation)
+# Canadian provinces (same region bucket as USA)
 CA_PROVINCES = {
     "AB", "BC", "MB", "NB", "NL", "NS", "NT", "NU", "ON", "PE", "QC", "SK", "YT",
 }
 
-# Caribbean / Atlantic codes we group with USA region
+# Caribbean / Atlantic codes, grouped with USA region
 CARIBBEAN_CODES = {"AW", "BS", "VI", "PR"}  # Aruba, Bahamas, USVI, Puerto Rico
 
 # Mexico + Central America grouping
@@ -116,7 +116,7 @@ def get_timezone_offset(tz_name: str) -> float:
     """Backwards-compatible helper: UTC offset in HOURS.
 
     Old utils.py exposed get_timezone_offset() returning a float number
-    of hours. We keep that signature but implement it using the new
+    of hours. We keep that signature but implement it using the
     minute-based helper so behaviour stays consistent.
     """
     minutes = get_timezone_offset_minutes(tz_name)
@@ -129,30 +129,42 @@ def get_timezone_offset(tz_name: str) -> float:
 
 
 def _region_from_code(code: str) -> int:
-    """Internal helper: region strictly from resort.code."""
+    """Internal helper: region strictly from resort.code.
+
+    IMPORTANT for Bali:
+    We deliberately prioritise Asia/Australia and Europe BEFORE US state
+    codes so that 'ID' is treated as Indonesia (Asia) when used as a
+    country code, not Idaho (US state).
+    """
     if not code:
         return REGION_FALLBACK
 
     # Normalize two-letter country / state codes
     code = code.upper()
 
-    if code in US_STATE_CODES:
-        return REGION_US_CARIBBEAN
+    # 1) Asia / Australia first (so 'ID' → Asia, not Idaho)
+    if code in ASIA_AU_CODES:
+        return REGION_ASIA_AU
 
-    if code in CA_PROVINCES or code == "CA":
-        return REGION_US_CARIBBEAN
-
-    if code in CARIBBEAN_CODES:
-        return REGION_US_CARIBBEAN
-
-    if code in MEX_CENTRAL_CODES:
-        return REGION_MEX_CENTRAL
-
+    # 2) Europe
     if code in EUROPE_CODES:
         return REGION_EUROPE
 
-    if code in ASIA_AU_CODES:
-        return REGION_ASIA_AU
+    # 3) Mexico / Costa Rica
+    if code in MEX_CENTRAL_CODES:
+        return REGION_MEX_CENTRAL
+
+    # 4) Canada
+    if code in CA_PROVINCES or code == "CA":
+        return REGION_US_CARIBBEAN
+
+    # 5) Caribbean
+    if code in CARIBBEAN_CODES:
+        return REGION_US_CARIBBEAN
+
+    # 6) USA states / DC / generic 'US'
+    if code in US_STATE_CODES or code == "US":
+        return REGION_US_CARIBBEAN
 
     return REGION_FALLBACK
 
@@ -162,13 +174,11 @@ def _region_from_timezone(tz: str) -> int:
     if not tz:
         return REGION_FALLBACK
 
-    # Americas
-    if tz.startswith("America/"):
+    # Americas, including Pacific/Honolulu
+    if tz.startswith("America/") or tz.startswith("Pacific/"):
         # Explicitly treat Cancun and Mazatlan as Mexico/Central bucket
         if tz in ("America/Cancun", "America/Mazatlan"):
             return REGION_MEX_CENTRAL
-        # Everything else in Americas that isn't clearly Mexico/Central
-        # is grouped with USA + Caribbean
         return REGION_US_CARIBBEAN
 
     # Europe
@@ -192,7 +202,7 @@ def get_region_priority(resort: Dict[str, Any]) -> int:
         3: Asia + Australia
         99: fallback / unknown
 
-    Primary classification is by `code`.
+    Primary classification is by `code` (with Asia/Europe priority).
     If `code` is missing or not recognized, we fall back to timezone.
     """
     code = (resort.get("code") or "").upper()
@@ -208,12 +218,11 @@ def get_region_priority(resort: Dict[str, Any]) -> int:
 
 
 # ----------------------------------------------------------------------
-# REGION LABELS (BACKWARDS-COMPATIBLE get_region_label)
+# REGION LABELS (get_region_label)
 # ----------------------------------------------------------------------
 
-# Legacy-style human-friendly labels keyed by timezone.
-# This is used by get_region_label(tz: str) to keep the old UI contract.
-TZ_TO_REGION = {
+# Human-friendly labels keyed by timezone, used by get_region_label(tz: str).
+TZ_TO_REGION: Dict[str, str] = {
     # Hawaii / Alaska / West Coast
     "Pacific/Honolulu": "Hawaii",
     "America/Anchorage": "Alaska",
@@ -250,13 +259,10 @@ TZ_TO_REGION = {
 
 
 def get_region_label(tz: str) -> str:
-    """Backwards-compatible timezone → region label helper.
+    """Timezone → human-friendly region label.
 
-    The old utils.py exposed get_region_label(tz: str) which is used
-    by common.ui. We preserve that API here.
-
-    If the timezone is not in TZ_TO_REGION, we fall back to the last
-    component of the tz name (e.g. 'Europe/Paris' → 'Paris').
+    If the timezone is not in TZ_TO_REGION, fall back to the last component
+    of the tz name (e.g. 'Europe/Paris' → 'Paris').
     """
     if not tz:
         return "Unknown"
@@ -264,7 +270,7 @@ def get_region_label(tz: str) -> str:
 
 
 # ----------------------------------------------------------------------
-# RESORT SORTING
+# SORTING – REGION GROUPS, THEN WEST → EAST
 # ----------------------------------------------------------------------
 
 
@@ -291,7 +297,9 @@ def sort_resorts_by_timezone(resorts: List[Dict[str, Any]]) -> List[Dict[str, An
         if tz in COMMON_TZ_ORDER:
             tz_index = COMMON_TZ_ORDER.index(tz)
         else:
-            tz_index = len(COMMON_TZ_ORDER)  # unknown timezones to the end of region
+            # Unknown timezones come after known ones within the region,
+            # ordered by UTC offset as a rough west→east indicator.
+            tz_index = len(COMMON_TZ_ORDER)
 
         offset_minutes = get_timezone_offset_minutes(tz)
         name = r.get("display_name") or r.get("resort_name") or ""
