@@ -270,7 +270,7 @@
     {
       "id": "aruba-ocean",
       "display_name": "Aruba Ocean🌴 🌊",
-      "code": "AO",
+      "code": "AW",
       "resort_name": "Marriott's Aruba Ocean Club",
       "address": "L.G. Smith Boulevard 99, Palm Beach, Aruba",
       "timezone": "America/Puerto_Rico",
@@ -784,7 +784,7 @@
     {
       "id": "aruba-surf",
       "display_name": "Aruba Surf🌴 🌊",
-      "code": "AS",
+      "code": "AW",
       "resort_name": "Marriott's Aruba Surf Club",
       "address": "L.G. Smith Boulevard 103, Palm Beach, Aruba",
       "timezone": "America/Puerto_Rico",
@@ -1480,7 +1480,7 @@
     {
       "id": "bali-gardens",
       "display_name": "Bali Gardens🌴",
-      "code": "BG",
+      "code": "ID",
       "resort_name": "Marriott's Bali Nusa Dua Gardens",
       "address": "Kawasan Pariwisata Lot SW1, Nusa Dua, Bali 80363, Indonesia",
       "timezone": "Asia/Singapore",
@@ -1846,7 +1846,7 @@
     {
       "id": "bali-terrace",
       "display_name": "Bali Terrace🌴",
-      "code": "BT",
+      "code": "ID",
       "resort_name": "Marriott's Bali Nusa Dua Terrace",
       "address": "Kawasan Pariwisata ITDC Lot SW 4-5, Nusa Dua, Bali 80363, Indonesia",
       "timezone": "Asia/Singapore",
@@ -2212,7 +2212,7 @@
     {
       "id": "birch-vail",
       "display_name": "Birch Vail⛷️🏔️",
-      "code": "BV",
+      "code": "CO",
       "resort_name": "Marriott's StreamSide Birch at Vail",
       "address": "2284 South Frontage Road West, Vail, CO 81657, USA",
       "timezone": "America/Denver",
@@ -2682,7 +2682,7 @@
     {
       "id": "boston",
       "display_name": "Boston🌆",
-      "code": "B",
+      "code": "MA",
       "resort_name": "Marriott Vacation Club at Custom House, Boston",
       "address": "3 McKinley Square, Boston, MA 02109, USA",
       "timezone": "America/New_York",
@@ -2954,7 +2954,7 @@
     {
       "id": "canyon-villas-arizona",
       "display_name": "Canyon Villas🌵",
-      "code": "CVA",
+      "code": "AZ",
       "resort_name": "Marriott's Canyon Villas",
       "address": "5220 East Marriott Drive, Phoenix, AZ 85054, USA",
       "timezone": "America/Denver",
@@ -3402,7 +3402,7 @@
     {
       "id": "chateau-vegas",
       "display_name": "Chateau Vegas🌆",
-      "code": "CV",
+      "code": "NV",
       "resort_name": "Marriott's Grand Chateau",
       "address": "75 East Harmon Avenue, Las Vegas, NV 89109, USA",
       "timezone": "America/Los_Angeles",
@@ -3668,7 +3668,7 @@
     {
       "id": "crystal-shores",
       "display_name": "Crystal Shorest☀️🐚",
-      "code": "CS",
+      "code": "FL",
       "resort_name": "Marriott's Crystal Shores",
       "address": "600 South Collier Boulevard, Marco Island, FL 34145, USA",
       "timezone": "America/New_York",
@@ -4306,7 +4306,7 @@
     {
       "id": "cypress-orlando",
       "display_name": "Cypress Orlando🎢",
-      "code": "CO",
+      "code": "FL",
       "resort_name": "Marriott's Cypress Harbour",
       "address": "11251 Harbour Villa Road, Orlando, FL 32821, USA",
       "timezone": "America/New_York",
@@ -4672,7 +4672,7 @@
     {
       "id": "desert-springs-ii",
       "display_name": "Desert Springs II🏌️",
-      "code": "DSI",
+      "code": "CA",
       "resort_name": "Marriott's Desert Springs Villas II",
       "address": "1091 Pinehurst Lane, Palm Desert, CA 92260, USA",
       "timezone": "America/Los_Angeles",
@@ -5120,7 +5120,7 @@
     {
       "id": "doral-miami",
       "display_name": "Doral Miami🌆🏌️",
-      "code": "DM",
+      "code": "FL",
       "resort_name": "Marriott's Villas at Doral",
       "address": "4101 NW 87th Avenue, Miami, FL 33178, USA",
       "timezone": "America/New_York",
@@ -5837,8 +5837,8 @@
     },
     {
       "id": "frenchman-s-cove",
-      "display_name": "Frenchman's Cove🌴",
-      "code": "FC",
+      "display_name": "Frenchman's Cove☀️🐚",
+      "code": "VI",
       "resort_name": "Marriott's Frenchman's Cove",
       "address": "7338 Estate Bakkeroe, St. Thomas, VI 00802, U.S. Virgin Islands",
       "timezone": "America/Puerto_Rico",
@@ -6228,7 +6228,7 @@
     {
       "id": "grande-vista-orlando",
       "display_name": "Grande Vista Orlando🎢",
-      "code": "GVO",
+      "code": "FL",
       "resort_name": "Marriott's Grande Vista",
       "address": "5925 Avenida Vista, Orlando, FL 32821, USA",
       "timezone": "America/New_York",
@@ -6666,7 +6666,7 @@
     {
       "id": "imperial-orlando",
       "display_name": "Imperial Orlando🎢",
-      "code": "IO",
+      "code": "FL",
       "resort_name": "Marriott's Imperial Palms Villas",
       "address": "8404 Vacation Way, Orlando, FL 32821, USA",
       "timezone": "America/New_York",
@@ -7032,7 +7032,7 @@
     {
       "id": "kauai-beach",
       "display_name": "Kauai Beach🌊☀️🐚",
-      "code": "KB",
+      "code": "HI",
       "resort_name": "Marriott's Kaua'i Beach Club",
       "address": "3610 Rice Street, Lihue, HI 96766, USA",
       "timezone": "Pacific/Honolulu",
@@ -7556,7 +7556,7 @@
     {
       "id": "khao-lak",
       "display_name": "Khao Lak🌴",
-      "code": "KL",
+      "code": "TH",
       "resort_name": "Marriott Vacation Club, Khao Lak Beach Resort",
       "address": "43/17 Moo 3, Khuk Khak, Takua Pa, Phang Nga 82220, Thailand",
       "timezone": "Asia/Bangkok",
@@ -7824,7 +7824,7 @@
     {
       "id": "lakeshore-orlando",
       "display_name": "Lakeshore Orlando🎢",
-      "code": "LO",
+      "code": "FL",
       "resort_name": "Marriott's Lakeshore Reserve",
       "address": "11248 Lakeshore Reserve Drive, Orlando, FL 32837, USA",
       "timezone": "America/New_York",
@@ -8334,7 +8334,7 @@
     {
       "id": "maui-ocean",
       "display_name": "Maui Ocean🌊☀️🐚",
-      "code": "MO",
+      "code": "HI",
       "resort_name": "Marriott's Maui Ocean Club",
       "address": "100 Nohea Kai Drive, Lahaina, HI 96761, USA",
       "timezone": "Pacific/Honolulu",
@@ -8902,7 +8902,7 @@
     {
       "id": "marbella-beach",
       "display_name": "Marbella ☀️🐚",
-      "code": "MB",
+      "code": "ES",
       "resort_name": "Marriott's Marbella Beach Resort",
       "address": "Carretera de Cádiz, Km 193, 29604 Marbella, Málaga, Spain",
       "timezone": "Europe/Madrid",
@@ -9408,7 +9408,7 @@
     {
       "id": "mountainside-utah",
       "display_name": "Mountainside Utah⛷️🏔️",
-      "code": "MU",
+      "code": "UT",
       "resort_name": "Marriott's MountainSide",
       "address": "1305 Lowell Avenue, Park City, UT 84060, USA",
       "timezone": "America/Denver",
@@ -9878,7 +9878,7 @@
     {
       "id": "newport-coast",
       "display_name": "Newport Coast🌆🎢",
-      "code": "NC",
+      "code": "CA",
       "resort_name": "Marriott's Newport Coast Villas",
       "address": "23000 Newport Coast Drive, Newport Coast, CA 92657, USA",
       "timezone": "America/Los_Angeles",
@@ -10158,7 +10158,7 @@
     {
       "id": "ocean-pointe",
       "display_name": "Ocean Pointe☀️🐚",
-      "code": "OP",
+      "code": "FL",
       "resort_name": "Marriott's Ocean Pointe",
       "address": "71 Ocean Avenue, Palm Beach Shores, FL 33404, USA",
       "timezone": "America/New_York",
@@ -10676,7 +10676,7 @@
     {
       "id": "panama-florida",
       "display_name": "Panama Florida☀️🐚",
-      "code": "PF",
+      "code": "FL",
       "resort_name": "Marriott's Legends Edge at Bay Point",
       "address": "4000 Marriott Drive, Panama City, FL 32408, USA",
       "timezone": "America/New_York",
@@ -10996,7 +10996,7 @@
     {
       "id": "phuket-beach-club",
       "display_name": "Phuket Beach 🌴",
-      "code": "PBC",
+      "code": "TH",
       "resort_name": "Marriott's Phuket Beach Club",
       "address": "230 Moo 3, Mai Khao, Phuket 83110, Thailand",
       "timezone": "Asia/Bangkok",
@@ -11248,7 +11248,7 @@
     {
       "id": "playa-andaluza",
       "display_name": "Playa Andaluza☀️🐚",
-      "code": "PA",
+      "code": "ES",
       "resort_name": "Marriott's Playa Andaluza, Spain",
       "address": "Carretera de Cádiz, Km 168, 29680 Estepona, Málaga, Spain",
       "timezone": "Europe/Madrid",
@@ -11838,7 +11838,7 @@
     {
       "id": "pulse-san-diego",
       "display_name": "Pulse San Diego🌆",
-      "code": "PSD",
+      "code": "CA",
       "resort_name": "Marriott Vacation Club, San Diego",
       "address": "701 A Street, San Diego, CA 92101, USA",
       "timezone": "America/Los_Angeles",
@@ -12356,7 +12356,7 @@
     {
       "id": "pulse-san-francisco",
       "display_name": "Pulse San Francisco🌆",
-      "code": "PSF",
+      "code": "CA",
       "resort_name": "Marriott Vacation Club, San Francisco",
       "address": "780 Mission Street, San Francisco, CA 94103, USA",
       "timezone": "America/Los_Angeles",
@@ -12862,7 +12862,7 @@
     {
       "id": "residence-tahoe",
       "display_name": "Residence Tahoe⛷️",
-      "code": "RT",
+      "code": "CA",
       "resort_name": "Marriott Grand Residence Club, Lake Tahoe",
       "address": "1001 Heavenly Village Way, South Lake Tahoe, CA 96150, USA",
       "timezone": "America/Los_Angeles",
@@ -13328,7 +13328,7 @@
     {
       "id": "ritz-san-francisco",
       "display_name": "Ritz San Francisco🌆",
-      "code": "RSF",
+      "code": "CA",
       "resort_name": "The Ritz-Carlton Club, San Francisco",
       "address": "690 Market Street, San Francisco, CA 94104, USA",
       "timezone": "America/Los_Angeles",
@@ -13804,7 +13804,7 @@
     {
       "id": "ritz-tahoe",
       "display_name": "Ritz Tahoe⛷️",
-      "code": "RT",
+      "code": "CA",
       "resort_name": "The Ritz-Carlton Club, Lake Tahoe",
       "address": "13051 Ritz-Carlton Highlands Drive, Truckee, CA 96161, USA",
       "timezone": "America/Los_Angeles",
@@ -14334,7 +14334,7 @@
     {
       "id": "ritz-vail",
       "display_name": "Ritz Vail⛷️🏔️",
-      "code": "RV",
+      "code": "CO",
       "resort_name": "The Ritz-Carlton Club, Vail",
       "address": "728 West Lionshead Circle, Vail, CO 81657, USA",
       "timezone": "America/Denver",
@@ -14900,7 +14900,7 @@
     {
       "id": "sabal-orlando",
       "display_name": "Sabal Orlando🎢",
-      "code": "SO",
+      "code": "FL",
       "resort_name": "Marriott's Sabal Palms",
       "address": "8805 World Center Drive, Orlando, FL 32821, USA",
       "timezone": "America/New_York",
@@ -15266,7 +15266,7 @@
     {
       "id": "shadow-ridge",
       "display_name": "Shadow Ridge🏌️",
-      "code": "SR",
+      "code": "CA",
       "resort_name": "Marriott's Shadow Ridge",
       "address": "9003 Shadow Ridge Road, Palm Desert, CA 92211, USA",
       "timezone": "America/Los_Angeles",
@@ -15714,7 +15714,7 @@
     {
       "id": "sheraton-kauai",
       "display_name": "Sheraton Kauai 🌊☀️🐚",
-      "code": "SK",
+      "code": "HI",
       "resort_name": "Sheraton Kauai Resort Villas",
       "address": "2440 Hoonani Road, Koloa, HI 96756, USA",
       "timezone": "Pacific/Honolulu",
@@ -16062,7 +16062,7 @@
     {
       "id": "sheraton-scottsdale",
       "display_name": "Sheraton Scottsdale🌵",
-      "code": "SS",
+      "code": "AZ",
       "resort_name": "Sheraton Desert Oasis, Scottsdale",
       "address": "17700 North Hayden Road, Scottsdale, AZ 85255, USA",
       "timezone": "America/Denver",
@@ -16510,7 +16510,7 @@
     {
       "id": "suenos-costarica",
       "display_name": "Suenos CostaRica🌴",
-      "code": "SC",
+      "code": "CR",
       "resort_name": "Marriott Vacation Club at Los Sueños, Costa Rica",
       "address": "800 meters west of Herradura Entrance, Playa Herradura, Garabito, Puntarenas, Costa Rica",
       "timezone": "America/Chicago",
@@ -16894,7 +16894,7 @@
     {
       "id": "surfers-paradise",
       "display_name": "Surfers Paradise☀️🐚",
-      "code": "SP",
+      "code": "AU",
       "resort_name": "Marriott Vacation Club at Surfers Paradise",
       "address": "158 Ferny Avenue, Surfers Paradise, QLD 4217, Australia",
       "timezone": "Australia/Brisbane",
@@ -17304,7 +17304,7 @@
     {
       "id": "village-paris",
       "display_name": "Village Paris🎢",
-      "code": "VP",
+      "code": "FR",
       "resort_name": "Marriott's Village d'Ile-de-France",
       "address": "1 Allée de l'Orme Rond, 77700 Bailly-Romainvilliers, France",
       "timezone": "Europe/Paris",
@@ -17678,7 +17678,7 @@
     {
       "id": "waikoloa-ocean",
       "display_name": "Waikoloa🌴",
-      "code": "WO",
+      "code": "HI",
       "resort_name": "Marriott's Waikoloa Ocean Club",
       "address": "69-275 Waikoloa Beach Drive, Waikoloa, HI 96738, USA",
       "timezone": "Pacific/Honolulu",
@@ -18114,7 +18114,7 @@
     {
       "id": "westin-ka-anapali",
       "display_name": "Westin Ka'anapali🌴",
-      "code": "WK",
+      "code": "HI",
       "resort_name": "The Westin Kā'anapali Ocean Resort Villas",
       "address": "6 Kai Ala Drive, Lahaina, HI 96761, USA",
       "timezone": "Pacific/Honolulu",
@@ -18594,7 +18594,7 @@
     {
       "id": "willow-branson",
       "display_name": "Willow Branson🎤🏔️",
-      "code": "WB",
+      "code": "MO",
       "resort_name": "Marriott's Willow Ridge Lodge",
       "address": "2929 Green Mountain Drive, Branson, MO 65616, USA",
       "timezone": "America/Chicago",
@@ -18910,7 +18910,7 @@
     {
       "id": "harbour-lake-orlando",
       "display_name": "Harbour Lake 🎢",
-      "code": "HLO",
+      "code": "FL",
       "resort_name": "Marriott's Harbour Lake",
       "address": "7102 Grand Horizons Boulevard, Orlando, FL 32821, USA",
       "timezone": "America/New_York",
@@ -19324,7 +19324,7 @@
     {
       "id": "washington-dc",
       "display_name": "Washington DC🌆",
-      "code": "WD",
+      "code": "DC",
       "resort_name": "Marriott Vacation Club at The Mayflower, Washington, D.C.",
       "address": "1127 Connecticut Avenue NW, Washington, DC 20036, USA",
       "timezone": "America/New_York",
@@ -19874,7 +19874,7 @@
     {
       "id": "ko-olina-beach",
       "display_name": "Ko Olina🌴",
-      "code": "KOB",
+      "code": "HI",
       "resort_name": "Marriott's Ko Olina Beach Club",
       "address": "92-161 Waipahe Place, Kapolei, HI 96707, USA",
       "timezone": "Pacific/Honolulu",
@@ -20148,6 +20148,30 @@
               }
             },
             {
+              "name": "AP1",
+              "global_reference": "AP1",
+              "room_points": {
+                "1BR Mountain": 1500,
+                "1BR Ocean": 1500,
+                "1BR PentMountain": 1500,
+                "1BR PentOcean": 1500,
+                "2BR Mountain": 1500,
+                "2BR Ocean": 1500,
+                "Studio Mountain": 1500,
+                "Studio Ocean": 1500,
+                "Studio PentMountain": 1500,
+                "Studio PentOcean": 1500,
+                "3BR Mountain": 1500,
+                "3BR Ocean": 1500,
+                "2BR PentMountain": 1500,
+                "2BR PentOcean": 1500,
+                "Studio MountainAP": 1500,
+                "1BR MountainAP": 1500,
+                "2BR MountainAP": 1500,
+                "2BR OceanAP": 1500
+              }
+            },
+            {
               "name": "Independence Day",
               "global_reference": "Independence Day",
               "room_points": {
@@ -20169,6 +20193,30 @@
                 "1BR MountainAP": 3525,
                 "2BR MountainAP": 4575,
                 "2BR OceanAP": 5725
+              }
+            },
+            {
+              "name": "AP2",
+              "global_reference": "AP2",
+              "room_points": {
+                "1BR Mountain": 1500,
+                "1BR Ocean": 1500,
+                "1BR PentMountain": 1500,
+                "1BR PentOcean": 1500,
+                "2BR Mountain": 1500,
+                "2BR Ocean": 1500,
+                "Studio Mountain": 1500,
+                "Studio Ocean": 1500,
+                "Studio PentMountain": 1500,
+                "Studio PentOcean": 1500,
+                "3BR Mountain": 1500,
+                "3BR Ocean": 1500,
+                "2BR PentMountain": 1500,
+                "2BR PentOcean": 1500,
+                "Studio MountainAP": 1500,
+                "1BR MountainAP": 1500,
+                "2BR MountainAP": 1500,
+                "2BR OceanAP": 1500
               }
             },
             {
@@ -20265,54 +20313,6 @@
                 "1BR MountainAP": 4075,
                 "2BR MountainAP": 5500,
                 "2BR OceanAP": 6875
-              }
-            },
-            {
-              "name": "AP1",
-              "global_reference": "AP1",
-              "room_points": {
-                "1BR Mountain": 1500,
-                "1BR Ocean": 1500,
-                "1BR PentMountain": 1500,
-                "1BR PentOcean": 1500,
-                "2BR Mountain": 1500,
-                "2BR Ocean": 1500,
-                "Studio Mountain": 1500,
-                "Studio Ocean": 1500,
-                "Studio PentMountain": 1500,
-                "Studio PentOcean": 1500,
-                "3BR Mountain": 1500,
-                "3BR Ocean": 1500,
-                "2BR PentMountain": 1500,
-                "2BR PentOcean": 1500,
-                "Studio MountainAP": 1500,
-                "1BR MountainAP": 1500,
-                "2BR MountainAP": 1500,
-                "2BR OceanAP": 1500
-              }
-            },
-            {
-              "name": "AP2",
-              "global_reference": "AP2",
-              "room_points": {
-                "1BR Mountain": 1500,
-                "1BR Ocean": 1500,
-                "1BR PentMountain": 1500,
-                "1BR PentOcean": 1500,
-                "2BR Mountain": 1500,
-                "2BR Ocean": 1500,
-                "Studio Mountain": 1500,
-                "Studio Ocean": 1500,
-                "Studio PentMountain": 1500,
-                "Studio PentOcean": 1500,
-                "3BR Mountain": 1500,
-                "3BR Ocean": 1500,
-                "2BR PentMountain": 1500,
-                "2BR PentOcean": 1500,
-                "Studio MountainAP": 1500,
-                "1BR MountainAP": 1500,
-                "2BR MountainAP": 1500,
-                "2BR OceanAP": 1500
               }
             }
           ]
@@ -20586,6 +20586,30 @@
               }
             },
             {
+              "name": "AP1",
+              "global_reference": "AP1",
+              "room_points": {
+                "1BR Mountain": 1500,
+                "1BR Ocean": 1500,
+                "1BR PentMountain": 1500,
+                "1BR PentOcean": 1500,
+                "2BR Mountain": 1500,
+                "2BR Ocean": 1500,
+                "Studio Mountain": 1500,
+                "Studio Ocean": 1500,
+                "Studio PentMountain": 1500,
+                "Studio PentOcean": 1500,
+                "3BR Mountain": 1500,
+                "3BR Ocean": 1500,
+                "2BR PentMountain": 1500,
+                "2BR PentOcean": 1500,
+                "Studio MountainAP": 1500,
+                "1BR MountainAP": 1500,
+                "2BR MountainAP": 1500,
+                "2BR OceanAP": 1500
+              }
+            },
+            {
               "name": "Independence Day",
               "global_reference": "Independence Day",
               "room_points": {
@@ -20607,6 +20631,30 @@
                 "1BR MountainAP": 3525,
                 "2BR MountainAP": 4575,
                 "2BR OceanAP": 5725
+              }
+            },
+            {
+              "name": "AP2",
+              "global_reference": "AP2",
+              "room_points": {
+                "1BR Mountain": 1500,
+                "1BR Ocean": 1500,
+                "1BR PentMountain": 1500,
+                "1BR PentOcean": 1500,
+                "2BR Mountain": 1500,
+                "2BR Ocean": 1500,
+                "Studio Mountain": 1500,
+                "Studio Ocean": 1500,
+                "Studio PentMountain": 1500,
+                "Studio PentOcean": 1500,
+                "3BR Mountain": 1500,
+                "3BR Ocean": 1500,
+                "2BR PentMountain": 1500,
+                "2BR PentOcean": 1500,
+                "Studio MountainAP": 1500,
+                "1BR MountainAP": 1500,
+                "2BR MountainAP": 1500,
+                "2BR OceanAP": 1500
               }
             },
             {
@@ -20704,54 +20752,6 @@
                 "2BR MountainAP": 5500,
                 "2BR OceanAP": 6875
               }
-            },
-            {
-              "name": "AP1",
-              "global_reference": "AP1",
-              "room_points": {
-                "1BR Mountain": 1500,
-                "1BR Ocean": 1500,
-                "1BR PentMountain": 1500,
-                "1BR PentOcean": 1500,
-                "2BR Mountain": 1500,
-                "2BR Ocean": 1500,
-                "Studio Mountain": 1500,
-                "Studio Ocean": 1500,
-                "Studio PentMountain": 1500,
-                "Studio PentOcean": 1500,
-                "3BR Mountain": 1500,
-                "3BR Ocean": 1500,
-                "2BR PentMountain": 1500,
-                "2BR PentOcean": 1500,
-                "Studio MountainAP": 1500,
-                "1BR MountainAP": 1500,
-                "2BR MountainAP": 1500,
-                "2BR OceanAP": 1500
-              }
-            },
-            {
-              "name": "AP2",
-              "global_reference": "AP2",
-              "room_points": {
-                "1BR Mountain": 1500,
-                "1BR Ocean": 1500,
-                "1BR PentMountain": 1500,
-                "1BR PentOcean": 1500,
-                "2BR Mountain": 1500,
-                "2BR Ocean": 1500,
-                "Studio Mountain": 1500,
-                "Studio Ocean": 1500,
-                "Studio PentMountain": 1500,
-                "Studio PentOcean": 1500,
-                "3BR Mountain": 1500,
-                "3BR Ocean": 1500,
-                "2BR PentMountain": 1500,
-                "2BR PentOcean": 1500,
-                "Studio MountainAP": 1500,
-                "1BR MountainAP": 1500,
-                "2BR MountainAP": 1500,
-                "2BR OceanAP": 1500
-              }
             }
           ]
         }
@@ -20760,7 +20760,7 @@
     {
       "id": "phuket-mai-khao",
       "display_name": "Phuket Mai Khao🌴",
-      "code": "PMK",
+      "code": "TH",
       "resort_name": "Marriott's Mai Khao Resort",
       "address": "234 Moo 3, Mai Khao, Phuket 83110, Thailand",
       "timezone": "Asia/Bangkok",
@@ -21030,7 +21030,7 @@
     {
       "id": "mallorca-son-antem",
       "display_name": "Mallorca☀️🐚🏌️",
-      "code": "MSA",
+      "code": "ES",
       "resort_name": "Marriott's Club Son Antem",
       "address": "Carretera MA 19, salida 20, Llucmajor, 07620, Mallorca, Spain",
       "timezone": "Europe/Madrid",
@@ -21508,7 +21508,7 @@
     {
       "id": "residence-tahoe-copy",
       "display_name": "Timber Lodge Tahoe⛷️",
-      "code": "TL",
+      "code": "CA",
       "resort_name": "Marriott's Timber Lodge",
       "address": "4100 Lake Tahoe Boulevard, South Lake Tahoe, CA 96150",
       "timezone": "America/Los_Angeles",
@@ -21694,6 +21694,16 @@
           ],
           "holidays": [
             {
+              "name": "Presidents Day",
+              "global_reference": "Presidents Day",
+              "room_points": {
+                "0Studio": 2950,
+                "1BR": 4125,
+                "2BR": 5675,
+                "3BR": 6225
+              }
+            },
+            {
               "name": "Independence Day",
               "global_reference": "Independence Day",
               "room_points": {
@@ -21741,16 +21751,6 @@
                 "1BR": 5725,
                 "2BR": 8175,
                 "3BR": 8950
-              }
-            },
-            {
-              "name": "Presidents Day",
-              "global_reference": "Presidents Day",
-              "room_points": {
-                "0Studio": 2950,
-                "1BR": 4125,
-                "2BR": 5675,
-                "3BR": 6225
               }
             }
           ]
@@ -21936,6 +21936,16 @@
           ],
           "holidays": [
             {
+              "name": "Presidents Day",
+              "global_reference": "Presidents Day",
+              "room_points": {
+                "0Studio": 2950,
+                "1BR": 4125,
+                "2BR": 5675,
+                "3BR": 6225
+              }
+            },
+            {
               "name": "Independence Day",
               "global_reference": "Independence Day",
               "room_points": {
@@ -21984,16 +21994,6 @@
                 "2BR": 8175,
                 "3BR": 8950
               }
-            },
-            {
-              "name": "Presidents Day",
-              "global_reference": "Presidents Day",
-              "room_points": {
-                "0Studio": 2950,
-                "1BR": 4125,
-                "2BR": 5675,
-                "3BR": 6225
-              }
             }
           ]
         }
@@ -22002,7 +22002,7 @@
     {
       "id": "birch-vail-copy",
       "display_name": "Beckenridge Colorado🏔️",
-      "code": "BC",
+      "code": "CO",
       "resort_name": "Marriott's Mountain Valley Lodge",
       "address": "655 Columbine Road, Breckenridge, CO 80424",
       "timezone": "America/Denver",
@@ -22444,7 +22444,7 @@
     {
       "id": "waikiki",
       "display_name": "Waikiki 🌊☀️🐚",
-      "code": "WKK",
+      "code": "HI",
       "resort_name": "Marriott Vacation Club, Waikiki",
       "address": "2080 Kalakaua Avenue, Honolulu, Oʻahu, Hawaiʻi",
       "timezone": "Pacific/Honolulu",
@@ -22769,8 +22769,8 @@
     },
     {
       "id": "waiohai-beach-club",
-      "display_name": "Waiohai Beach Club🌊☀️🐚",
-      "code": "WBC",
+      "display_name": "Waiohai Beach🌊☀️🐚",
+      "code": "HI",
       "resort_name": "Marriott's Waiohai Beach Club",
       "address": "2249 Poipu Road, Kōloa, Kauaʻi, HI 96756, USA",
       "timezone": "Pacific/Honolulu",
@@ -22932,6 +22932,16 @@
               }
             },
             {
+              "name": "AP1",
+              "global_reference": "AP1",
+              "room_points": {
+                "2BR Island": 4225,
+                "2BR IslandAP": 5870,
+                "2BR Ocean": 5025,
+                "2BR OceanAP": 6760
+              }
+            },
+            {
               "name": "Independence Day",
               "global_reference": "Independence Day",
               "room_points": {
@@ -22939,6 +22949,16 @@
                 "2BR Ocean": 5875,
                 "2BR IslandAP": 4870,
                 "2BR OceanAP": 5560
+              }
+            },
+            {
+              "name": "AP2",
+              "global_reference": "AP2",
+              "room_points": {
+                "2BR Island": 4850,
+                "2BR IslandAP": 5870,
+                "2BR Ocean": 5875,
+                "2BR OceanAP": 6760
               }
             },
             {
@@ -22978,26 +22998,6 @@
                 "2BR Island": 5550,
                 "2BR Ocean": 6450,
                 "2BR IslandAP": 5870,
-                "2BR OceanAP": 6760
-              }
-            },
-            {
-              "name": "AP1",
-              "global_reference": "AP1",
-              "room_points": {
-                "2BR Island": 4225,
-                "2BR IslandAP": 5870,
-                "2BR Ocean": 5025,
-                "2BR OceanAP": 6760
-              }
-            },
-            {
-              "name": "AP2",
-              "global_reference": "AP2",
-              "room_points": {
-                "2BR Island": 4850,
-                "2BR IslandAP": 5870,
-                "2BR Ocean": 5875,
                 "2BR OceanAP": 6760
               }
             }
@@ -23160,6 +23160,16 @@
               }
             },
             {
+              "name": "AP1",
+              "global_reference": "AP1",
+              "room_points": {
+                "2BR Island": 4225,
+                "2BR IslandAP": 5870,
+                "2BR Ocean": 5025,
+                "2BR OceanAP": 6760
+              }
+            },
+            {
               "name": "Independence Day",
               "global_reference": "Independence Day",
               "room_points": {
@@ -23167,6 +23177,16 @@
                 "2BR Ocean": 5875,
                 "2BR IslandAP": 4870,
                 "2BR OceanAP": 5560
+              }
+            },
+            {
+              "name": "AP2",
+              "global_reference": "AP2",
+              "room_points": {
+                "2BR Island": 4850,
+                "2BR IslandAP": 5870,
+                "2BR Ocean": 5875,
+                "2BR OceanAP": 6760
               }
             },
             {
@@ -23208,26 +23228,6 @@
                 "2BR IslandAP": 5870,
                 "2BR OceanAP": 6760
               }
-            },
-            {
-              "name": "AP1",
-              "global_reference": "AP1",
-              "room_points": {
-                "2BR Island": 4225,
-                "2BR IslandAP": 5870,
-                "2BR Ocean": 5025,
-                "2BR OceanAP": 6760
-              }
-            },
-            {
-              "name": "AP2",
-              "global_reference": "AP2",
-              "room_points": {
-                "2BR Island": 4850,
-                "2BR IslandAP": 5870,
-                "2BR Ocean": 5875,
-                "2BR OceanAP": 6760
-              }
             }
           ]
         }
@@ -23235,8 +23235,8 @@
     },
     {
       "id": "harborside-atlantis",
-      "display_name": "Harborside Bahamas",
-      "code": "HARBORSIDE",
+      "display_name": "Bahamas☀️🐚",
+      "code": "BS",
       "resort_name": "Harborside Resort at Atlantis",
       "address": "One Casino Drive, Paradise Island, The Bahamas",
       "timezone": "America/Puerto_Rico",
@@ -23697,8 +23697,8 @@
     },
     {
       "id": "lagunamar-ocean-resort",
-      "display_name": "Westin Lagunamar",
-      "code": "LAGUNAMAR",
+      "display_name": "Westin Lagunamar☀️🐚",
+      "code": "MX",
       "resort_name": "The Westin Lagunamar Ocean Resort",
       "address": "Boulevard Kukulcán Km 12.5, Lt 18, Zona Hotelera, Cancún, Quintana Roo 77500, Mexico",
       "timezone": "America/New_York",
@@ -23735,9 +23735,9 @@
                     "Thu"
                   ],
                   "room_points": {
-                    "Studio": 300,
-                    "1BR Villa": 425,
-                    "2BR Villa LO": 650
+                    "0Studio": 300,
+                    "2BR Lockoff": 650,
+                    "1BR": 425
                   }
                 },
                 "fri_sat": {
@@ -23746,9 +23746,9 @@
                     "Sat"
                   ],
                   "room_points": {
-                    "Studio": 400,
-                    "1BR Villa": 575,
-                    "2BR Villa LO": 900
+                    "0Studio": 400,
+                    "2BR Lockoff": 900,
+                    "1BR": 575
                   }
                 }
               }
@@ -23775,9 +23775,9 @@
                     "Thu"
                   ],
                   "room_points": {
-                    "Studio": 350,
-                    "1BR Villa": 500,
-                    "2BR Villa LO": 750
+                    "0Studio": 350,
+                    "2BR Lockoff": 750,
+                    "1BR": 500
                   }
                 },
                 "fri_sat": {
@@ -23786,9 +23786,9 @@
                     "Sat"
                   ],
                   "room_points": {
-                    "Studio": 475,
-                    "1BR Villa": 700,
-                    "2BR Villa LO": 1075
+                    "0Studio": 475,
+                    "2BR Lockoff": 1075,
+                    "1BR": 700
                   }
                 }
               }
@@ -23819,9 +23819,9 @@
                     "Thu"
                   ],
                   "room_points": {
-                    "Studio": 225,
-                    "1BR Villa": 325,
-                    "2BR Villa LO": 500
+                    "0Studio": 225,
+                    "2BR Lockoff": 500,
+                    "1BR": 325
                   }
                 },
                 "fri_sat": {
@@ -23830,9 +23830,9 @@
                     "Sat"
                   ],
                   "room_points": {
-                    "Studio": 325,
-                    "1BR Villa": 475,
-                    "2BR Villa LO": 725
+                    "0Studio": 325,
+                    "2BR Lockoff": 725,
+                    "1BR": 475
                   }
                 }
               }
@@ -23855,9 +23855,9 @@
                     "Thu"
                   ],
                   "room_points": {
-                    "Studio": 125,
-                    "1BR Villa": 225,
-                    "2BR Villa LO": 300
+                    "0Studio": 125,
+                    "2BR Lockoff": 300,
+                    "1BR": 225
                   }
                 },
                 "fri_sat": {
@@ -23866,9 +23866,9 @@
                     "Sat"
                   ],
                   "room_points": {
-                    "Studio": 200,
-                    "1BR Villa": 300,
-                    "2BR Villa LO": 450
+                    "0Studio": 200,
+                    "2BR Lockoff": 450,
+                    "1BR": 300
                   }
                 }
               }
@@ -23879,36 +23879,36 @@
               "name": "Presidents Day",
               "global_reference": "Presidents Day",
               "room_points": {
-                "Studio": 3425,
-                "1BR Villa": 5000,
-                "2BR Villa LO": 7575
+                "0Studio": 3425,
+                "2BR Lockoff": 7575,
+                "1BR": 5000
               }
             },
             {
               "name": "Easter2",
               "global_reference": "Easter2",
               "room_points": {
-                "Studio": 3375,
-                "1BR Villa": 4925,
-                "2BR Villa LO": 7550
+                "0Studio": 3375,
+                "2BR Lockoff": 7550,
+                "1BR": 4925
               }
             },
             {
               "name": "Christmas",
               "global_reference": "Christmas",
               "room_points": {
-                "Studio": 3375,
-                "1BR Villa": 4925,
-                "2BR Villa LO": 7550
+                "0Studio": 3375,
+                "2BR Lockoff": 7550,
+                "1BR": 4925
               }
             },
             {
               "name": "NewYear",
               "global_reference": "NewYear",
               "room_points": {
-                "Studio": 3725,
-                "1BR Villa": 5375,
-                "2BR Villa LO": 8300
+                "0Studio": 3725,
+                "2BR Lockoff": 8300,
+                "1BR": 5375
               }
             }
           ]
@@ -23941,9 +23941,9 @@
                     "Thu"
                   ],
                   "room_points": {
-                    "Studio": 300,
-                    "1BR Villa": 425,
-                    "2BR Villa LO": 650
+                    "0Studio": 300,
+                    "2BR Lockoff": 650,
+                    "1BR": 425
                   }
                 },
                 "fri_sat": {
@@ -23952,9 +23952,9 @@
                     "Sat"
                   ],
                   "room_points": {
-                    "Studio": 400,
-                    "1BR Villa": 575,
-                    "2BR Villa LO": 900
+                    "0Studio": 400,
+                    "2BR Lockoff": 900,
+                    "1BR": 575
                   }
                 }
               }
@@ -23981,9 +23981,9 @@
                     "Thu"
                   ],
                   "room_points": {
-                    "Studio": 350,
-                    "1BR Villa": 500,
-                    "2BR Villa LO": 750
+                    "0Studio": 350,
+                    "2BR Lockoff": 750,
+                    "1BR": 500
                   }
                 },
                 "fri_sat": {
@@ -23992,9 +23992,9 @@
                     "Sat"
                   ],
                   "room_points": {
-                    "Studio": 475,
-                    "1BR Villa": 700,
-                    "2BR Villa LO": 1075
+                    "0Studio": 475,
+                    "2BR Lockoff": 1075,
+                    "1BR": 700
                   }
                 }
               }
@@ -24025,9 +24025,9 @@
                     "Thu"
                   ],
                   "room_points": {
-                    "Studio": 225,
-                    "1BR Villa": 325,
-                    "2BR Villa LO": 500
+                    "0Studio": 225,
+                    "2BR Lockoff": 500,
+                    "1BR": 325
                   }
                 },
                 "fri_sat": {
@@ -24036,9 +24036,9 @@
                     "Sat"
                   ],
                   "room_points": {
-                    "Studio": 325,
-                    "1BR Villa": 475,
-                    "2BR Villa LO": 725
+                    "0Studio": 325,
+                    "2BR Lockoff": 725,
+                    "1BR": 475
                   }
                 }
               }
@@ -24061,9 +24061,9 @@
                     "Thu"
                   ],
                   "room_points": {
-                    "Studio": 125,
-                    "1BR Villa": 225,
-                    "2BR Villa LO": 300
+                    "0Studio": 125,
+                    "2BR Lockoff": 300,
+                    "1BR": 225
                   }
                 },
                 "fri_sat": {
@@ -24072,9 +24072,9 @@
                     "Sat"
                   ],
                   "room_points": {
-                    "Studio": 200,
-                    "1BR Villa": 300,
-                    "2BR Villa LO": 450
+                    "0Studio": 200,
+                    "2BR Lockoff": 450,
+                    "1BR": 300
                   }
                 }
               }
@@ -24085,36 +24085,36 @@
               "name": "Presidents Day",
               "global_reference": "Presidents Day",
               "room_points": {
-                "Studio": 3425,
-                "1BR Villa": 5000,
-                "2BR Villa LO": 7575
+                "0Studio": 3425,
+                "2BR Lockoff": 7575,
+                "1BR": 5000
               }
             },
             {
               "name": "Easter2",
               "global_reference": "Easter2",
               "room_points": {
-                "Studio": 3375,
-                "1BR Villa": 4925,
-                "2BR Villa LO": 7550
+                "0Studio": 3375,
+                "2BR Lockoff": 7550,
+                "1BR": 4925
               }
             },
             {
               "name": "Christmas",
               "global_reference": "Christmas",
               "room_points": {
-                "Studio": 3375,
-                "1BR Villa": 4925,
-                "2BR Villa LO": 7550
+                "0Studio": 3375,
+                "2BR Lockoff": 7550,
+                "1BR": 4925
               }
             },
             {
               "name": "NewYear",
               "global_reference": "NewYear",
               "room_points": {
-                "Studio": 3725,
-                "1BR Villa": 5375,
-                "2BR Villa LO": 8300
+                "0Studio": 3725,
+                "2BR Lockoff": 8300,
+                "1BR": 5375
               }
             }
           ]
@@ -24123,8 +24123,8 @@
     },
     {
       "id": "los-cabos-baja-point",
-      "display_name": "Westin Baja Point",
-      "code": "CABOS-BAJA",
+      "display_name": "Westin Baja Point☀️🐚",
+      "code": "MX",
       "resort_name": "The Westin Los Cabos Resort Villas & Spa, Baja Point",
       "address": "Carretera Transpeninsular KM 22.5, Los Cabos, Baja California Sur 23400, Mexico",
       "timezone": "America/Denver",
@@ -24157,10 +24157,10 @@
                     "Thu"
                   ],
                   "room_points": {
-                    "Guest Room": 325,
-                    "1BR Villa": 550,
-                    "2BR Villa LO": 850,
-                    "3BR Villa LO": 1025
+                    "0Guest": 325,
+                    "1BR": 550,
+                    "2BR": 850,
+                    "3BR": 1025
                   }
                 },
                 "fri_sat": {
@@ -24169,10 +24169,10 @@
                     "Sat"
                   ],
                   "room_points": {
-                    "Guest Room": 450,
-                    "1BR Villa": 775,
-                    "2BR Villa LO": 1200,
-                    "3BR Villa LO": 1450
+                    "0Guest": 450,
+                    "1BR": 775,
+                    "2BR": 1200,
+                    "3BR": 1450
                   }
                 }
               }
@@ -24199,10 +24199,10 @@
                     "Thu"
                   ],
                   "room_points": {
-                    "Guest Room": 400,
-                    "1BR Villa": 675,
-                    "2BR Villa LO": 1000,
-                    "3BR Villa LO": 1200
+                    "0Guest": 400,
+                    "1BR": 675,
+                    "2BR": 1000,
+                    "3BR": 1200
                   }
                 },
                 "fri_sat": {
@@ -24211,10 +24211,10 @@
                     "Sat"
                   ],
                   "room_points": {
-                    "Guest Room": 500,
-                    "1BR Villa": 950,
-                    "2BR Villa LO": 1450,
-                    "3BR Villa LO": 1725
+                    "0Guest": 500,
+                    "1BR": 950,
+                    "2BR": 1450,
+                    "3BR": 1725
                   }
                 }
               }
@@ -24245,10 +24245,10 @@
                     "Thu"
                   ],
                   "room_points": {
-                    "Guest Room": 225,
-                    "1BR Villa": 400,
-                    "2BR Villa LO": 575,
-                    "3BR Villa LO": 700
+                    "0Guest": 225,
+                    "1BR": 400,
+                    "2BR": 575,
+                    "3BR": 700
                   }
                 },
                 "fri_sat": {
@@ -24257,10 +24257,10 @@
                     "Sat"
                   ],
                   "room_points": {
-                    "Guest Room": 325,
-                    "1BR Villa": 575,
-                    "2BR Villa LO": 875,
-                    "3BR Villa LO": 1025
+                    "0Guest": 325,
+                    "1BR": 575,
+                    "2BR": 875,
+                    "3BR": 1025
                   }
                 }
               }
@@ -24283,10 +24283,10 @@
                     "Thu"
                   ],
                   "room_points": {
-                    "Guest Room": 150,
-                    "1BR Villa": 275,
-                    "2BR Villa LO": 400,
-                    "3BR Villa LO": 500
+                    "0Guest": 150,
+                    "1BR": 275,
+                    "2BR": 400,
+                    "3BR": 500
                   }
                 },
                 "fri_sat": {
@@ -24295,10 +24295,10 @@
                     "Sat"
                   ],
                   "room_points": {
-                    "Guest Room": 200,
-                    "1BR Villa": 375,
-                    "2BR Villa LO": 575,
-                    "3BR Villa LO": 675
+                    "0Guest": 200,
+                    "1BR": 375,
+                    "2BR": 575,
+                    "3BR": 675
                   }
                 }
               }
@@ -24309,40 +24309,40 @@
               "name": "Presidents Day",
               "global_reference": "Presidents Day",
               "room_points": {
-                "Guest Room": 3775,
-                "1BR Villa": 6700,
-                "2BR Villa LO": 10100,
-                "3BR Villa LO": 12025
+                "0Guest": 3775,
+                "1BR": 6700,
+                "2BR": 10100,
+                "3BR": 12025
               }
             },
             {
               "name": "Easter2",
               "global_reference": "Easter2",
               "room_points": {
-                "Guest Room": 3725,
-                "1BR Villa": 6525,
-                "2BR Villa LO": 10100,
-                "3BR Villa LO": 11875
+                "0Guest": 3725,
+                "1BR": 6525,
+                "2BR": 10100,
+                "3BR": 11875
               }
             },
             {
               "name": "Christmas",
               "global_reference": "Christmas",
               "room_points": {
-                "Guest Room": 3725,
-                "1BR Villa": 6525,
-                "2BR Villa LO": 10100,
-                "3BR Villa LO": 11875
+                "0Guest": 3725,
+                "1BR": 6525,
+                "2BR": 10100,
+                "3BR": 11875
               }
             },
             {
               "name": "NewYear",
               "global_reference": "NewYear",
               "room_points": {
-                "Guest Room": 4150,
-                "1BR Villa": 7100,
-                "2BR Villa LO": 11050,
-                "3BR Villa LO": 13350
+                "0Guest": 4150,
+                "1BR": 7100,
+                "2BR": 11050,
+                "3BR": 13350
               }
             }
           ]
@@ -24375,10 +24375,10 @@
                     "Thu"
                   ],
                   "room_points": {
-                    "Guest Room": 325,
-                    "1BR Villa": 550,
-                    "2BR Villa LO": 850,
-                    "3BR Villa LO": 1025
+                    "0Guest": 325,
+                    "1BR": 550,
+                    "2BR": 850,
+                    "3BR": 1025
                   }
                 },
                 "fri_sat": {
@@ -24387,10 +24387,10 @@
                     "Sat"
                   ],
                   "room_points": {
-                    "Guest Room": 450,
-                    "1BR Villa": 775,
-                    "2BR Villa LO": 1200,
-                    "3BR Villa LO": 1450
+                    "0Guest": 450,
+                    "1BR": 775,
+                    "2BR": 1200,
+                    "3BR": 1450
                   }
                 }
               }
@@ -24417,10 +24417,10 @@
                     "Thu"
                   ],
                   "room_points": {
-                    "Guest Room": 400,
-                    "1BR Villa": 675,
-                    "2BR Villa LO": 1000,
-                    "3BR Villa LO": 1200
+                    "0Guest": 400,
+                    "1BR": 675,
+                    "2BR": 1000,
+                    "3BR": 1200
                   }
                 },
                 "fri_sat": {
@@ -24429,10 +24429,10 @@
                     "Sat"
                   ],
                   "room_points": {
-                    "Guest Room": 500,
-                    "1BR Villa": 950,
-                    "2BR Villa LO": 1450,
-                    "3BR Villa LO": 1725
+                    "0Guest": 500,
+                    "1BR": 950,
+                    "2BR": 1450,
+                    "3BR": 1725
                   }
                 }
               }
@@ -24463,10 +24463,10 @@
                     "Thu"
                   ],
                   "room_points": {
-                    "Guest Room": 225,
-                    "1BR Villa": 400,
-                    "2BR Villa LO": 575,
-                    "3BR Villa LO": 700
+                    "0Guest": 225,
+                    "1BR": 400,
+                    "2BR": 575,
+                    "3BR": 700
                   }
                 },
                 "fri_sat": {
@@ -24475,10 +24475,10 @@
                     "Sat"
                   ],
                   "room_points": {
-                    "Guest Room": 325,
-                    "1BR Villa": 575,
-                    "2BR Villa LO": 875,
-                    "3BR Villa LO": 1025
+                    "0Guest": 325,
+                    "1BR": 575,
+                    "2BR": 875,
+                    "3BR": 1025
                   }
                 }
               }
@@ -24501,10 +24501,10 @@
                     "Thu"
                   ],
                   "room_points": {
-                    "Guest Room": 150,
-                    "1BR Villa": 275,
-                    "2BR Villa LO": 400,
-                    "3BR Villa LO": 500
+                    "0Guest": 150,
+                    "1BR": 275,
+                    "2BR": 400,
+                    "3BR": 500
                   }
                 },
                 "fri_sat": {
@@ -24513,10 +24513,10 @@
                     "Sat"
                   ],
                   "room_points": {
-                    "Guest Room": 200,
-                    "1BR Villa": 375,
-                    "2BR Villa LO": 575,
-                    "3BR Villa LO": 675
+                    "0Guest": 200,
+                    "1BR": 375,
+                    "2BR": 575,
+                    "3BR": 675
                   }
                 }
               }
@@ -24527,40 +24527,40 @@
               "name": "Presidents Day",
               "global_reference": "Presidents Day",
               "room_points": {
-                "Guest Room": 3775,
-                "1BR Villa": 6700,
-                "2BR Villa LO": 10100,
-                "3BR Villa LO": 12025
+                "0Guest": 3775,
+                "1BR": 6700,
+                "2BR": 10100,
+                "3BR": 12025
               }
             },
             {
               "name": "Easter2",
               "global_reference": "Easter2",
               "room_points": {
-                "Guest Room": 3725,
-                "1BR Villa": 6525,
-                "2BR Villa LO": 10100,
-                "3BR Villa LO": 11875
+                "0Guest": 3725,
+                "1BR": 6525,
+                "2BR": 10100,
+                "3BR": 11875
               }
             },
             {
               "name": "Christmas",
               "global_reference": "Christmas",
               "room_points": {
-                "Guest Room": 3725,
-                "1BR Villa": 6525,
-                "2BR Villa LO": 10100,
-                "3BR Villa LO": 11875
+                "0Guest": 3725,
+                "1BR": 6525,
+                "2BR": 10100,
+                "3BR": 11875
               }
             },
             {
               "name": "NewYear",
               "global_reference": "NewYear",
               "room_points": {
-                "Guest Room": 4150,
-                "1BR Villa": 7100,
-                "2BR Villa LO": 11050,
-                "3BR Villa LO": 13350
+                "0Guest": 4150,
+                "1BR": 7100,
+                "2BR": 11050,
+                "3BR": 13350
               }
             }
           ]
@@ -24569,8 +24569,8 @@
     },
     {
       "id": "los-cabos-main",
-      "display_name": "Westin Los Cabos",
-      "code": "CABOS-MAIN",
+      "display_name": "Westin Los Cabos☀️🐚",
+      "code": "MX",
       "resort_name": "The Westin Los Cabos Resort Villas & Spa",
       "address": "Carretera Transpeninsular Km 22.5, Los Cabos, Baja California Sur 23400, Mexico",
       "timezone": "America/Denver",
@@ -24603,12 +24603,12 @@
                     "Thu"
                   ],
                   "room_points": {
-                    "Studio": 350,
-                    "Villa": 725,
-                    "2BR LG": 850,
-                    "2BR GOV": 1025,
                     "3BR Villa": 950,
-                    "3BR GOV": 1325
+                    "0studio": 350,
+                    "2BR Villa": 725,
+                    "2BR Governor": 1025,
+                    "2BR Large": 850,
+                    "3BR Governor": 1325
                   }
                 },
                 "fri_sat": {
@@ -24617,12 +24617,12 @@
                     "Sat"
                   ],
                   "room_points": {
-                    "Studio": 500,
-                    "Villa": 1000,
-                    "2BR LG": 1200,
-                    "2BR GOV": 1450,
                     "3BR Villa": 1300,
-                    "3BR GOV": 1875
+                    "0studio": 500,
+                    "2BR Villa": 1000,
+                    "2BR Governor": 1450,
+                    "2BR Large": 1200,
+                    "3BR Governor": 1875
                   }
                 }
               }
@@ -24649,12 +24649,12 @@
                     "Thu"
                   ],
                   "room_points": {
-                    "Studio": 425,
-                    "Villa": 825,
-                    "2BR LG": 1000,
-                    "2BR GOV": 1200,
                     "3BR Villa": 1075,
-                    "3BR GOV": 1550
+                    "0studio": 425,
+                    "2BR Villa": 825,
+                    "2BR Governor": 1200,
+                    "2BR Large": 1000,
+                    "3BR Governor": 1550
                   }
                 },
                 "fri_sat": {
@@ -24663,12 +24663,12 @@
                     "Sat"
                   ],
                   "room_points": {
-                    "Studio": 575,
-                    "Villa": 1200,
-                    "2BR LG": 1450,
-                    "2BR GOV": 1725,
                     "3BR Villa": 1550,
-                    "3BR GOV": 2250
+                    "0studio": 575,
+                    "2BR Villa": 1200,
+                    "2BR Governor": 1725,
+                    "2BR Large": 1450,
+                    "3BR Governor": 2250
                   }
                 }
               }
@@ -24699,12 +24699,12 @@
                     "Thu"
                   ],
                   "room_points": {
-                    "Studio": 250,
-                    "Villa": 500,
-                    "2BR LG": 575,
-                    "2BR GOV": 700,
                     "3BR Villa": 650,
-                    "3BR GOV": 925
+                    "0studio": 250,
+                    "2BR Villa": 500,
+                    "2BR Governor": 700,
+                    "2BR Large": 575,
+                    "3BR Governor": 925
                   }
                 },
                 "fri_sat": {
@@ -24713,12 +24713,12 @@
                     "Sat"
                   ],
                   "room_points": {
-                    "Studio": 350,
-                    "Villa": 725,
-                    "2BR LG": 875,
-                    "2BR GOV": 1025,
                     "3BR Villa": 950,
-                    "3BR GOV": 1325
+                    "0studio": 350,
+                    "2BR Villa": 725,
+                    "2BR Governor": 1025,
+                    "2BR Large": 875,
+                    "3BR Governor": 1325
                   }
                 }
               }
@@ -24741,12 +24741,12 @@
                     "Thu"
                   ],
                   "room_points": {
-                    "Studio": 150,
-                    "Villa": 325,
-                    "2BR LG": 400,
-                    "2BR GOV": 500,
                     "3BR Villa": 450,
-                    "3BR GOV": 650
+                    "0studio": 150,
+                    "2BR Villa": 325,
+                    "2BR Governor": 500,
+                    "2BR Large": 400,
+                    "3BR Governor": 650
                   }
                 },
                 "fri_sat": {
@@ -24755,12 +24755,12 @@
                     "Sat"
                   ],
                   "room_points": {
-                    "Studio": 200,
-                    "Villa": 475,
-                    "2BR LG": 575,
-                    "2BR GOV": 675,
                     "3BR Villa": 600,
-                    "3BR GOV": 850
+                    "0studio": 200,
+                    "2BR Villa": 475,
+                    "2BR Governor": 675,
+                    "2BR Large": 575,
+                    "3BR Governor": 850
                   }
                 }
               }
@@ -24771,48 +24771,48 @@
               "name": "Presidents Day",
               "global_reference": "Presidents Day",
               "room_points": {
-                "Studio": 4275,
-                "Villa": 8425,
-                "2BR LG": 10100,
-                "2BR GOV": 12025,
-                "3BR Villa": 10850,
-                "3BR GOV": 15625
+                "0studio": 4275,
+                "2BR Governor": 12025,
+                "2BR Large": 10100,
+                "2BR Villa": 8425,
+                "3BR Governor": 15625,
+                "3BR Villa": 10950
               }
             },
             {
               "name": "Easter2",
               "global_reference": "Easter2",
               "room_points": {
-                "Studio": 4175,
-                "Villa": 8350,
-                "2BR LG": 10100,
-                "2BR GOV": 11875,
                 "3BR Villa": 10850,
-                "3BR GOV": 15475
+                "0studio": 4175,
+                "2BR Villa": 8350,
+                "2BR Governor": 11875,
+                "2BR Large": 10100,
+                "3BR Governor": 15475
               }
             },
             {
               "name": "Christmas",
               "global_reference": "Christmas",
               "room_points": {
-                "Studio": 4175,
-                "Villa": 8350,
-                "2BR LG": 10100,
-                "2BR GOV": 11875,
                 "3BR Villa": 10850,
-                "3BR GOV": 15475
+                "0studio": 4175,
+                "2BR Villa": 8350,
+                "2BR Governor": 11875,
+                "2BR Large": 10100,
+                "3BR Governor": 15475
               }
             },
             {
               "name": "NewYear",
               "global_reference": "NewYear",
               "room_points": {
-                "Studio": 4625,
-                "Villa": 9250,
-                "2BR LG": 11050,
-                "2BR GOV": 13350,
-                "3BR Villa": 11875,
-                "3BR GOV": 17250
+                "0studio": 4625,
+                "2BR Governor": 13350,
+                "2BR Large": 11050,
+                "2BR Villa": 9250,
+                "3BR Governor": 17250,
+                "3BR Villa": 11975
               }
             }
           ]
@@ -24845,12 +24845,12 @@
                     "Thu"
                   ],
                   "room_points": {
-                    "Studio": 350,
-                    "Villa": 725,
-                    "2BR LG": 850,
-                    "2BR GOV": 1025,
                     "3BR Villa": 950,
-                    "3BR GOV": 1325
+                    "0studio": 350,
+                    "2BR Villa": 725,
+                    "2BR Governor": 1025,
+                    "2BR Large": 850,
+                    "3BR Governor": 1325
                   }
                 },
                 "fri_sat": {
@@ -24859,12 +24859,12 @@
                     "Sat"
                   ],
                   "room_points": {
-                    "Studio": 500,
-                    "Villa": 1000,
-                    "2BR LG": 1200,
-                    "2BR GOV": 1450,
                     "3BR Villa": 1300,
-                    "3BR GOV": 1875
+                    "0studio": 500,
+                    "2BR Villa": 1000,
+                    "2BR Governor": 1450,
+                    "2BR Large": 1200,
+                    "3BR Governor": 1875
                   }
                 }
               }
@@ -24891,12 +24891,12 @@
                     "Thu"
                   ],
                   "room_points": {
-                    "Studio": 425,
-                    "Villa": 825,
-                    "2BR LG": 1000,
-                    "2BR GOV": 1200,
                     "3BR Villa": 1075,
-                    "3BR GOV": 1550
+                    "0studio": 425,
+                    "2BR Villa": 825,
+                    "2BR Governor": 1200,
+                    "2BR Large": 1000,
+                    "3BR Governor": 1550
                   }
                 },
                 "fri_sat": {
@@ -24905,12 +24905,12 @@
                     "Sat"
                   ],
                   "room_points": {
-                    "Studio": 575,
-                    "Villa": 1200,
-                    "2BR LG": 1450,
-                    "2BR GOV": 1725,
                     "3BR Villa": 1550,
-                    "3BR GOV": 2250
+                    "0studio": 575,
+                    "2BR Villa": 1200,
+                    "2BR Governor": 1725,
+                    "2BR Large": 1450,
+                    "3BR Governor": 2250
                   }
                 }
               }
@@ -24941,12 +24941,12 @@
                     "Thu"
                   ],
                   "room_points": {
-                    "Studio": 250,
-                    "Villa": 500,
-                    "2BR LG": 575,
-                    "2BR GOV": 700,
                     "3BR Villa": 650,
-                    "3BR GOV": 925
+                    "0studio": 250,
+                    "2BR Villa": 500,
+                    "2BR Governor": 700,
+                    "2BR Large": 575,
+                    "3BR Governor": 925
                   }
                 },
                 "fri_sat": {
@@ -24955,12 +24955,12 @@
                     "Sat"
                   ],
                   "room_points": {
-                    "Studio": 350,
-                    "Villa": 725,
-                    "2BR LG": 875,
-                    "2BR GOV": 1025,
                     "3BR Villa": 950,
-                    "3BR GOV": 1325
+                    "0studio": 350,
+                    "2BR Villa": 725,
+                    "2BR Governor": 1025,
+                    "2BR Large": 875,
+                    "3BR Governor": 1325
                   }
                 }
               }
@@ -24983,12 +24983,12 @@
                     "Thu"
                   ],
                   "room_points": {
-                    "Studio": 150,
-                    "Villa": 325,
-                    "2BR LG": 400,
-                    "2BR GOV": 500,
                     "3BR Villa": 450,
-                    "3BR GOV": 650
+                    "0studio": 150,
+                    "2BR Villa": 325,
+                    "2BR Governor": 500,
+                    "2BR Large": 400,
+                    "3BR Governor": 650
                   }
                 },
                 "fri_sat": {
@@ -24997,12 +24997,12 @@
                     "Sat"
                   ],
                   "room_points": {
-                    "Studio": 200,
-                    "Villa": 475,
-                    "2BR LG": 575,
-                    "2BR GOV": 675,
                     "3BR Villa": 600,
-                    "3BR GOV": 850
+                    "0studio": 200,
+                    "2BR Villa": 475,
+                    "2BR Governor": 675,
+                    "2BR Large": 575,
+                    "3BR Governor": 850
                   }
                 }
               }
@@ -25013,48 +25013,48 @@
               "name": "Presidents Day",
               "global_reference": "Presidents Day",
               "room_points": {
-                "Studio": 4275,
-                "Villa": 8425,
-                "2BR LG": 10100,
-                "2BR GOV": 12025,
-                "3BR Villa": 10850,
-                "3BR GOV": 15625
+                "0studio": 4275,
+                "2BR Governor": 12025,
+                "2BR Large": 10100,
+                "2BR Villa": 8425,
+                "3BR Governor": 15625,
+                "3BR Villa": 10950
               }
             },
             {
               "name": "Easter2",
               "global_reference": "Easter2",
               "room_points": {
-                "Studio": 4175,
-                "Villa": 8350,
-                "2BR LG": 10100,
-                "2BR GOV": 11875,
                 "3BR Villa": 10850,
-                "3BR GOV": 15475
+                "0studio": 4175,
+                "2BR Villa": 8350,
+                "2BR Governor": 11875,
+                "2BR Large": 10100,
+                "3BR Governor": 15475
               }
             },
             {
               "name": "Christmas",
               "global_reference": "Christmas",
               "room_points": {
-                "Studio": 4175,
-                "Villa": 8350,
-                "2BR LG": 10100,
-                "2BR GOV": 11875,
                 "3BR Villa": 10850,
-                "3BR GOV": 15475
+                "0studio": 4175,
+                "2BR Villa": 8350,
+                "2BR Governor": 11875,
+                "2BR Large": 10100,
+                "3BR Governor": 15475
               }
             },
             {
               "name": "NewYear",
               "global_reference": "NewYear",
               "room_points": {
-                "Studio": 4625,
-                "Villa": 9250,
-                "2BR LG": 11050,
-                "2BR GOV": 13350,
-                "3BR Villa": 11875,
-                "3BR GOV": 17250
+                "0studio": 4625,
+                "2BR Governor": 13350,
+                "2BR Large": 11050,
+                "2BR Villa": 9250,
+                "3BR Governor": 17250,
+                "3BR Villa": 11975
               }
             }
           ]
