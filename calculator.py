@@ -570,6 +570,15 @@ TIER_EXECUTIVE = "Executive (25% off within 30 days)"
 TIER_PRESIDENTIAL = "Presidential / Chairman (30% off within 60 days)"
 TIER_OPTIONS = [TIER_NO_DISCOUNT, TIER_EXECUTIVE, TIER_PRESIDENTIAL]
 
+def get_unique_years_from_data(data: Dict[str, Any]) -> List[str]:
+    """Helper to get years from both resorts and global holidays for date picker."""
+    years = set()
+    for resort in data.get("resorts", []):
+        years.update(resort.get("years", {}).keys())
+    if "global_holidays" in data:
+        years.update(data["global_holidays"].keys())
+    return sorted([y for y in years if y.isdigit() and len(y) == 4])
+
 def apply_settings_from_dict(user_data: dict):
     try:
         if "maintenance_rate" in user_data: st.session_state.pref_maint_rate = float(user_data["maintenance_rate"])
@@ -665,7 +674,7 @@ def main(forced_mode: str = "Renter") -> None:
     rate_to_use = 0.50
     disc_mul = 1.0
 
-    with st.expander("⚙️ Configuration & Settings", expanded=False):
+    with st.expander("⚙️ Settings", expanded=False):
         if mode == UserMode.OWNER:
             c1, c2 = st.columns(2)
             with c1:
@@ -732,13 +741,13 @@ def main(forced_mode: str = "Renter") -> None:
             with sl_col1:
                 config_file = st.file_uploader("Load Saved Settings (JSON)", type="json", key="user_cfg_upload_main")
                 if config_file:
-                     file_sig = f"{config_file.name}_{config_file.size}"
-                     if "last_loaded_cfg" not in st.session_state or st.session_state.last_loaded_cfg != file_sig:
-                         config_file.seek(0)
-                         data = json.load(config_file)
-                         apply_settings_from_dict(data)
-                         st.session_state.last_loaded_cfg = file_sig
-                         st.rerun()
+                      file_sig = f"{config_file.name}_{config_file.size}"
+                      if "last_loaded_cfg" not in st.session_state or st.session_state.last_loaded_cfg != file_sig:
+                          config_file.seek(0)
+                          data = json.load(config_file)
+                          apply_settings_from_dict(data)
+                          st.session_state.last_loaded_cfg = file_sig
+                          st.rerun()
             with sl_col2:
                 current_pref_resort = st.session_state.current_resort_id if st.session_state.current_resort_id else ""
                 current_settings = {
@@ -799,11 +808,29 @@ def main(forced_mode: str = "Renter") -> None:
     r_name = resort_obj.get("display_name")
     info = repo.get_resort_info(r_name)
     render_resort_card(info["full_name"], info["timezone"], info["address"])
+    # st.divider()
 
     # --- CALCULATOR INPUTS ---
     c1, c2, c3, c4 = st.columns([2, 1, 2, 2])
     with c1:
-        checkin = st.date_input("Check-in", value=st.session_state.calc_checkin, key="calc_checkin_widget")
+        # Get available years for the date picker
+        available_years = get_unique_years_from_data(st.session_state.data)
+        min_date = datetime.now().date()
+        max_date = datetime.now().date() + timedelta(days=365*2)
+        
+        if available_years:
+            min_y = int(available_years[0])
+            max_y = int(available_years[-1])
+            min_date = date(min_y, 1, 1)
+            max_date = date(max_y, 12, 31)
+            
+        checkin = st.date_input(
+            "Check-in", 
+            value=st.session_state.calc_checkin, 
+            min_value=min_date,
+            max_value=max_date,
+            key="calc_checkin_widget"
+        )
         st.session_state.calc_checkin = checkin
 
     if not st.session_state.calc_checkin_user_set and checkin != st.session_state.calc_initial_default:
@@ -844,7 +871,7 @@ def main(forced_mode: str = "Renter") -> None:
         discount_display = f"✅ {pct}% Off ({policy_label})"
     
     rate_label = "Maintenance Fee Rate" if mode == UserMode.OWNER else "Rental Rate"
-    st.caption(f"ℹ️ **Calculation Basis:** {rate_label}: **${rate_to_use:.2f}/pt** • Discount Setting: **{discount_display}**")
+    st.caption(f"⚙️ Settings: {rate_label}: **${rate_to_use:.2f}/pt** • Points Discount: **{discount_display}**")
 
     res = calc.calculate_breakdown(r_name, room_sel, adj_in, adj_n, mode, rate_to_use, policy, owner_params)
 
@@ -906,5 +933,5 @@ def main(forced_mode: str = "Renter") -> None:
             else:
                 st.info("No season or holiday pricing data for this year.")
 
-def run(forced_mode="Renter") -> None:
+def run(forced_mode: str = "Renter") -> None:
     main(forced_mode)
