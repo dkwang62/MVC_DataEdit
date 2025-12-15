@@ -886,7 +886,7 @@ def main(forced_mode: str = "Renter") -> None:
         total_purchase = purchase_per_pt * res.total_points  # Now safe — res exists
         useful_life = st.session_state.get("pref_useful_life", 10)
 
-        settings_parts.append(f"Purchase($) {total_purchase:,.0f}")
+        settings_parts.append(f"Purchase USD {total_purchase:,.0f}")
         settings_parts.append(f"Useful Life: **{useful_life} yrs**")
 
     settings_parts.append(f"**{discount_display}**")
