@@ -865,8 +865,11 @@ def main(forced_mode: str = "Renter") -> None:
 
     
 
-    # --- RESULTS ---
-# Enhanced settings line with TOTAL Purchase value and Useful Life
+# --- RESULTS ---
+    # First, perform the calculation
+    res = calc.calculate_breakdown(r_name, room_sel, adj_in, adj_n, mode, rate_to_use, policy, owner_params)
+
+    # Now build the enhanced settings caption (safe to use res.total_points)
     discount_display = "None"
     if disc_mul < 1.0:
         pct = int((1.0 - disc_mul) * 100)
@@ -879,9 +882,8 @@ def main(forced_mode: str = "Renter") -> None:
     settings_parts.append(f"{rate_label}: **${rate_to_use:.2f}/pt**")
 
     if mode == UserMode.OWNER:
-        # Calculate total purchase value: (Purchase $/pt) × Total Points
         purchase_per_pt = st.session_state.get("pref_purchase_price", 18.0)
-        total_purchase = purchase_per_pt * res.total_points
+        total_purchase = purchase_per_pt * res.total_points  # Now safe — res exists
         useful_life = st.session_state.get("pref_useful_life", 10)
 
         settings_parts.append(f"Purchase: **${total_purchase:,.0f}**")
@@ -890,8 +892,8 @@ def main(forced_mode: str = "Renter") -> None:
     settings_parts.append(f"Points Discount: **{discount_display}**")
 
     st.caption(f"⚙️ Settings: " + " • ".join(settings_parts))
-    res = calc.calculate_breakdown(r_name, room_sel, adj_in, adj_n, mode, rate_to_use, policy, owner_params)
 
+    # Now display metrics (rest of your existing code)
     if mode == UserMode.OWNER:
         cols = st.columns(5)
         cols[0].metric("Total Points", f"{res.total_points:,}")
