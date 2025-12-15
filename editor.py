@@ -2101,9 +2101,6 @@ Restarting the app resets everything to the default dataset, so be sure to save 
                 render_season_points_grid(working, BASE_YEAR_FOR_POINTS, current_resort_id)
         with tab6:
             render_excel_export_import(working, current_resort_id, data)
-    
-    st.markdown("---")
-    
             
     st.markdown("---")
     render_global_settings_v2(data, years)
