@@ -2084,21 +2084,18 @@ Restarting the app resets everything to the default dataset, so be sure to save 
             st.info("✨ Excel-like editing with copy/paste, drag-fill, and multi-select. Changes auto-sync across years where applicable.")
     
             # Season dates (year-specific)
-            with st.expander("📅 Edit Season Dates", expanded=True):
+            with st.expander("📅 Edit Season Dates", expanded=False):
                 render_season_dates_grid(working, current_resort_id)
     
-            st.markdown("---")
-    
             # Season points (applies to all years)
-            with st.expander("🎯 Edit Season Points", expanded=True):
+            with st.expander("🎯 Edit Season Points", expanded=False):
                 # BASE_YEAR = "2025"  # or your preferred base year
-                # render_season_points_grid(working, BASE_YEAR, current_resort_id)
                 render_season_points_grid(working, BASE_YEAR_FOR_POINTS, current_resort_id)
 
-                # Holiday points (applies to all years)
-            with st.expander("🎄 Edit Holiday Points", expanded=True):
+            # Holiday points (applies to all years)
+            with st.expander("🎄 Edit Holiday Points", expanded=False):
                 render_holiday_points_grid(working, BASE_YEAR_FOR_POINTS, current_resort_id)
-            # render_holiday_points_grid(working, BASE_YEAR, current_resort_id)
+            st.markdown("---")
             render_excel_export_import(working, current_resort_id, data)
             
     st.markdown("---")
