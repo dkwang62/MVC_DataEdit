@@ -1557,7 +1557,7 @@ def validate_resort_data_v2(
 def render_validation_panel_v2(
     working: Dict[str, Any], data: Dict[str, Any], years: List[str]
 ):
-    with st.expander("🔍 Date Validation", expanded=False):
+    with st.expander("🔍 Date gaps or overlaps", expanded=False):
         issues = validate_resort_data_v2(working, data, years)
         if issues:
             st.error(f"**Found {len(issues)} issue(s):**")
