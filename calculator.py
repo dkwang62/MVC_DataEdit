@@ -866,16 +866,30 @@ def main(forced_mode: str = "Renter") -> None:
     
 
     # --- RESULTS ---
-    # Minimal Explainer just above results
+# Enhanced settings line with TOTAL Purchase value and Useful Life
     discount_display = "None"
     if disc_mul < 1.0:
         pct = int((1.0 - disc_mul) * 100)
         policy_label = "Executive" if disc_mul == 0.75 else "Presidential/Chairman" if disc_mul == 0.7 else "Custom"
         discount_display = f"✅ {pct}% Off ({policy_label})"
-    
-    rate_label = "Maintenance Fee Rate" if mode == UserMode.OWNER else "Rental Rate"
-    st.caption(f"⚙️ Settings: {rate_label}: **${rate_to_use:.2f}/pt** • Points Discount: **{discount_display}**")
 
+    rate_label = "Maintenance Fee Rate" if mode == UserMode.OWNER else "Rental Rate"
+
+    settings_parts = []
+    settings_parts.append(f"{rate_label}: **${rate_to_use:.2f}/pt**")
+
+    if mode == UserMode.OWNER:
+        # Calculate total purchase value: (Purchase $/pt) × Total Points
+        purchase_per_pt = st.session_state.get("pref_purchase_price", 18.0)
+        total_purchase = purchase_per_pt * res.total_points
+        useful_life = st.session_state.get("pref_useful_life", 10)
+
+        settings_parts.append(f"Purchase: **${total_purchase:,.0f}**")
+        settings_parts.append(f"Useful Life: **{useful_life} yrs**")
+
+    settings_parts.append(f"Points Discount: **{discount_display}**")
+
+    st.caption(f"⚙️ Settings: " + " • ".join(settings_parts))
     res = calc.calculate_breakdown(r_name, room_sel, adj_in, adj_n, mode, rate_to_use, policy, owner_params)
 
     if mode == UserMode.OWNER:
