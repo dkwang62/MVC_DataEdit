@@ -2080,6 +2080,10 @@ Restarting the app resets everything to the default dataset, so be sure to save 
             render_holidays_summary_table(working) 
             st.markdown("---")
             render_holiday_management_v2(working, years, current_resort_id, data) 
+            # Holiday points (applies to all years)
+            with st.expander("🎄 Edit Holiday Points", expanded=True):
+                render_holiday_points_grid(working, BASE_YEAR_FOR_POINTS, current_resort_id)
+            # render_holiday_points_grid(working, BASE_YEAR, current_resort_id)
         with tab5:
             st.markdown("## 📊 Spreadsheet-Style Editors")
             st.info("✨ Excel-like editing with copy/paste, drag-fill, and multi-select. Changes auto-sync across years where applicable.")
@@ -2100,10 +2104,6 @@ Restarting the app resets everything to the default dataset, so be sure to save 
     
     st.markdown("---")
     
-    # Holiday points (applies to all years)
-    with st.expander("🎄 Edit Holiday Points", expanded=True):
-        render_holiday_points_grid(working, BASE_YEAR_FOR_POINTS, current_resort_id)
-        # render_holiday_points_grid(working, BASE_YEAR, current_resort_id)
             
     st.markdown("---")
     render_global_settings_v2(data, years)
