@@ -876,10 +876,10 @@ def main(forced_mode: str = "Renter") -> None:
         policy_label = "Executive" if disc_mul == 0.75 else "Presidential/Chairman" if disc_mul == 0.7 else "Custom"
         discount_display = f"✅ {pct}% Off ({policy_label})"
 
-    rate_label = "Maintenance Fee Rate" if mode == UserMode.OWNER else "Rental Rate"
+    rate_label = "Maintenance " if mode == UserMode.OWNER else "Rental Rate"
 
     settings_parts = []
-    settings_parts.append(f"{rate_label}: **${rate_to_use:.2f}/pt**")
+    settings_parts.append(f"{rate_label}: ${rate_to_use:.2f}/pt")
 
     if mode == UserMode.OWNER:
         purchase_per_pt = st.session_state.get("pref_purchase_price", 18.0)
