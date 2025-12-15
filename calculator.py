@@ -748,7 +748,7 @@ def main(forced_mode: str = "Renter") -> None:
             with c1:
                 current_val = st.session_state.get("pref_maint_rate", 0.55)
                 val_rate = st.number_input(
-                    "Annual Maintenance Fee ($/point)",
+                    "Maintenance ($/point)",
                     value=current_val,
                     key="widget_maint_rate",
                     step=0.01, min_value=0.0
@@ -874,7 +874,7 @@ def main(forced_mode: str = "Renter") -> None:
     if disc_mul < 1.0:
         pct = int((1.0 - disc_mul) * 100)
         policy_label = "Executive" if disc_mul == 0.75 else "Presidential/Chairman" if disc_mul == 0.7 else "Custom"
-        discount_display = f"✅ {pct}% Off ({policy_label})"
+        discount_display = f"✅ {pct}% Off points ({policy_label})"
 
     rate_label = "Maintenance " if mode == UserMode.OWNER else "Rental Rate"
 
@@ -886,10 +886,10 @@ def main(forced_mode: str = "Renter") -> None:
         total_purchase = purchase_per_pt * res.total_points  # Now safe — res exists
         useful_life = st.session_state.get("pref_useful_life", 10)
 
-        settings_parts.append(f"Purchase: **${total_purchase:,.0f}**")
+        settings_parts.append(f"Purchase value: ${total_purchase:,.0f}")
         settings_parts.append(f"Useful Life: **{useful_life} yrs**")
 
-    settings_parts.append(f"Points Discount: **{discount_display}**")
+    settings_parts.append(f"Tier: **{discount_display}**")
 
     st.caption(f"⚙️ Settings: " + " • ".join(settings_parts))
 
