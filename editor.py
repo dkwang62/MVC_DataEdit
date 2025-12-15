@@ -1557,7 +1557,7 @@ def validate_resort_data_v2(
 def render_validation_panel_v2(
     working: Dict[str, Any], data: Dict[str, Any], years: List[str]
 ):
-    with st.expander("🔍 Data Validation", expanded=False):
+    with st.expander("🔍 Date Validation", expanded=False):
         issues = validate_resort_data_v2(working, data, years)
         if issues:
             st.error(f"**Found {len(issues)} issue(s):**")
@@ -2065,12 +2065,12 @@ Restarting the app resets everything to the default dataset, so be sure to save 
             ]
         )
         with tab1:
+            edit_resort_basics(working, current_resort_id)
             render_seasons_summary_table(working)
             render_holidays_summary_table(working)
-            edit_resort_basics(working, current_resort_id)
         with tab2:
-            render_gantt_charts_v2(working, years, data)
             render_validation_panel_v2(working, data, years)
+            render_gantt_charts_v2(working, years, data)            
             render_season_dates_editor_v2(working, years, current_resort_id)
         with tab3:
             render_seasons_summary_table(working) 
