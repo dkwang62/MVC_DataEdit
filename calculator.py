@@ -13,18 +13,6 @@ from common.ui import render_resort_card, render_resort_grid, render_page_header
 from common.charts import create_gantt_chart_from_resort_data
 from common.data import ensure_data_in_session
 
-
-# ==============================================================================
-# AUTO-SAVE HELPER
-# ==============================================================================
-def trigger_auto_save():
-    """Trigger auto-save of settings if persistence is available."""
-    if hasattr(st.session_state, 'persistence'):
-        from browser_persistence_final import get_settings_to_save
-        settings = get_settings_to_save(st.session_state)
-        st.session_state.persistence.save_settings(settings)
-
-
 # ==============================================================================
 # LAYER 1: DOMAIN MODELS
 # ==============================================================================
@@ -699,19 +687,6 @@ def main(forced_mode: str = "Renter") -> None:
     if not resort_obj: return
 
     r_name = resort_obj.get("display_name")
-    
-    # Auto-save when resort changes
-    if "last_saved_resort" not in st.session_state:
-        st.session_state.last_saved_resort = None
-    
-    if st.session_state.last_saved_resort != st.session_state.current_resort_id:
-        st.session_state.last_saved_resort = st.session_state.current_resort_id
-        # Trigger auto-save if persistence is available
-        if hasattr(st.session_state, 'persistence'):
-            from browser_persistence_final import get_settings_to_save
-            settings = get_settings_to_save(st.session_state)
-            st.session_state.persistence.save_settings(settings)
-    
     info = repo.get_resort_info(r_name)
     render_resort_card(info["full_name"], info["timezone"], info["address"])
     # st.divider()
@@ -780,7 +755,6 @@ def main(forced_mode: str = "Renter") -> None:
                 )
                 if val_rate != current_val:
                     st.session_state.pref_maint_rate = val_rate
-                    trigger_auto_save()
                 rate_to_use = val_rate
 
             with c2:
@@ -788,30 +762,16 @@ def main(forced_mode: str = "Renter") -> None:
                 try: t_idx = TIER_OPTIONS.index(current_tier)
                 except ValueError: t_idx = 0
                 opt = st.radio("Discount Tier:", TIER_OPTIONS, index=t_idx, key="widget_discount_tier")
-                if opt != current_tier:
-                    st.session_state.pref_discount_tier = opt
-                    trigger_auto_save()
-                else:
-                    st.session_state.pref_discount_tier = opt
+                st.session_state.pref_discount_tier = opt
 
             col_chk2, col_chk3 = st.columns(2)
             inc_m = True
             with col_chk2:
-                prev_inc_c = st.session_state.get("pref_inc_c", True)
-                inc_c = st.checkbox("Include Capital Cost", value=prev_inc_c, key="widget_inc_c")
-                if inc_c != prev_inc_c:
-                    st.session_state.pref_inc_c = inc_c
-                    trigger_auto_save()
-                else:
-                    st.session_state.pref_inc_c = inc_c
+                inc_c = st.checkbox("Include Capital Cost", value=st.session_state.get("pref_inc_c", True), key="widget_inc_c")
+                st.session_state.pref_inc_c = inc_c
             with col_chk3:
-                prev_inc_d = st.session_state.get("pref_inc_d", True)
-                inc_d = st.checkbox("Include Depreciation", value=prev_inc_d, key="widget_inc_d")
-                if inc_d != prev_inc_d:
-                    st.session_state.pref_inc_d = inc_d
-                    trigger_auto_save()
-                else:
-                    st.session_state.pref_inc_d = inc_d
+                inc_d = st.checkbox("Include Depreciation", value=st.session_state.get("pref_inc_d", True), key="widget_inc_d")
+                st.session_state.pref_inc_d = inc_d
 
             cap, coc, life, salvage = 18.0, 0.06, 15, 3.0
             
@@ -819,43 +779,23 @@ def main(forced_mode: str = "Renter") -> None:
                 st.markdown("---")
                 rc1, rc2, rc3, rc4 = st.columns(4)
                 with rc1:
-                    prev_cap = st.session_state.get("pref_purchase_price", 18.0)
-                    val_cap = st.number_input("Purchase ($/pt)", value=prev_cap, key="widget_purchase_price", step=1.0)
-                    if val_cap != prev_cap:
-                        st.session_state.pref_purchase_price = val_cap
-                        trigger_auto_save()
-                    else:
-                        st.session_state.pref_purchase_price = val_cap
+                    val_cap = st.number_input("Purchase ($/pt)", value=st.session_state.get("pref_purchase_price", 18.0), key="widget_purchase_price", step=1.0)
+                    st.session_state.pref_purchase_price = val_cap
                     cap = val_cap
                 with rc2:
                     if inc_c:
-                        prev_coc = st.session_state.get("pref_capital_cost", 5.0)
-                        val_coc = st.number_input("Cost of Capital (%)", value=prev_coc, key="widget_capital_cost", step=0.5)
-                        if val_coc != prev_coc:
-                            st.session_state.pref_capital_cost = val_coc
-                            trigger_auto_save()
-                        else:
-                            st.session_state.pref_capital_cost = val_coc
+                        val_coc = st.number_input("Cost of Capital (%)", value=st.session_state.get("pref_capital_cost", 5.0), key="widget_capital_cost", step=0.5)
+                        st.session_state.pref_capital_cost = val_coc
                         coc = val_coc / 100.0
                 with rc3:
                     if inc_d:
-                        prev_life = st.session_state.get("pref_useful_life", 10)
-                        val_life = st.number_input("Useful Life (yrs)", value=prev_life, key="widget_useful_life", min_value=1)
-                        if val_life != prev_life:
-                            st.session_state.pref_useful_life = val_life
-                            trigger_auto_save()
-                        else:
-                            st.session_state.pref_useful_life = val_life
+                        val_life = st.number_input("Useful Life (yrs)", value=st.session_state.get("pref_useful_life", 10), key="widget_useful_life", min_value=1)
+                        st.session_state.pref_useful_life = val_life
                         life = val_life
                 with rc4:
                     if inc_d:
-                        prev_salvage = st.session_state.get("pref_salvage_value", 3.0)
-                        val_salvage = st.number_input("Salvage ($/pt)", value=prev_salvage, key="widget_salvage_value", step=0.5)
-                        if val_salvage != prev_salvage:
-                            st.session_state.pref_salvage_value = val_salvage
-                            trigger_auto_save()
-                        else:
-                            st.session_state.pref_salvage_value = val_salvage
+                        val_salvage = st.number_input("Salvage ($/pt)", value=st.session_state.get("pref_salvage_value", 3.0), key="widget_salvage_value", step=0.5)
+                        st.session_state.pref_salvage_value = val_salvage
                         salvage = val_salvage
 
             owner_params = {
@@ -900,11 +840,7 @@ def main(forced_mode: str = "Renter") -> None:
             with c1:
                 curr_rent = st.session_state.get("renter_rate_val", 0.50)
                 renter_rate_input = st.number_input("Rental Cost per Point ($)", value=curr_rent, step=0.01, key="widget_renter_rate")
-                if renter_rate_input != curr_rent:
-                    st.session_state.renter_rate_val = renter_rate_input
-                    trigger_auto_save()
-                else:
-                    st.session_state.renter_rate_val = renter_rate_input
+                if renter_rate_input != curr_rent: st.session_state.renter_rate_val = renter_rate_input
                 rate_to_use = renter_rate_input
 
             with c2:
@@ -912,11 +848,7 @@ def main(forced_mode: str = "Renter") -> None:
                 try: r_idx = TIER_OPTIONS.index(curr_r_tier)
                 except ValueError: r_idx = 0
                 opt = st.radio("Discount tier available:", TIER_OPTIONS, index=r_idx, key="widget_renter_discount_tier")
-                if opt != curr_r_tier:
-                    st.session_state.renter_discount_tier = opt
-                    trigger_auto_save()
-                else:
-                    st.session_state.renter_discount_tier = opt
+                st.session_state.renter_discount_tier = opt
 
             if "Presidential" in opt or "Chairman" in opt: policy = DiscountPolicy.PRESIDENTIAL
             elif "Executive" in opt: policy = DiscountPolicy.EXECUTIVE
