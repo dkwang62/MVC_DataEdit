@@ -1,7 +1,7 @@
-# browser_persistence.py
+# browser_persistence_final.py
 """
 Production-ready browser persistence for Streamlit Community Cloud.
-Uses multiple strategies with automatic fallback.
+Fixed version without problematic component keys.
 """
 
 import json
@@ -11,18 +11,17 @@ import streamlit.components.v1 as components
 
 
 class BrowserPersistence:
-    """Browser-based persistence with multiple fallback strategies."""
+    """Browser-based persistence using localStorage."""
     
     def __init__(self, storage_key: str = "mvc_calculator_settings"):
         self.storage_key = storage_key
-        self._init_counter = 0
     
     def save_settings(self, settings: Dict[str, Any]) -> bool:
-        """Save settings using localStorage.
+        """Save settings to browser localStorage.
         
         Strategy:
-        1. Store in session_state (works during session)
-        2. Write to localStorage via JavaScript (persists across sessions)
+        1. Store in session_state immediately
+        2. Write to localStorage via JavaScript
         """
         try:
             # Always save to session state first (immediate)
@@ -30,8 +29,8 @@ class BrowserPersistence:
             
             # Save to browser localStorage
             settings_json = json.dumps(settings)
-            # Escape quotes for JavaScript
-            escaped_json = settings_json.replace('\\', '\\\\').replace('"', '\\"')
+            # Escape for safe embedding in JavaScript
+            escaped_json = settings_json.replace('\\', '\\\\').replace('"', '\\"').replace("'", "\\'")
             
             save_script = f"""
                 <script>
@@ -40,81 +39,90 @@ class BrowserPersistence:
                             localStorage.setItem('{self.storage_key}', "{escaped_json}");
                             console.log('[MVC] ✅ Settings saved to localStorage');
                         }} catch(e) {{
-                            console.error('[MVC] ❌ localStorage save failed:', e);
+                            console.error('[MVC] ❌ Save failed:', e);
                         }}
                     }})();
                 </script>
             """
             
-            components.html(save_script, height=0, scrolling=False)
+            # Use components.html without key parameter
+            components.html(save_script, height=0)
             return True
             
         except Exception as e:
-            st.error(f"Failed to save settings: {e}")
+            print(f"[MVC] Error saving settings: {e}")
             return False
     
     def load_settings(self) -> Optional[Dict[str, Any]]:
-        """Load settings from session state or localStorage.
+        """Load settings from session state (populated from localStorage on first load).
         
         Returns settings if found, None otherwise.
         """
-        # First check session state (fastest)
         session_key = f'_persisted_{self.storage_key}'
+        
+        # Check if already in session state
         if session_key in st.session_state:
             return st.session_state[session_key]
         
-        # If not in session state, try to load from localStorage
-        # This uses a callback mechanism via iframe
-        if not st.session_state.get('_storage_load_attempted', False):
-            self._attempt_load_from_browser()
-            st.session_state._storage_load_attempted = True
+        # Try to load from localStorage on first run
+        if not st.session_state.get('_localStorage_load_attempted', False):
+            self._load_from_browser()
+            st.session_state._localStorage_load_attempted = True
         
-        # Check if loaded
+        # Check again after load attempt
         return st.session_state.get(session_key)
     
-    def _attempt_load_from_browser(self):
-        """Attempt to load from browser localStorage."""
-        # Use a unique key for each load attempt
-        load_key = f"load_attempt_{self._init_counter}"
-        self._init_counter += 1
+    def _load_from_browser(self):
+        """Load from browser localStorage into session state."""
+        session_key = f'_persisted_{self.storage_key}'
         
+        # JavaScript to load and immediately store in a hidden div
         load_script = f"""
+            <div id="mvc-settings-loader" style="display:none;"></div>
             <script>
                 (function() {{
                     try {{
                         const data = localStorage.getItem('{self.storage_key}');
                         if (data) {{
-                            console.log('[MVC] ✅ Settings found in localStorage');
-                            // Try to set via Streamlit mechanism
-                            const parsed = JSON.parse(data);
-                            
-                            // Send to parent window
-                            if (window.parent) {{
-                                window.parent.postMessage({{
-                                    type: 'MVC_SETTINGS_LOADED',
-                                    data: parsed,
-                                    key: '{self.storage_key}'
-                                }}, '*');
+                            console.log('[MVC] ✅ Found settings in localStorage');
+                            // Store in hidden div for Python to read
+                            const loader = document.getElementById('mvc-settings-loader');
+                            if (loader) {{
+                                loader.textContent = data;
                             }}
                         }} else {{
                             console.log('[MVC] ℹ️  No saved settings found');
                         }}
                     }} catch(e) {{
-                        console.error('[MVC] ❌ localStorage load failed:', e);
+                        console.error('[MVC] ❌ Load failed:', e);
                     }}
                 }})();
             </script>
         """
         
-        components.html(load_script, height=0, scrolling=False, key=load_key)
+        # Render the script
+        result = components.html(load_script, height=0)
+        
+        # Try to parse the result if returned
+        if result:
+            try:
+                settings = json.loads(result)
+                st.session_state[session_key] = settings
+                print(f"[MVC] ✅ Loaded settings from browser")
+            except Exception as e:
+                print(f"[MVC] ⚠️  Could not parse loaded settings: {e}")
     
     def clear_settings(self) -> bool:
-        """Clear saved settings."""
+        """Clear saved settings from both session state and localStorage."""
         try:
             # Clear from session state
             session_key = f'_persisted_{self.storage_key}'
             if session_key in st.session_state:
                 del st.session_state[session_key]
+            
+            # Reset load flag so it can try again
+            if '_localStorage_load_attempted' in st.session_state:
+                del st.session_state._localStorage_load_attempted
             
             # Clear from localStorage
             clear_script = f"""
@@ -124,17 +132,17 @@ class BrowserPersistence:
                             localStorage.removeItem('{self.storage_key}');
                             console.log('[MVC] ✅ Settings cleared from localStorage');
                         }} catch(e) {{
-                            console.error('[MVC] ❌ localStorage clear failed:', e);
+                            console.error('[MVC] ❌ Clear failed:', e);
                         }}
                     }})();
                 </script>
             """
             
-            components.html(clear_script, height=0, scrolling=False)
+            components.html(clear_script, height=0)
             return True
             
         except Exception as e:
-            st.error(f"Failed to clear settings: {e}")
+            print(f"[MVC] Error clearing settings: {e}")
             return False
 
 
