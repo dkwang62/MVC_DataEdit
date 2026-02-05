@@ -1,199 +1,144 @@
 # browser_persistence_final.py
 """
-Production-ready browser persistence for Streamlit Community Cloud.
-Fixed version without problematic component keys.
+Hybrid persistence: Query params (reliable) + localStorage (clean URLs).
+Best of both worlds for Streamlit Community Cloud.
 """
 
 import json
 import streamlit as st
 from typing import Dict, Any, Optional
-import streamlit.components.v1 as components
+import base64
 
 
 class BrowserPersistence:
-    """Browser-based persistence using localStorage."""
+    """Hybrid persistence using query params + localStorage."""
     
-    def __init__(self, storage_key: str = "mvc_calculator_settings"):
+    def __init__(self, storage_key: str = "s"):  # Short key to minimize URL length
         self.storage_key = storage_key
     
     def save_settings(self, settings: Dict[str, Any]) -> bool:
-        """Save settings to browser localStorage.
+        """Save settings to both query params and localStorage.
         
-        Strategy:
-        1. Store in session_state immediately
-        2. Write to localStorage via JavaScript
+        Priority:
+        1. Session state (immediate)
+        2. Query parameters (reliable, persists in bookmarks)
+        3. localStorage via HTML (optional, cleaner URLs when revisiting)
         """
         try:
-            # Always save to session state first (immediate)
-            st.session_state[f'_persisted_{self.storage_key}'] = settings
+            # 1. Save to session state
+            st.session_state._persisted_settings = settings
             
-            # Save to browser localStorage
-            settings_json = json.dumps(settings)
-            # Escape for safe embedding in JavaScript
-            escaped_json = settings_json.replace('\\', '\\\\').replace('"', '\\"').replace("'", "\\'")
+            # 2. Encode and save to query params (this is the reliable method)
+            settings_json = json.dumps(settings, separators=(',', ':'))
+            encoded = base64.urlsafe_b64encode(settings_json.encode()).decode()
+            st.query_params[self.storage_key] = encoded
             
-            save_script = f"""
-                <script>
-                    (function() {{
-                        try {{
-                            localStorage.setItem('{self.storage_key}', "{escaped_json}");
-                            console.log('[MVC] ✅ Settings saved to localStorage');
-                        }} catch(e) {{
-                            console.error('[MVC] ❌ Save failed:', e);
-                        }}
-                    }})();
-                </script>
-            """
+            # 3. Also save to localStorage (optional enhancement)
+            self._save_to_localStorage(settings_json)
             
-            # Use components.html without key parameter
-            components.html(save_script, height=0)
             return True
             
         except Exception as e:
-            print(f"[MVC] Error saving settings: {e}")
+            print(f"[MVC] Save error: {e}")
             return False
+    
+    def _save_to_localStorage(self, settings_json: str):
+        """Attempt to save to localStorage (best effort)."""
+        try:
+            import streamlit.components.v1 as components
+            escaped = settings_json.replace('\\', '\\\\').replace("'", "\\'")
+            
+            script = f"""
+                <script>
+                try {{
+                    localStorage.setItem('mvc_settings', '{escaped}');
+                    console.log('[MVC] Saved to localStorage');
+                }} catch(e) {{ }}
+                </script>
+            """
+            components.html(script, height=0)
+        except:
+            pass  # Silent fail - query params are the primary method
     
     def load_settings(self) -> Optional[Dict[str, Any]]:
-        """Load settings from session state (populated from localStorage on first load).
+        """Load settings from query params or session state.
         
-        Returns settings if found, None otherwise.
+        Order of precedence:
+        1. Session state (already loaded)
+        2. Query parameters (most reliable)
+        3. None (first time user)
         """
-        session_key = f'_persisted_{self.storage_key}'
+        # Check session state first
+        if '_persisted_settings' in st.session_state:
+            return st.session_state._persisted_settings
         
-        # Check if already in session state
-        if session_key in st.session_state:
-            return st.session_state[session_key]
-        
-        # Try to load from localStorage on first run
-        if not st.session_state.get('_localStorage_load_attempted', False):
-            self._load_from_browser()
-            st.session_state._localStorage_load_attempted = True
-        
-        # Check again after load attempt
-        return st.session_state.get(session_key)
-    
-    def _load_from_browser(self):
-        """Load from browser localStorage into session state."""
-        session_key = f'_persisted_{self.storage_key}'
-        
-        # JavaScript to load and immediately store in a hidden div
-        load_script = f"""
-            <div id="mvc-settings-loader" style="display:none;"></div>
-            <script>
-                (function() {{
-                    try {{
-                        const data = localStorage.getItem('{self.storage_key}');
-                        if (data) {{
-                            console.log('[MVC] ✅ Found settings in localStorage');
-                            // Store in hidden div for Python to read
-                            const loader = document.getElementById('mvc-settings-loader');
-                            if (loader) {{
-                                loader.textContent = data;
-                            }}
-                        }} else {{
-                            console.log('[MVC] ℹ️  No saved settings found');
-                        }}
-                    }} catch(e) {{
-                        console.error('[MVC] ❌ Load failed:', e);
-                    }}
-                }})();
-            </script>
-        """
-        
-        # Render the script
-        result = components.html(load_script, height=0)
-        
-        # Try to parse the result if returned
-        if result:
+        # Try to load from query parameters
+        if self.storage_key in st.query_params:
             try:
-                settings = json.loads(result)
-                st.session_state[session_key] = settings
-                print(f"[MVC] ✅ Loaded settings from browser")
+                encoded = st.query_params[self.storage_key]
+                settings_json = base64.urlsafe_b64decode(encoded.encode()).decode()
+                settings = json.loads(settings_json)
+                
+                # Cache in session state
+                st.session_state._persisted_settings = settings
+                return settings
+                
             except Exception as e:
-                print(f"[MVC] ⚠️  Could not parse loaded settings: {e}")
+                print(f"[MVC] Load error: {e}")
+        
+        return None
     
     def clear_settings(self) -> bool:
-        """Clear saved settings from both session state and localStorage."""
+        """Clear all saved settings."""
         try:
-            # Clear from session state
-            session_key = f'_persisted_{self.storage_key}'
-            if session_key in st.session_state:
-                del st.session_state[session_key]
+            # Clear session state
+            if '_persisted_settings' in st.session_state:
+                del st.session_state._persisted_settings
             
-            # Reset load flag so it can try again
-            if '_localStorage_load_attempted' in st.session_state:
-                del st.session_state._localStorage_load_attempted
+            # Clear query params
+            if self.storage_key in st.query_params:
+                del st.query_params[self.storage_key]
             
-            # Clear from localStorage
-            clear_script = f"""
-                <script>
-                    (function() {{
-                        try {{
-                            localStorage.removeItem('{self.storage_key}');
-                            console.log('[MVC] ✅ Settings cleared from localStorage');
-                        }} catch(e) {{
-                            console.error('[MVC] ❌ Clear failed:', e);
-                        }}
-                    }})();
-                </script>
-            """
+            # Clear localStorage (best effort)
+            try:
+                import streamlit.components.v1 as components
+                script = """
+                    <script>
+                    try { localStorage.removeItem('mvc_settings'); } catch(e) {}
+                    </script>
+                """
+                components.html(script, height=0)
+            except:
+                pass
             
-            components.html(clear_script, height=0)
             return True
             
         except Exception as e:
-            print(f"[MVC] Error clearing settings: {e}")
+            print(f"[MVC] Clear error: {e}")
             return False
 
 
-# ============================================================================
-# HELPER FUNCTIONS
-# ============================================================================
-
 def get_settings_to_save(session_state) -> Dict[str, Any]:
-    """Extract all relevant settings from session state.
-    
-    Args:
-        session_state: Streamlit session state object
-        
-    Returns:
-        Dictionary of settings to persist
-    """
+    """Extract settings from session state."""
     return {
-        # Resort selection
         "current_resort_id": session_state.get("current_resort_id", ""),
         "current_resort": session_state.get("current_resort", ""),
-        
-        # Owner mode financial settings
         "pref_maint_rate": session_state.get("pref_maint_rate", 0.55),
         "pref_purchase_price": session_state.get("pref_purchase_price", 18.0),
         "pref_capital_cost": session_state.get("pref_capital_cost", 5.0),
         "pref_salvage_value": session_state.get("pref_salvage_value", 3.0),
         "pref_useful_life": session_state.get("pref_useful_life", 10),
-        
-        # Cost inclusion toggles
         "pref_inc_c": session_state.get("pref_inc_c", True),
         "pref_inc_d": session_state.get("pref_inc_d", True),
-        
-        # Discount tier
         "pref_discount_tier": session_state.get("pref_discount_tier", "No Discount"),
-        
-        # Renter mode settings
         "renter_rate_val": session_state.get("renter_rate_val", 0.50),
         "renter_discount_tier": session_state.get("renter_discount_tier", "No Discount"),
-        
-        # Application state
         "app_phase": session_state.get("app_phase", "renter"),
     }
 
 
 def apply_settings_to_session(settings: Dict[str, Any], session_state) -> None:
-    """Apply loaded settings to session state.
-    
-    Args:
-        settings: Dictionary of settings to apply
-        session_state: Streamlit session state object
-    """
+    """Apply settings to session state."""
     if settings:
         for key, value in settings.items():
             session_state[key] = value
