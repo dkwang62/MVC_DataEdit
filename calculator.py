@@ -589,6 +589,17 @@ def main(forced_mode: str = "Renter") -> None:
     if not resort_obj: return
 
     r_name = resort_obj.get("display_name")
+    
+    # Clear room type selection if resort has changed
+    if "last_resort_id" not in st.session_state:
+        st.session_state.last_resort_id = st.session_state.current_resort_id
+    
+    if st.session_state.last_resort_id != st.session_state.current_resort_id:
+        # Resort changed - clear room selection so ALL rooms table expands
+        if "selected_room_type" in st.session_state:
+            del st.session_state.selected_room_type
+        st.session_state.last_resort_id = st.session_state.current_resort_id
+    
     info = repo.get_resort_info(r_name)
     render_resort_card(info["full_name"], info["timezone"], info["address"])
     
@@ -632,14 +643,34 @@ def main(forced_mode: str = "Renter") -> None:
         # Update session state with current value
         st.session_state.calc_nights = nights
 
-    # Adjust for holidays if user has set a check-in date
-    if st.session_state.calc_checkin_user_set:
-        adj_in, adj_n, adj = calc.adjust_holiday(r_name, checkin, nights)
-    else:
-        adj_in, adj_n, adj = checkin, nights, False
+    # Always adjust for holidays when dates overlap
+    adj_in, adj_n, adj = calc.adjust_holiday(r_name, checkin, nights)
 
     if adj:
-        st.info(f"✨ Adjusted to holiday: {adj_in.strftime('%b %d')} - {(adj_in+timedelta(days=adj_n-1)).strftime('%b %d')}")
+        # Holiday adjustment occurred - show prominent alert
+        original_checkout = checkin + timedelta(days=nights - 1)
+        adjusted_checkout = adj_in + timedelta(days=adj_n - 1)
+        
+        # Determine what changed
+        date_changed = checkin != adj_in
+        nights_changed = nights != adj_n
+        
+        # Build detailed message
+        changes = []
+        if date_changed:
+            changes.append(f"Check-in moved from **{checkin.strftime('%b %d')}** to **{adj_in.strftime('%b %d')}**")
+        if nights_changed:
+            changes.append(f"Stay extended from **{nights} nights** to **{adj_n} nights**")
+        
+        change_text = " and ".join(changes)
+        
+        st.warning(
+            f"🎉 **Holiday Period Detected!**\n\n"
+            f"Your dates overlap with a holiday period. To get holiday pricing, your reservation has been adjusted:\n\n"
+            f"{change_text}\n\n"
+            f"**New stay:** {adj_in.strftime('%b %d, %Y')} - {adjusted_checkout.strftime('%b %d, %Y')} ({adj_n} nights)",
+            icon="⚠️"
+        )
 
     # Get all available room types for this resort
     pts, _ = calc._get_daily_points(calc.repo.get_resort(r_name), adj_in)
@@ -872,9 +903,9 @@ def main(forced_mode: str = "Renter") -> None:
             cols[1].metric("Total Rent", f"${res.financial_total:,.0f}")
             if res.discount_applied: st.success(f"✨ Discount Applied: {len(res.discounted_days)} days")
 
-        # Daily Breakdown - in expander, collapsed by default
-        with st.expander("📅 Daily Breakdown", expanded=False):
-            st.dataframe(res.breakdown_df, use_container_width=True, hide_index=True)
+        # Daily Breakdown - displayed directly (not in expander)
+        st.markdown("#### 📅 Daily Breakdown")
+        st.dataframe(res.breakdown_df, use_container_width=True, hide_index=True)
     
     # --- SEASON AND HOLIDAY CALENDAR (Always available, independent of selection) ---
     st.divider()
