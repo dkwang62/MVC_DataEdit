@@ -340,6 +340,7 @@ def create_gantt_chart_image(
     """
     Build a season + holiday Gantt chart as a static matplotlib image.
     Returns PIL Image for display with st.image().
+    Version: 2.0 - Fixed title encoding and simplified month labels
     """
     rows = []
     
@@ -369,7 +370,8 @@ def create_gantt_chart_image(
     if not rows:
         return None
     
-    # Create figure
+    # Create figure with explicit font settings to handle special characters
+    plt.rcParams['font.family'] = 'DejaVu Sans'
     fig, ax = plt.subplots(figsize=(10, max(3, len(rows) * 0.5)))
     
     # Draw bars
@@ -383,14 +385,14 @@ def create_gantt_chart_image(
     ax.set_yticklabels([label for label, _, _, _ in rows])
     ax.invert_yaxis()
     
-    # Format x-axis with simple month names
+    # Format x-axis with simple month names (no year)
     ax.xaxis.set_major_locator(mdates.MonthLocator())
     ax.xaxis.set_major_formatter(mdates.DateFormatter("%b"))
     
     # Grid and styling
     ax.grid(True, axis='x', alpha=0.3)
     
-    # Title using original resort name
+    # Title - use original resort name
     resort_name = getattr(resort_data, "name", "Resort")
     ax.set_title(f"{resort_name} - {year}", pad=12, size=12)
     
