@@ -1,7 +1,6 @@
 import math
 import json
 import os
-import io
 from dataclasses import dataclass
 from datetime import datetime, timedelta, date
 from enum import Enum
@@ -9,11 +8,8 @@ from typing import List, Dict, Optional, Tuple, Any
 import pandas as pd
 import plotly.express as px
 import streamlit as st
-import matplotlib.pyplot as plt
-import matplotlib.dates as mdates
-from PIL import Image
 from common.ui import render_resort_card, render_resort_grid, render_page_header
-from common.charts import create_gantt_chart_from_resort_data
+from common.charts import create_gantt_chart_image
 from common.data import ensure_data_in_session
 
 # ==============================================================================
@@ -390,89 +386,6 @@ def get_all_room_types_for_resort(resort_data: ResortData) -> List[str]:
         for holiday in year_obj.holidays:
             rooms.update(holiday.room_points.keys())
     return sorted(rooms)
-
-# ==============================================================================
-# GANTT CHART IMAGE RENDERING (Matplotlib)
-# ==============================================================================
-GANTT_COLORS = {
-    "Peak": "#D73027", 
-    "High": "#FC8D59", 
-    "Mid": "#FEE08B", 
-    "Low": "#91BFDB", 
-    "Holiday": "#9C27B0"
-}
-
-def season_bucket(name: str) -> str:
-    """Map season name to color bucket."""
-    n = (name or "").lower()
-    if "peak" in n: return "Peak"
-    if "high" in n: return "High"
-    if "mid" in n or "shoulder" in n: return "Mid"
-    if "low" in n: return "Low"
-    return "Low"
-
-@st.cache_data(ttl=3600)
-def render_gantt_image(resort_data: ResortData, year_str: str, global_holidays: dict) -> Optional[Image.Image]:
-    """Render Gantt chart as matplotlib image."""
-    rows = []
-    
-    if year_str not in resort_data.years:
-        return None
-    
-    yd = resort_data.years[year_str]
-    
-    # Add seasons
-    for s in yd.seasons:
-        name = s.name
-        bucket = season_bucket(name)
-        for p in s.periods:
-            rows.append((name, p.start, p.end, bucket))
-    
-    # Add holidays
-    for h in yd.holidays:
-        rows.append((h.name, h.start_date, h.end_date, "Holiday"))
-    
-    if not rows:
-        return None
-    
-    # Create figure
-    fig, ax = plt.subplots(figsize=(10, max(3, len(rows) * 0.5)))
-    
-    # Draw bars
-    for i, (label, start, end, typ) in enumerate(rows):
-        duration = (end - start).days + 1
-        ax.barh(i, duration, left=mdates.date2num(start), height=0.6, 
-                color=GANTT_COLORS.get(typ, "#999"), edgecolor="black", linewidth=0.5)
-    
-    # Configure axes
-    ax.set_yticks(range(len(rows)))
-    ax.set_yticklabels([label for label, _, _, _ in rows])
-    ax.invert_yaxis()
-    
-    # Format x-axis with simple month names (no year)
-    ax.xaxis.set_major_locator(mdates.MonthLocator())
-    ax.xaxis.set_major_formatter(mdates.DateFormatter("%b"))
-    
-    # Grid and styling
-    ax.grid(True, axis='x', alpha=0.3)
-    
-    # Use the original resort name from data - don't strip anything
-    ax.set_title(f"{resort_data.name} - {year_str}", pad=12, size=12)
-    
-    # Legend
-    legend_elements = [
-        plt.Rectangle((0,0), 1, 1, facecolor=GANTT_COLORS[k], label=k) 
-        for k in GANTT_COLORS if any(t == k for _, _, _, t in rows)
-    ]
-    ax.legend(handles=legend_elements, loc='upper right', bbox_to_anchor=(1, 1))
-    
-    # Convert to image
-    buf = io.BytesIO()
-    plt.savefig(buf, format='png', bbox_inches='tight', dpi=150)
-    plt.close(fig)
-    buf.seek(0)
-    
-    return Image.open(buf)
 
 def build_season_cost_table(
     resort_data: ResortData,
@@ -1030,8 +943,8 @@ def main(forced_mode: str = "Renter") -> None:
     res_data = calc.repo.get_resort(r_name)
     if res_data and year_str in res_data.years:
         with st.expander("📅 Season & Holiday Calendar", expanded=False):
-            # Render Gantt chart as static image
-            gantt_img = render_gantt_image(res_data, year_str, st.session_state.data.get("global_holidays", {}))
+            # Render Gantt chart as static image using function from charts.py
+            gantt_img = create_gantt_chart_image(res_data, year_str, st.session_state.data.get("global_holidays", {}))
             
             if gantt_img:
                 st.image(gantt_img, use_column_width=True)
