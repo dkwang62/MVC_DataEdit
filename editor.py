@@ -2012,8 +2012,8 @@ class EditorPointAuditor:
         self.data = data_dict
         self.global_holidays = data_dict.get("global_holidays", {})
     
-    def calculate_annual_total(self, resort_id: str, year: int) -> int:
-        """Calculate total points for ALL room types in a specific year."""
+    def calculate_annual_total(self, resort_id: str, year: int, date_range: Optional[Dict] = None) -> int:
+        """Calculate total points for ALL room types in a specific year or date range."""
         resort = next((r for r in self.data['resorts'] if r['id'] == resort_id), None)
         if not resort:
             return 0
@@ -2024,8 +2024,20 @@ class EditorPointAuditor:
         
         y_data = resort['years'][year_str]
         total_points = 0
-        start_date = date(year, 1, 1)
-        end_date = date(year, 12, 31)
+        
+        # Determine date range
+        if date_range:
+            try:
+                start_date = date(year, date_range['start_month'], date_range['start_day'])
+                end_date = date(year, date_range['end_month'], date_range['end_day'])
+            except ValueError:
+                # Invalid date (e.g., Feb 30), fall back to full year
+                start_date = date(year, 1, 1)
+                end_date = date(year, 12, 31)
+        else:
+            start_date = date(year, 1, 1)
+            end_date = date(year, 12, 31)
+        
         current_date = start_date
         
         while current_date <= end_date:
@@ -2071,7 +2083,8 @@ class EditorPointAuditor:
         target_id: str,
         base_year: int,
         compare_year: int,
-        tolerance_percent: float
+        tolerance_percent: float,
+        date_range: Optional[Dict] = None
     ) -> Tuple[ResortVarianceResult, ResortVarianceResult]:
         baseline_resort = next((r for r in self.data['resorts'] if r['id'] == baseline_id), None)
         target_resort = next((r for r in self.data['resorts'] if r['id'] == target_id), None)
@@ -2079,8 +2092,8 @@ class EditorPointAuditor:
         baseline_name = baseline_resort.get('display_name', baseline_id) if baseline_resort else baseline_id
         target_name = target_resort.get('display_name', target_id) if target_resort else target_id
         
-        baseline_base = self.calculate_annual_total(baseline_id, base_year)
-        baseline_compare = self.calculate_annual_total(baseline_id, compare_year)
+        baseline_base = self.calculate_annual_total(baseline_id, base_year, date_range)
+        baseline_compare = self.calculate_annual_total(baseline_id, compare_year, date_range)
         baseline_variance = baseline_compare - baseline_base
         baseline_percent = (baseline_variance / baseline_base * 100) if baseline_base > 0 else 0
         
@@ -2095,8 +2108,8 @@ class EditorPointAuditor:
             status_message="Reference standard"
         )
         
-        target_base = self.calculate_annual_total(target_id, base_year)
-        target_compare = self.calculate_annual_total(target_id, compare_year)
+        target_base = self.calculate_annual_total(target_id, base_year, date_range)
+        target_compare = self.calculate_annual_total(target_id, compare_year, date_range)
         target_variance = target_compare - target_base
         target_percent = (target_variance / target_base * 100) if target_base > 0 else 0
         
@@ -2131,11 +2144,281 @@ class EditorPointAuditor:
         )
         
         return baseline_result, target_result
+    
+    def auto_optimize_date_range(
+        self,
+        resort_a_id: str,
+        resort_b_id: str,
+        base_year: int,
+        compare_year: int,
+        tolerance: float,
+        initial_start_month: int = 1,
+        initial_start_day: int = 8,
+        initial_end_month: int = 12,
+        initial_end_day: int = 18
+    ) -> Dict:
+        """
+        Automatically find the longest date range where two resorts have matching variance patterns.
+        
+        Algorithm:
+        1. Start with a conservative safe period (Jan 8 - Dec 18)
+        2. Check if variance patterns match within tolerance
+        3. If match: try expanding the period
+        4. If no match: shrink the period from edges
+        5. Return the longest matching period or error
+        """
+        
+        # Start with initial safe period
+        best_start_month = initial_start_month
+        best_start_day = initial_start_day
+        best_end_month = initial_end_month
+        best_end_day = initial_end_day
+        best_match = None
+        best_days = 0
+        
+        # Try the initial period first
+        try:
+            date_range = {
+                'start_month': best_start_month,
+                'start_day': best_start_day,
+                'end_month': best_end_month,
+                'end_day': best_end_day
+            }
+            
+            # Calculate for both resorts
+            a_base = self.calculate_annual_total(resort_a_id, base_year, date_range)
+            a_compare = self.calculate_annual_total(resort_a_id, compare_year, date_range)
+            a_variance_pct = ((a_compare - a_base) / a_base * 100) if a_base > 0 else 0
+            
+            b_base = self.calculate_annual_total(resort_b_id, base_year, date_range)
+            b_compare = self.calculate_annual_total(resort_b_id, compare_year, date_range)
+            b_variance_pct = ((b_compare - b_base) / b_base * 100) if b_base > 0 else 0
+            
+            variance_diff = abs(a_variance_pct - b_variance_pct)
+            
+            # Calculate actual days in range
+            start_date = date(base_year, best_start_month, best_start_day)
+            end_date = date(base_year, best_end_month, best_end_day)
+            days_in_range = (end_date - start_date).days + 1
+            
+            if variance_diff <= tolerance:
+                # We have a match!
+                best_match = {
+                    'start_month': best_start_month,
+                    'start_day': best_start_day,
+                    'end_month': best_end_month,
+                    'end_day': best_end_day,
+                    'variance_diff': variance_diff,
+                    'days': days_in_range,
+                    'a_base': a_base,
+                    'a_compare': a_compare,
+                    'a_variance_pct': a_variance_pct,
+                    'b_base': b_base,
+                    'b_compare': b_compare,
+                    'b_variance_pct': b_variance_pct
+                }
+                best_days = days_in_range
+                
+                # Try to expand - add days at start and end
+                expanded = self._try_expand_period(
+                    resort_a_id, resort_b_id, base_year, compare_year, tolerance,
+                    best_start_month, best_start_day, best_end_month, best_end_day
+                )
+                
+                if expanded and expanded['days'] > best_days:
+                    best_match = expanded
+                    best_days = expanded['days']
+            
+            else:
+                # No match - try shrinking from edges
+                shrunk = self._try_shrink_period(
+                    resort_a_id, resort_b_id, base_year, compare_year, tolerance,
+                    best_start_month, best_start_day, best_end_month, best_end_day
+                )
+                
+                if shrunk:
+                    best_match = shrunk
+                    best_days = shrunk['days']
+            
+            if best_match:
+                # Format result
+                start_str = f"{base_year}-{best_match['start_month']:02d}-{best_match['start_day']:02d}"
+                end_str = f"{base_year}-{best_match['end_month']:02d}-{best_match['end_day']:02d}"
+                
+                total_days_in_year = 366 if base_year % 4 == 0 and (base_year % 100 != 0 or base_year % 400 == 0) else 365
+                excluded_days = total_days_in_year - best_match['days']
+                
+                return {
+                    'success': True,
+                    'start_date': start_str,
+                    'end_date': end_str,
+                    'days_analyzed': best_match['days'],
+                    'excluded_days': excluded_days,
+                    'variance_percent': best_match['variance_diff'],
+                    'tolerance': tolerance,
+                    'resort_a_base': best_match['a_base'],
+                    'resort_a_compare': best_match['a_compare'],
+                    'resort_a_variance_pct': best_match['a_variance_pct'],
+                    'resort_b_base': best_match['b_base'],
+                    'resort_b_compare': best_match['b_compare'],
+                    'resort_b_variance_pct': best_match['b_variance_pct']
+                }
+            else:
+                return {
+                    'success': False,
+                    'message': f"Could not find any period with matching patterns (tolerance: {tolerance}%). Try increasing tolerance or check if resorts have fundamentally different point structures."
+                }
+                
+        except Exception as e:
+            return {
+                'success': False,
+                'message': f"Error during optimization: {str(e)}"
+            }
+    
+    def _try_expand_period(self, resort_a_id, resort_b_id, base_year, compare_year, tolerance,
+                          start_month, start_day, end_month, end_day, max_iterations=30):
+        """Try to expand the date range while maintaining match."""
+        current_best = None
+        current_days = 0
+        
+        for _ in range(max_iterations):
+            # Try expanding start (go earlier)
+            new_start_month, new_start_day = start_month, start_day - 1
+            if new_start_day < 1:
+                new_start_month -= 1
+                if new_start_month < 1:
+                    break  # Can't go before January
+                new_start_day = 31  # Will be validated
+            
+            # Try this expansion
+            try:
+                date_range = {
+                    'start_month': new_start_month,
+                    'start_day': new_start_day,
+                    'end_month': end_month,
+                    'end_day': end_day
+                }
+                
+                a_base = self.calculate_annual_total(resort_a_id, base_year, date_range)
+                a_compare = self.calculate_annual_total(resort_a_id, compare_year, date_range)
+                a_var = ((a_compare - a_base) / a_base * 100) if a_base > 0 else 0
+                
+                b_base = self.calculate_annual_total(resort_b_id, base_year, date_range)
+                b_compare = self.calculate_annual_total(resort_b_id, compare_year, date_range)
+                b_var = ((b_compare - b_base) / b_base * 100) if b_base > 0 else 0
+                
+                diff = abs(a_var - b_var)
+                
+                if diff <= tolerance:
+                    # Expansion successful
+                    start_month, start_day = new_start_month, new_start_day
+                    start_date = date(base_year, start_month, start_day)
+                    end_date = date(base_year, end_month, end_day)
+                    days = (end_date - start_date).days + 1
+                    
+                    if days > current_days:
+                        current_best = {
+                            'start_month': start_month,
+                            'start_day': start_day,
+                            'end_month': end_month,
+                            'end_day': end_day,
+                            'variance_diff': diff,
+                            'days': days,
+                            'a_base': a_base,
+                            'a_compare': a_compare,
+                            'a_variance_pct': a_var,
+                            'b_base': b_base,
+                            'b_compare': b_compare,
+                            'b_variance_pct': b_var
+                        }
+                        current_days = days
+                else:
+                    break  # Can't expand further
+            except:
+                break
+        
+        return current_best
+    
+    def _try_shrink_period(self, resort_a_id, resort_b_id, base_year, compare_year, tolerance,
+                           start_month, start_day, end_month, end_day, max_iterations=50):
+        """Shrink the date range from edges until a match is found."""
+        
+        for iteration in range(max_iterations):
+            try:
+                date_range = {
+                    'start_month': start_month,
+                    'start_day': start_day,
+                    'end_month': end_month,
+                    'end_day': end_day
+                }
+                
+                a_base = self.calculate_annual_total(resort_a_id, base_year, date_range)
+                a_compare = self.calculate_annual_total(resort_a_id, compare_year, date_range)
+                a_var = ((a_compare - a_base) / a_base * 100) if a_base > 0 else 0
+                
+                b_base = self.calculate_annual_total(resort_b_id, base_year, date_range)
+                b_compare = self.calculate_annual_total(resort_b_id, compare_year, date_range)
+                b_var = ((b_compare - b_base) / b_base * 100) if b_base > 0 else 0
+                
+                diff = abs(a_var - b_var)
+                
+                start_date = date(base_year, start_month, start_day)
+                end_date = date(base_year, end_month, end_day)
+                days = (end_date - start_date).days + 1
+                
+                if diff <= tolerance:
+                    # Found a match!
+                    return {
+                        'start_month': start_month,
+                        'start_day': start_day,
+                        'end_month': end_month,
+                        'end_day': end_day,
+                        'variance_diff': diff,
+                        'days': days,
+                        'a_base': a_base,
+                        'a_compare': a_compare,
+                        'a_variance_pct': a_var,
+                        'b_base': b_base,
+                        'b_compare': b_compare,
+                        'b_variance_pct': b_var
+                    }
+                
+                # Shrink from both edges alternately
+                if iteration % 2 == 0:
+                    # Shrink from start
+                    start_day += 1
+                    if start_day > 31:
+                        start_month += 1
+                        start_day = 1
+                    if start_month > 12:
+                        break
+                else:
+                    # Shrink from end
+                    end_day -= 1
+                    if end_day < 1:
+                        end_month -= 1
+                        end_day = 31
+                    if end_month < 1:
+                        break
+                
+                # Check if range is too small
+                try:
+                    test_start = date(base_year, start_month, start_day)
+                    test_end = date(base_year, end_month, end_day)
+                    if test_start >= test_end:
+                        break  # Range collapsed
+                except:
+                    break
+                    
+            except Exception:
+                continue
+        
+        return None
 
 
 def render_data_integrity_tab(data: Dict, current_resort_id: str):
     st.markdown("## 🔍 Data Quality Assurance")
-    st.markdown("Verify data integrity by comparing point variance across years and resorts.")
+    st.markdown("Compare point variance between any two resorts and automatically find the longest matching period.")
     
     resorts = data.get('resorts', [])
     resort_options = {r.get('display_name', r['id']): r['id'] for r in resorts}
@@ -2143,8 +2426,6 @@ def render_data_integrity_tab(data: Dict, current_resort_id: str):
     
     current_resort = next((r for r in resorts if r['id'] == current_resort_id), None)
     current_name = current_resort.get('display_name', current_resort_id) if current_resort else ""
-    
-    st.info(f"📍 **Currently editing:** {current_name}")
     
     # Get all available years from data
     all_years = set()
@@ -2166,7 +2447,7 @@ def render_data_integrity_tab(data: Dict, current_resort_id: str):
             options=available_years,
             index=0 if available_years else 0,
             help="The reference year to compare from",
-            key="editor_base_year_selector"
+            key="integrity_tab_base_year_selector"
         )
     
     with col2:
@@ -2175,219 +2456,292 @@ def render_data_integrity_tab(data: Dict, current_resort_id: str):
             options=available_years,
             index=min(1, len(available_years) - 1) if len(available_years) > 1 else 0,
             help="The year to compare against the base year",
-            key="editor_compare_year_selector"
+            key="integrity_tab_compare_year_selector"
         )
     
     if base_year == compare_year:
         st.warning("⚠️ Please select different years to compare.")
         return
     
-    st.caption(f"ℹ️ Comparing {base_year} → {compare_year} annual point totals")
+    st.divider()
+    
+    # Resort Selection - Two Resorts WITH HOLIDAY FILTERING
+    st.markdown("### 🏨 Select Resorts to Compare")
+    
+    # Get holiday groups
+    resort_holiday_map = {}
+    
+    for resort in resorts:
+        resort_id = resort.get('id')
+        resort_name = resort.get('display_name', resort_id)
+        
+        # Get holiday weeks used (from base year)
+        holidays_used = set()
+        year_data = resort.get('years', {}).get(base_year, {})
+        for holiday in year_data.get('holidays', []):
+            global_ref = holiday.get('global_reference', holiday.get('name'))
+            if global_ref:
+                holidays_used.add(global_ref)
+        
+        resort_holiday_map[resort_id] = holidays_used
+    
+    # Group resorts by holiday calendar
+    holiday_groups = {}
+    for resort_id, holidays in resort_holiday_map.items():
+        holiday_key = frozenset(holidays)  # Use frozenset as dict key
+        if holiday_key not in holiday_groups:
+            holiday_groups[holiday_key] = []
+        holiday_groups[holiday_key].append(resort_id)
+    
+    # Resort A selection
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        resort_a_name = st.selectbox(
+            "Resort A (Reference)",
+            options=resort_names,
+            index=resort_names.index(current_name) if current_name in resort_names else 0,
+            help="Select first resort for comparison",
+            key="integrity_tab_resort_a_selector"
+        )
+        resort_a_id = resort_options.get(resort_a_name)
+        
+        # Show Resort A holiday info
+        resort_a_holidays = resort_holiday_map.get(resort_a_id, set())
+        
+        if resort_a_holidays:
+            st.caption(f"📅 {len(resort_a_holidays)} holidays: {', '.join(sorted(resort_a_holidays)[:3])}{'...' if len(resort_a_holidays) > 3 else ''}")
+        else:
+            st.caption(f"📅 No holidays defined")
+    
+    with col2:
+        # Filter Resort B options to only show resorts with SAME holiday calendar
+        resort_a_holiday_key = frozenset(resort_holiday_map.get(resort_a_id, set()))
+        compatible_resort_ids = holiday_groups.get(resort_a_holiday_key, [])
+        
+        # Remove Resort A from compatible list
+        compatible_resort_ids = [rid for rid in compatible_resort_ids if rid != resort_a_id]
+        
+        if not compatible_resort_ids:
+            st.warning("⚠️ No compatible resorts found with matching holiday calendar")
+            st.caption("Resort B must have the exact same holidays as Resort A for 0% variance comparison")
+            st.info("💡 Tip: Check that both resorts reference the same global holidays in their year data")
+            return
+        
+        # Get display names for compatible resorts
+        compatible_resort_names = [
+            next((r.get('display_name', r['id']) for r in resorts if r['id'] == rid), rid)
+            for rid in compatible_resort_ids
+        ]
+        
+        resort_b_name = st.selectbox(
+            f"Resort B (Compare) - {len(compatible_resort_names)} compatible",
+            options=compatible_resort_names,
+            index=0,
+            help=f"Only showing resorts with matching holiday calendar ({len(resort_a_holidays)} holidays)",
+            key="integrity_tab_resort_b_selector"
+        )
+        resort_b_id = next((rid for rid in compatible_resort_ids 
+                           if next((r.get('display_name', r['id']) for r in resorts if r['id'] == rid), rid) == resort_b_name), 
+                          None)
+        
+        # Show Resort B holiday info
+        resort_b_holidays = resort_holiday_map.get(resort_b_id, set())
+        
+        if resort_b_holidays:
+            st.caption(f"📅 {len(resort_b_holidays)} holidays: {', '.join(sorted(resort_b_holidays)[:3])}{'...' if len(resort_b_holidays) > 3 else ''}")
+    
+    # Show compatibility summary
+    if resort_a_id and resort_b_id:
+        st.divider()
+        
+        # Verify holiday match (should always match due to filtering, but double-check)
+        matching_holidays = resort_a_holidays & resort_b_holidays
+        
+        if len(matching_holidays) == len(resort_a_holidays) == len(resort_b_holidays):
+            st.success(f"✅ Perfect holiday match: {len(matching_holidays)} identical holidays in both resorts")
+            if matching_holidays:
+                st.caption(f"Holidays: {', '.join(sorted(matching_holidays))}")
+        else:
+            # This shouldn't happen due to filtering, but handle it gracefully
+            missing_in_b = resort_a_holidays - resort_b_holidays
+            extra_in_b = resort_b_holidays - resort_a_holidays
+            st.error(f"⚠️ Holiday calendar mismatch detected (this shouldn't happen!)")
+            if missing_in_b:
+                st.write(f"Missing in {resort_b_name}: {', '.join(sorted(missing_in_b))}")
+            if extra_in_b:
+                st.write(f"Extra in {resort_b_name}: {', '.join(sorted(extra_in_b))}")
+    
+    if not resort_b_id:
+        return
     
     st.divider()
     
-    # Resort Selection
-    col1, col2 = st.columns([3, 1])
-    
-    with col1:
-        baseline_label = "Baseline Resort for Comparison"
-        if "editor_baseline_check_result" in st.session_state:
-            cached_baseline = st.session_state.editor_baseline_check_result.resort_name
-            baseline_label = f"Baseline Resort (Current: {cached_baseline})"
-        
-        selected_baseline_name = st.selectbox(
-            baseline_label,
-            options=resort_names,
-            index=0 if resort_names else 0,
-            help="Select a resort with verified data to use as reference",
-            key="editor_baseline_selector"
-        )
-        
-        selected_baseline_id = resort_options.get(selected_baseline_name)
-        
-    with col2:
-        st.markdown("<br>", unsafe_allow_html=True)
-        if st.button("🔄 Clear", use_container_width=True, help="Clear results"):
-            if "editor_integrity_check_result" in st.session_state:
-                del st.session_state.editor_integrity_check_result
-            if "editor_baseline_check_result" in st.session_state:
-                del st.session_state.editor_baseline_check_result
-            st.rerun()
-    
-    st.caption(f"ℹ️ {selected_baseline_name} will be recalculated fresh to ensure accuracy")
-    
+    # Tolerance setting
     col1, col2 = st.columns([3, 1])
     
     with col1:
         tolerance = st.slider(
             "Variance Tolerance (%)",
             min_value=0.0,
-            max_value=20.0,
-            value=5.0,
-            step=0.5,
-            help=f"Alert thresholds: Warning above tolerance, Error above 2× tolerance",
-            key="editor_tolerance_slider"
+            max_value=5.0,
+            value=0.5,
+            step=0.1,
+            help="Maximum acceptable variance for 'matching' period (recommend 0.5% or less)",
+            key="integrity_tab_tolerance_slider"
         )
     
     with col2:
         check_button = st.button(
-            "🔍 Check Data", 
+            "🔍 Auto-Optimize", 
             use_container_width=True, 
             type="primary",
-            help=f"Compare {current_name} against {selected_baseline_name}"
+            help=f"Find longest matching period between {resort_a_name} and {resort_b_name}",
+            key="integrity_tab_optimize_button"
         )
     
     if check_button:
-        with st.spinner(f"Calculating annual points for {selected_baseline_name} and {current_name}..."):
+        with st.spinner(f"Finding optimal date range for {resort_a_name} vs {resort_b_name}..."):
             auditor = EditorPointAuditor(data)
             
             try:
-                baseline_result, target_result = auditor.check_resort_variance(
-                    selected_baseline_id, 
-                    current_resort_id,
+                # Run auto-optimization
+                result = auditor.auto_optimize_date_range(
+                    resort_a_id,
+                    resort_b_id,
                     int(base_year),
                     int(compare_year),
                     tolerance
                 )
                 
-                if baseline_result.points_base == 0 and baseline_result.points_compare == 0:
-                    st.error(f"❌ No point data found for {selected_baseline_name}. Check that {base_year} and {compare_year} years exist with seasons/holidays.")
-                    return
-                
-                if target_result.points_base == 0 and target_result.points_compare == 0:
-                    st.error(f"❌ No point data found for {current_name}. Check that {base_year} and {compare_year} years exist with seasons/holidays.")
-                    return
-                
-                st.session_state.editor_integrity_check_result = target_result
-                st.session_state.editor_baseline_check_result = baseline_result
-                st.session_state.editor_comparison_years = (base_year, compare_year)
-                st.rerun()
+                if result['success']:
+                    st.session_state.optimization_result = result
+                    st.session_state.comparison_resorts = (resort_a_name, resort_b_name)
+                    st.session_state.comparison_years = (base_year, compare_year)
+                    st.rerun()
+                else:
+                    st.error(f"❌ {result['message']}")
+                    st.markdown("**Possible reasons:**")
+                    st.markdown(f"- Point values differ between {base_year} and {compare_year}")
+                    st.markdown("- Season patterns are inconsistent")
+                    st.markdown("- Missing data in one or both years")
+                    st.markdown(f"- Tolerance ({tolerance}%) may be too strict")
                 
             except Exception as e:
-                st.error(f"Error during calculation: {str(e)}")
+                st.error(f"Error during optimization: {str(e)}")
                 import traceback
                 st.code(traceback.format_exc())
                 return
     
-    if ("editor_integrity_check_result" in st.session_state and 
-        "editor_baseline_check_result" in st.session_state and
-        "editor_comparison_years" in st.session_state):
+    # Display results
+    if "optimization_result" in st.session_state and "comparison_resorts" in st.session_state:
+        result = st.session_state.optimization_result
+        res_a, res_b = st.session_state.comparison_resorts
+        yr_base, yr_compare = st.session_state.comparison_years
         
-        baseline = st.session_state.editor_baseline_check_result
-        target = st.session_state.editor_integrity_check_result
-        comp_base_year, comp_compare_year = st.session_state.editor_comparison_years
-        
-        st.divider()
-        
-        st.markdown(f"### 📊 {baseline.resort_name} (Baseline Reference)")
-        col1, col2, col3 = st.columns(3)
-        with col1:
-            st.metric(f"{comp_base_year} Total Points", f"{baseline.points_base:,}")
-        with col2:
-            st.metric(f"{comp_compare_year} Total Points", f"{baseline.points_compare:,}")
-        with col3:
-            st.metric(
-                "Variance", 
-                f"{'+' if baseline.variance_points >= 0 else ''}{baseline.variance_points:,} pts",
-                f"{'+' if baseline.variance_percent >= 0 else ''}{baseline.variance_percent:.2f}%"
-            )
-        
-        # Dynamic caption based on year difference
-        year_diff = int(comp_compare_year) - int(comp_base_year)
-        if year_diff == 1:
-            st.caption(f"Single year comparison: {comp_base_year} → {comp_compare_year}")
-        elif year_diff == 2:
-            st.caption(f"Two-year comparison: {comp_base_year} → {comp_compare_year} (includes leap year if 2026)")
-        else:
-            st.caption(f"Multi-year comparison: {year_diff} year difference")
-        
-        st.divider()
-        
-        st.markdown(f"### 📍 {target.resort_name} (Current Resort)")
-        col1, col2, col3 = st.columns(3)
-        with col1:
-            st.metric(f"{comp_base_year} Total Points", f"{target.points_base:,}")
-        with col2:
-            st.metric(f"{comp_compare_year} Total Points", f"{target.points_compare:,}")
-        with col3:
-            st.metric(
-                "Variance", 
-                f"{'+' if target.variance_points >= 0 else ''}{target.variance_points:,} pts",
-                f"{'+' if target.variance_percent >= 0 else ''}{target.variance_percent:.2f}%"
-            )
-        
-        st.divider()
-        
-        st.markdown("### ⚖️ Comparison Analysis")
-        
-        percent_diff = abs(target.variance_percent - baseline.variance_percent)
-        
-        col1, col2, col3 = st.columns(3)
-        with col1:
-            st.metric(f"{baseline.resort_name}", f"{baseline.variance_percent:.2f}%")
-        with col2:
-            st.metric(f"{target.resort_name}", f"{target.variance_percent:.2f}%")
-        with col3:
-            st.metric("Difference", f"{percent_diff:.2f}%")
-        
-        if target.status == "ERROR":
-            st.error(f"{target.status_icon} **{target.status}**: {target.status_message}")
-            st.markdown("**Recommended Actions:**")
-            st.markdown(f"- Review season periods for missing or overlapping dates in {comp_compare_year}")
-            st.markdown(f"- Check holiday definitions for {comp_compare_year}")
-            st.markdown("- Verify room point values weren't accidentally changed")
-        elif target.status == "WARNING":
-            st.warning(f"{target.status_icon} **{target.status}**: {target.status_message}")
-            st.markdown("**Suggested Actions:**")
-            st.markdown("- Review data for potential inconsistencies")
-            st.markdown("- Compare with baseline to understand differences")
-        else:
-            st.success(f"{target.status_icon} **{target.status}**: {target.status_message}")
-        
-        with st.expander("ℹ️ Understanding Results"):
-            st.markdown(f"""
-            **Status Levels:**
-            - ✅ **NORMAL**: Data appears consistent with baseline pattern
-            - ⚠️ **WARNING**: Some variance detected - review recommended
-            - 🚨 **ERROR**: Significant issues found - likely data entry error
+        if result['success']:
+            st.success(f"✅ Found optimal matching period with {result['variance_percent']:.3f}% variance")
             
-            **What We Compare:**
-            - **{comp_base_year}**: Total points for all days in {comp_base_year}
-            - **{comp_compare_year}**: Total points for all days in {comp_compare_year}
-            - **Variance**: Difference between these two years
+            st.divider()
             
-            **Expected Variance:**
-            - **Same year apart**: ~0% variance if point values stayed constant
-            - **Adjacent years**: Small variance (< 2%) due to holidays on different weekdays
-            - **Multi-year gaps**: Larger variance may be normal if point values intentionally changed
+            # Show the optimal period
+            st.markdown("### 📅 Optimal Matching Period")
             
-            **Common Causes of Variance:**
-            - **Holiday Day-of-Week Shifts**: Same holiday on different weekday = different points
-            - **Missing Dates**: Gaps in season coverage leave days without point values
-            - **Season Pattern Changes**: Different high/low season distribution between years
-            - **Point Value Changes**: Room point values modified between years
-            - **Leap Year Effect**: If comparing across 2026, one extra day affects totals
+            col1, col2, col3 = st.columns(3)
+            with col1:
+                st.metric("Start Date", result['start_date'])
+            with col2:
+                st.metric("End Date", result['end_date'])
+            with col3:
+                st.metric("Days Analyzed", result['days_analyzed'])
             
-            **Typical Issues:**
-            - **Negative variance**: Compare year incomplete or has fewer days covered
-            - **Zero variance**: Exact same data (verify compare year wasn't just copied)
-            - **Excessive variance**: Point values changed or duplicate/missing entries
-            - **Zero points**: Years not defined or missing seasons/holidays
+            st.info(f"💡 This is the longest period where {res_a} and {res_b} have matching point patterns (within {result['tolerance']}% tolerance)")
             
-            **Using This Tool:**
-            1. Select the years you want to compare (base year → compare year)
-            2. Choose a baseline resort you know has accurate data
-            3. Set tolerance based on how strictly you want to validate
-            4. Check each resort you're editing against the baseline
-            5. Fix any ERRORs before saving
-            6. Review WARNINGs to understand if differences are intentional
+            st.divider()
+            
+            # Show comparison metrics
+            st.markdown(f"### ⚖️ Comparison: {res_a} vs {res_b}")
+            
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                st.markdown(f"**{res_a}** ({yr_base})")
+                st.metric("Total Points", f"{result['resort_a_base']:,}")
+                st.metric(f"{yr_compare} Points", f"{result['resort_a_compare']:,}")
+                st.metric("Variance", f"{result['resort_a_variance_pct']:.3f}%")
+            
+            with col2:
+                st.markdown(f"**{res_b}** ({yr_base})")
+                st.metric("Total Points", f"{result['resort_b_base']:,}")
+                st.metric(f"{yr_compare} Points", f"{result['resort_b_compare']:,}")
+                st.metric("Variance", f"{result['resort_b_variance_pct']:.3f}%")
+            
+            st.divider()
+            
+            col1, col2, col3 = st.columns(3)
+            with col1:
+                st.metric(f"{res_a} Pattern", f"{result['resort_a_variance_pct']:.3f}%")
+            with col2:
+                st.metric(f"{res_b} Pattern", f"{result['resort_b_variance_pct']:.3f}%")
+            with col3:
+                diff = abs(result['resort_a_variance_pct'] - result['resort_b_variance_pct'])
+                st.metric("Difference", f"{diff:.3f}%", 
+                         delta=f"Target: <{result['tolerance']}%",
+                         delta_color="off")
+            
+            # Interpretation
+            if diff < result['tolerance']:
+                st.success(f"✅ MATCH: Both resorts show consistent year-over-year patterns within the matching period")
+            else:
+                st.warning(f"⚠️ VARIANCE: Patterns differ by {diff:.3f}% (tolerance: {result['tolerance']}%)")
+            
+            # Show what was excluded
+            if result['excluded_days'] > 0:
+                st.divider()
+                st.markdown("### 🚫 Excluded Periods")
+                st.caption(f"{result['excluded_days']} days excluded from analysis (edge periods with mismatched data)")
+                
+                col1, col2 = st.columns(2)
+                with col1:
+                    if result['start_date'] != f"{yr_base}-01-01":
+                        days_start = (datetime.strptime(result['start_date'], '%Y-%m-%d').date() - date(int(yr_base), 1, 1)).days
+                        st.write(f"• Start of year: Jan 1 - {result['start_date'][:10]} ({days_start} days)")
+                
+                with col2:
+                    if result['end_date'] != f"{yr_base}-12-31":
+                        days_end = (date(int(yr_base), 12, 31) - datetime.strptime(result['end_date'], '%Y-%m-%d').date()).days
+                        st.write(f"• End of year: {result['end_date'][:10]} - Dec 31 ({days_end} days)")
+        
+        with st.expander("ℹ️ How Auto-Optimization Works"):
+            st.markdown("""
+            **Algorithm:**
+            1. **Start with safe period**: Jan 8 - Dec 18 (345 days)
+            2. **Calculate variance** for both resorts in this period
+            3. **Check if patterns match** (difference < tolerance)
+            4. **If matched**: Try expanding the period (add days at start/end)
+            5. **If not matched**: Shrink the period (remove days from edges)
+            6. **Repeat** until finding the longest matching period
+            7. **Return optimal range** or flag error if no match found
+            
+            **What "Matching" Means:**
+            - Both resorts show similar year-over-year variance patterns
+            - Example: If Resort A has +0.15% variance, Resort B should have ~+0.15% too
+            - Difference between patterns must be < tolerance (default 0.5%)
+            
+            **Why Periods Get Excluded:**
+            - **New Year's Week**: Often crosses year boundaries (Dec 26 - Jan 7)
+            - **Holiday Mismatches**: Holidays may be defined differently between resorts
+            - **Incomplete Data**: Edge periods may have missing season coverage
+            - **Pattern Changes**: Point values may change at year boundaries
+            
+            **Use Cases:**
+            - **Verify Year Generation**: Check if 2027 was correctly generated from 2025
+            - **Cross-Resort Validation**: Ensure two resorts use same point patterns
+            - **Find Data Issues**: Quickly identify which periods have problems
             """)
     else:
-        st.info("👆 Select years and a baseline resort, then click 'Check Data' to validate data quality")
+        st.info("👆 Select two resorts and years, then click 'Auto-Optimize' to find the longest matching period")
 
-# ----------------------------------------------------------------------
-# MAIN APPLICATION
-# ----------------------------------------------------------------------
 def run():
     initialize_session_state()
     if st.session_state.data is None:
